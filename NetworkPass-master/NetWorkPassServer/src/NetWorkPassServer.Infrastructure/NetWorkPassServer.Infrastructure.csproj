@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Scrutor" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\auth\AuthServer.Application\AuthServer.Application.csproj" />
+    <ProjectReference Include="..\..\auth\AuthServer.Domain\AuthServer.Domain.csproj" />
+    <ProjectReference Include="..\..\shared\SharedLibrary\SharedLibrary.csproj" />
+    <ProjectReference Include="..\NetWorkPassServer.Application\NetWorkPassServer.Application.csproj" />
+    <ProjectReference Include="..\NetWorkPassServer.Domain\NetWorkPassServer.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

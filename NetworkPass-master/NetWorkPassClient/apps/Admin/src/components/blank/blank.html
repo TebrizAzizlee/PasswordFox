@@ -1,0 +1,124 @@
+<title>NetWorkPass | {{pageTitle()}}</title>
+<div class="content-area">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">
+      <h1><i class="bi" [ngClass]="pageIcon"></i>{{pageTitle()}}</h1>
+      <p class="page-subtitle">{{pageDescription()}}</p>
+    </div>
+
+    <div class="page-actions">
+      @if(showStatus()) {
+      <div class="status-badge">
+        @if(status()) {
+        <span class="badge bg-success">AKTİV</span>
+        } @else {
+        <span class="badge bg-success">PASSIV</span>
+        }
+      </div>
+
+    }
+    @if(showBackbtn()) {
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-left me-1"></i>Geri
+      </button>
+      }
+@if(showEditbtn())
+{
+  <div class="btn-group">
+        <button type="button" class="btn btn-primary">
+          <i class="bi bi-pencil me-1"></i>Redaktə et
+        </button>
+      </div>
+}
+
+    </div>
+  </div>
+
+<ng-content></ng-content>
+
+  @if(showAudit())
+  {
+    <div class="record-info-footer">
+    <div class="row g-3">
+      @if(audit()?.updateAt){
+   <div class="col-md-6">
+        <div class="record-info-card">
+          <div class="record-info-icon">
+            <i class="bi bi-pencil text-warning"></i>
+          </div>
+          <div class="record-info-content">
+            <label for class="record-info-label">Son Yenileme</label>
+            <div class="record-info-details">
+              <span class="record-info-user"
+                >{{audit()?.updateFullName}}</span
+              >
+              <span class="record-info-date">{{audit()!.updateAt | date:'dd MMM yyyy HH:mm:ss'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+
+
+      <div class="col-md-6">
+        <div class="record-info-card">
+          <div class="record-info-icon">
+            <i class="bi bi-plus-circle text-success"></i>
+          </div>
+          <div class="record-info-content">
+            <label for class="record-info-label">Yaradilma Tarixi</label>
+            <div class="record-info-details">
+              <span class="record-info-user"
+                >{{audit()!.createFullName}}</span
+              >
+              <span class="record-info-date">{{audit()!.createAt | date:'dd MMM yyyy HH:mm:ss'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+  <!-- Kayıt Bilgileri Footer -->
+  <div class="record-info-footer">
+    <div class="row g-3">
+      @if(audit()?.updateAt){
+   <!-- <div class="col-md-6">
+        <div class="record-info-card">
+          <div class="record-info-icon">
+            <i class="bi bi-pencil text-warning"></i>
+          </div>
+          <div class="record-info-content">
+            <label for class="record-info-label">Son Yenileme</label>
+            <div class="record-info-details">
+              <span class="record-info-user"
+                >{{audit()?.updateFullName}}</span
+              >
+              <span class="record-info-date">{{audit()!.updateAt | date:'dd MMM yyyy HH:mm:ss'}}</span>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      }
+
+
+      <!-- <div class="col-md-6">
+        <div class="record-info-card">
+          <div class="record-info-icon">
+            <i class="bi bi-plus-circle text-success"></i>
+          </div>
+          <div class="record-info-content">
+            <label for class="record-info-label">Yaradilma Tarixi</label>
+            <div class="record-info-details">
+              <span class="record-info-user"
+                >{{audit()!.createFullName}}</span
+              >
+              <span class="record-info-date">{{audit()!.createAt | date:'dd MMM yyyy HH:mm:ss'}}</span>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>

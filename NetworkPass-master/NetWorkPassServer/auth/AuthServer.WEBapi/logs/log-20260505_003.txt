@@ -1,0 +1,442 @@
+2026-05-05 15:20:04.838 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 15:20:04.893 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 15:20:07.098 +04:00 [INF] Executed DbCommand (83ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 15:20:07.141 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 15:20:07.170 +04:00 [INF] Token cleanup started
+2026-05-05 15:20:07.270 +04:00 [INF] Executed DbCommand (24ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 15:20:07.335 +04:00 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address https://127.0.0.1:7232: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-05-05 15:34:19.752 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 15:34:19.798 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 15:34:22.317 +04:00 [INF] Executed DbCommand (49ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 15:34:22.356 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 15:34:22.384 +04:00 [INF] Token cleanup started
+2026-05-05 15:34:22.518 +04:00 [INF] Executed DbCommand (67ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 15:34:22.554 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-05 15:34:22.556 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-05 15:34:22.558 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 15:34:22.559 +04:00 [INF] Hosting environment: Development
+2026-05-05 15:34:22.560 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-05 15:34:32.293 +04:00 [INF] Request starting HTTP/1.1 POST https://localhost:7232/auth/login - application/json 61
+2026-05-05 15:34:33.856 +04:00 [INF] Failed to validate the token.
+System.ArgumentException: IDX14102: Unable to decode the header '[PII of type 'Microsoft.IdentityModel.Logging.SecurityArtifact' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]' as Base64Url encoded string.
+ ---> System.MissingMethodException: Method not found: 'Void Microsoft.IdentityModel.Tokens.Base64UrlEncoder.Decode(System.ReadOnlySpan`1<Char>, System.Span`1<Byte>)'.
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.CreateClaimSet(ReadOnlySpan`1 strSpan, Int32 startIndex, Int32 length, Boolean createHeaderClaimSet)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(ReadOnlyMemory`1 encodedTokenMemory)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(ReadOnlyMemory`1 encodedTokenMemory)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken..ctor(String jwtEncodedString)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ReadToken(String token, TokenValidationParameters validationParameters)
+2026-05-05 15:34:33.871 +04:00 [INF] Bearer was not authenticated. Failure message: IDX14102: Unable to decode the header '[PII of type 'Microsoft.IdentityModel.Logging.SecurityArtifact' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]' as Base64Url encoded string.
+2026-05-05 15:34:33.875 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 15:34:34.052 +04:00 [INF] Executed DbCommand (4ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 15:34:34.222 +04:00 [INF] Executed DbCommand (5ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 15:34:34.376 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 15:34:34.395 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 15:34:34.400 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 15:34:34.420 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 15:34:34.429 +04:00 [INF] Request finished HTTP/1.1 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 2137.9739ms
+2026-05-05 15:43:57.357 +04:00 [INF] Request starting HTTP/1.1 POST https://localhost:7232/auth/login - application/json 61
+2026-05-05 15:43:57.366 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 15:43:57.402 +04:00 [INF] Executed DbCommand (15ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 15:43:57.418 +04:00 [INF] Executed DbCommand (7ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 15:43:57.429 +04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 15:43:57.436 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 15:43:57.437 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 15:43:57.440 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 15:43:57.445 +04:00 [INF] Request finished HTTP/1.1 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 87.7139ms
+2026-05-05 15:44:22.535 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 15:46:18.601 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 15:46:18.645 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 15:46:19.968 +04:00 [INF] Executed DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 15:46:20.005 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 15:46:20.031 +04:00 [INF] Token cleanup started
+2026-05-05 15:46:20.116 +04:00 [INF] Executed DbCommand (21ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 15:46:20.169 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-05 15:46:20.171 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-05 15:46:20.172 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 15:46:20.173 +04:00 [INF] Hosting environment: Development
+2026-05-05 15:46:20.174 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-05 15:47:29.435 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 15:47:29.482 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 15:47:30.898 +04:00 [INF] Executed DbCommand (40ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 15:47:30.936 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 15:47:30.964 +04:00 [INF] Token cleanup started
+2026-05-05 15:47:31.067 +04:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 15:47:31.124 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-05 15:47:31.126 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-05 15:47:31.129 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 15:47:31.131 +04:00 [INF] Hosting environment: Development
+2026-05-05 15:47:31.132 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-05 15:47:58.429 +04:00 [INF] Request starting HTTP/1.1 POST https://localhost:7232/auth/login - application/json 61
+2026-05-05 15:47:58.486 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 15:47:58.673 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 15:47:58.854 +04:00 [INF] Executed DbCommand (5ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 15:47:59.035 +04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 15:47:59.054 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 15:47:59.059 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 15:47:59.081 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 15:47:59.090 +04:00 [INF] Request finished HTTP/1.1 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 662.7504ms
+2026-05-05 15:57:31.121 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 16:04:23.946 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 16:04:23.991 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 16:04:25.362 +04:00 [INF] Executed DbCommand (38ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 16:04:25.400 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 16:04:25.429 +04:00 [INF] Token cleanup started
+2026-05-05 16:04:25.516 +04:00 [INF] Executed DbCommand (22ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 16:04:25.569 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-05 16:04:25.570 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-05 16:04:25.571 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 16:04:25.573 +04:00 [INF] Hosting environment: Development
+2026-05-05 16:04:25.574 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-05 16:04:34.714 +04:00 [INF] Request starting HTTP/1.1 POST https://localhost:7232/auth/login - application/json 61
+2026-05-05 16:04:34.772 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:04:34.938 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 16:04:35.113 +04:00 [INF] Executed DbCommand (6ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 16:04:35.286 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 16:04:35.304 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 16:04:35.309 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 16:04:35.331 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:04:35.341 +04:00 [INF] Request finished HTTP/1.1 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 628.4518ms
+2026-05-05 16:07:16.823 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 16:07:16.873 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 16:07:18.870 +04:00 [INF] Executed DbCommand (45ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 16:07:18.932 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 16:07:18.981 +04:00 [INF] Token cleanup started
+2026-05-05 16:07:19.107 +04:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 16:07:19.319 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-05 16:07:19.320 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-05 16:07:19.391 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 16:07:19.392 +04:00 [INF] Hosting environment: Development
+2026-05-05 16:07:19.394 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-05 16:07:39.870 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-05 16:07:46.292 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-05 16:07:46.301 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-05 16:07:46.301 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-05 16:07:46.457 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-05-05 16:07:46.457 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-05-05 16:07:46.481 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-05 16:07:46.481 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-05 16:07:46.498 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-05 16:07:46.505 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-05-05 16:07:46.498 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-05 16:07:46.509 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-05 16:07:46.513 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-05-05 16:07:46.520 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-05 16:07:46.520 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-05 16:07:46.531 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 238.6167ms
+2026-05-05 16:07:46.532 +04:00 [INF] CORS policy execution failed.
+2026-05-05 16:07:46.533 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 6673.1153ms
+2026-05-05 16:07:46.540 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-05 16:07:46.545 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-05 16:07:46.657 +04:00 [INF] Sending file with download name ''.
+2026-05-05 16:07:46.657 +04:00 [INF] Sending file with download name ''.
+2026-05-05 16:07:46.662 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-05 16:07:46.663 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 149.9828ms
+2026-05-05 16:07:46.689 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-05 16:07:46.692 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 186.6858ms
+2026-05-05 16:07:47.044 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-05-05 16:07:47.048 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-05 16:07:47.218 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-05 16:07:47.220 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 175.5642ms
+2026-05-05 16:07:47.546 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/favicon.svg - null null
+2026-05-05 16:07:47.550 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/favicon.svg'
+2026-05-05 16:07:47.551 +04:00 [INF] Sending file with download name ''.
+2026-05-05 16:07:47.552 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/favicon.svg'
+2026-05-05 16:07:47.554 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/favicon.svg - 200 533 image/svg+xml 7.8782ms
+2026-05-05 16:07:58.840 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 58
+2026-05-05 16:07:58.843 +04:00 [INF] CORS policy execution failed.
+2026-05-05 16:07:58.844 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-05 16:07:58.845 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:08:04.070 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 16:08:09.169 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 16:08:09.340 +04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 16:08:09.359 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 16:08:09.363 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 16:08:09.367 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:08:09.371 +04:00 [INF] Request finished HTTP/2 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 10531.8388ms
+2026-05-05 16:11:12.871 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 58
+2026-05-05 16:11:12.879 +04:00 [INF] CORS policy execution failed.
+2026-05-05 16:11:12.880 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-05 16:11:12.882 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:11:16.609 +04:00 [INF] Executed DbCommand (20ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 16:11:35.696 +04:00 [INF] Executed DbCommand (29ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 16:11:35.705 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 16:11:35.709 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 16:11:35.710 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 16:11:35.711 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:11:35.712 +04:00 [INF] Request finished HTTP/2 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 22841.5262ms
+2026-05-05 16:18:55.309 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 16:18:55.364 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 16:19:00.560 +04:00 [INF] Executed DbCommand (42ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 16:19:00.619 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 16:19:00.665 +04:00 [INF] Token cleanup started
+2026-05-05 16:19:00.822 +04:00 [INF] Executed DbCommand (59ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 16:19:01.010 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-05 16:19:01.012 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-05 16:19:01.090 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 16:19:01.091 +04:00 [INF] Hosting environment: Development
+2026-05-05 16:19:01.092 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-05 16:19:01.645 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-05 16:19:23.410 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-05 16:19:23.456 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-05 16:19:24.844 +04:00 [INF] Executed DbCommand (34ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-05 16:19:24.882 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-05 16:19:24.910 +04:00 [INF] Token cleanup started
+2026-05-05 16:19:24.998 +04:00 [INF] Executed DbCommand (24ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 16:19:25.048 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-05 16:19:25.049 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-05 16:19:25.051 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-05 16:19:25.052 +04:00 [INF] Hosting environment: Development
+2026-05-05 16:19:25.054 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-05 16:19:51.362 +04:00 [INF] Request starting HTTP/1.1 POST https://localhost:7232/auth/login - application/json 61
+2026-05-05 16:19:51.445 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:19:51.625 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 16:19:51.806 +04:00 [INF] Executed DbCommand (5ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 16:19:51.967 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 16:19:51.984 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 16:19:51.988 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 16:19:52.007 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:19:52.015 +04:00 [INF] Request finished HTTP/1.1 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 655.8334ms
+2026-05-05 16:24:51.611 +04:00 [INF] Request starting HTTP/1.1 POST https://localhost:7232/auth/login - application/json 61
+2026-05-05 16:24:51.619 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:24:51.647 +04:00 [INF] Executed DbCommand (14ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-05 16:24:51.660 +04:00 [INF] Executed DbCommand (6ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-05 16:24:51.669 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-05 16:24:51.673 +04:00 [INF] Setting HTTP status code 200.
+2026-05-05 16:24:51.674 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-05 16:24:51.677 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-05 16:24:51.678 +04:00 [INF] Request finished HTTP/1.1 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 66.9687ms
+2026-05-05 16:29:25.046 +04:00 [INF] Executed DbCommand (19ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-05 16:29:35.477 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-05 16:29:35.676 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-05 16:29:35.922 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-05-05 16:29:36.043 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-05 16:29:36.093 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-05-05 16:29:36.093 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-05-05 16:29:36.104 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 626.7701ms
+2026-05-05 16:29:36.109 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-05 16:29:36.112 +04:00 [INF] CORS policy execution failed.
+2026-05-05 16:29:36.123 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-05 16:29:36.128 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-05 16:29:36.130 +04:00 [INF] Sending file with download name ''.
+2026-05-05 16:29:36.133 +04:00 [INF] Sending file with download name ''.
+2026-05-05 16:29:36.140 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-05 16:29:36.141 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 47.908ms
+2026-05-05 16:29:36.182 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-05 16:29:36.191 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 98.0798ms
+2026-05-05 16:29:36.743 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-05-05 16:29:36.755 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-05 16:29:36.910 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-05 16:29:36.912 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 168.437ms

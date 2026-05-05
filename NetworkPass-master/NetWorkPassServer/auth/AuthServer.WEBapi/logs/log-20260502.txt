@@ -1,0 +1,315 @@
+2026-05-02 00:06:54.802 +04:00 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 00:16:54.845 +04:00 [INF] Executed DbCommand (21ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 00:26:54.886 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 00:36:54.938 +04:00 [INF] Executed DbCommand (25ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 00:46:54.978 +04:00 [INF] Executed DbCommand (16ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 00:56:55.039 +04:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 01:06:55.098 +04:00 [INF] Executed DbCommand (25ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 01:16:55.133 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 01:26:55.180 +04:00 [INF] Executed DbCommand (21ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 01:36:55.212 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 01:46:55.236 +04:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 01:56:55.268 +04:00 [INF] Executed DbCommand (18ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 02:06:55.323 +04:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 02:16:55.364 +04:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 02:26:55.421 +04:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 02:36:55.490 +04:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 02:46:55.542 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 02:56:55.590 +04:00 [INF] Executed DbCommand (23ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 03:06:55.651 +04:00 [INF] Executed DbCommand (29ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 03:16:55.696 +04:00 [INF] Executed DbCommand (18ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 03:26:55.745 +04:00 [INF] Executed DbCommand (23ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 03:36:55.796 +04:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 03:46:55.845 +04:00 [INF] Executed DbCommand (12ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 03:56:55.870 +04:00 [INF] Executed DbCommand (13ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 04:06:55.914 +04:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 04:16:55.981 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 04:26:56.030 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 04:36:56.090 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 04:46:56.154 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 04:56:56.219 +04:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 05:06:56.283 +04:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 05:16:56.341 +04:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 05:26:56.401 +04:00 [INF] Executed DbCommand (29ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 05:36:56.457 +04:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 05:46:56.500 +04:00 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 05:56:56.530 +04:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 06:06:56.586 +04:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 06:16:56.627 +04:00 [INF] Executed DbCommand (20ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 06:26:56.656 +04:00 [INF] Executed DbCommand (9ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 06:36:56.703 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 06:46:56.756 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 06:56:56.820 +04:00 [INF] Executed DbCommand (29ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 07:06:56.879 +04:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 07:16:56.942 +04:00 [INF] Executed DbCommand (24ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 07:26:56.991 +04:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 07:36:57.049 +04:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 07:46:57.119 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 07:56:57.180 +04:00 [INF] Executed DbCommand (22ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 08:06:57.236 +04:00 [INF] Executed DbCommand (32ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 08:16:57.290 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 08:26:57.349 +04:00 [INF] Executed DbCommand (18ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 08:36:57.382 +04:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 08:46:57.403 +04:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 08:56:57.447 +04:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 09:06:57.476 +04:00 [INF] Executed DbCommand (13ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 09:16:57.505 +04:00 [INF] Executed DbCommand (12ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 09:26:57.559 +04:00 [INF] Executed DbCommand (20ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 09:36:57.606 +04:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 09:46:57.656 +04:00 [INF] Executed DbCommand (18ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 09:56:57.687 +04:00 [INF] Executed DbCommand (13ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 10:06:57.740 +04:00 [INF] Executed DbCommand (33ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 10:16:57.789 +04:00 [INF] Executed DbCommand (22ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-02 10:26:57.855 +04:00 [INF] Executed DbCommand (29ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1

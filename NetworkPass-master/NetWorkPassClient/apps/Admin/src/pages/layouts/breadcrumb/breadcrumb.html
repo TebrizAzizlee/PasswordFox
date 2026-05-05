@@ -1,0 +1,11 @@
+ <ol class="breadcrumb">
+           @for(data of breadcrumb.breadcrumbdata();track data.url){
+ <li class="breadcrumb-item" [ngClass]="data.isActive?'active':''">
+              <a [routerLink]="data.url">
+                <i class="bi"[ngClass]="data.icon"></i>
+               {{data.title}}
+              </a>
+            </li>
+
+           }
+          </ol>

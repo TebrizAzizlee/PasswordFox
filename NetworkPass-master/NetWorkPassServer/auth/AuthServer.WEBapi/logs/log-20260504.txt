@@ -1,0 +1,125 @@
+2026-05-04 14:28:14.712 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-04 14:28:14.761 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-04 14:28:18.577 +04:00 [INF] Executed DbCommand (50ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-04 14:28:18.636 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-04 14:28:18.676 +04:00 [INF] Token cleanup started
+2026-05-04 14:28:18.848 +04:00 [INF] Executed DbCommand (92ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-04 14:28:19.004 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-04 14:28:19.006 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-04 14:28:19.060 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-04 14:28:19.062 +04:00 [INF] Hosting environment: Development
+2026-05-04 14:28:19.062 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-04 14:28:19.452 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-04 14:28:21.243 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-04 14:28:21.397 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-05-04 14:28:21.429 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-04 14:28:21.438 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-04 14:28:21.443 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-04 14:28:21.445 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-05-04 14:28:21.445 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-05-04 14:28:21.456 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 2015.8704ms
+2026-05-04 14:28:21.458 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-04 14:28:21.460 +04:00 [INF] CORS policy execution failed.
+2026-05-04 14:28:21.465 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-04 14:28:21.469 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-04 14:28:21.580 +04:00 [INF] Sending file with download name ''.
+2026-05-04 14:28:21.580 +04:00 [INF] Sending file with download name ''.
+2026-05-04 14:28:21.585 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-04 14:28:21.587 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 141.3922ms
+2026-05-04 14:28:21.618 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-04 14:28:21.622 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 176.3318ms
+2026-05-04 14:28:21.975 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-05-04 14:28:21.978 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-04 14:28:22.138 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-04 14:28:22.139 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 164.5378ms
+2026-05-04 14:28:22.458 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/favicon.svg - null null
+2026-05-04 14:28:22.461 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/favicon.svg'
+2026-05-04 14:28:22.462 +04:00 [INF] Sending file with download name ''.
+2026-05-04 14:28:22.463 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/favicon.svg'
+2026-05-04 14:28:22.464 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/favicon.svg - 200 533 image/svg+xml 5.2063ms
+2026-05-04 14:28:52.815 +04:00 [INF] Request starting HTTP/1.1 POST https://localhost:7232/auth/login - application/json 61
+2026-05-04 14:28:52.819 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-04 14:29:00.554 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-05-04 14:29:24.483 +04:00 [INF] Executed DbCommand (23ms) [Parameters=[@__user_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE [l]
+SET [l].[IsActive] = CAST(0 AS bit)
+FROM [LoginTokens] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[UserId] = @__user_Id_0 AND [l].[IsActive] = CAST(1 AS bit)
+2026-05-04 14:29:25.650 +04:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (DbType = DateTimeOffset), @p12='?' (DbType = Guid), @p13='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [ExpiresAt], [IsActive], [IsDeleted], [RevokedAt], [RevokedReason], [TokenHash], [UpdatedAt], [UpdatedBy], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-05-04 14:29:31.570 +04:00 [INF] Setting HTTP status code 200.
+2026-05-04 14:29:31.574 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-05-04 14:29:31.579 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-04 14:29:31.584 +04:00 [INF] Request finished HTTP/1.1 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 38769.8693ms
+2026-05-04 14:38:46.044 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-04 14:38:46.093 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-05-04 14:38:48.600 +04:00 [INF] Executed DbCommand (50ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-04 14:38:48.665 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-04 14:38:48.724 +04:00 [INF] Token cleanup started
+2026-05-04 14:38:48.859 +04:00 [INF] Executed DbCommand (34ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-04 14:38:49.080 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-04 14:38:49.082 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-04 14:38:49.184 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-04 14:38:49.186 +04:00 [INF] Hosting environment: Development
+2026-05-04 14:38:49.189 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-04 14:38:49.562 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-04 14:38:49.824 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-04 14:38:49.982 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-05-04 14:38:50.014 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-04 14:38:50.026 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-04 14:38:50.032 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-05-04 14:38:50.032 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-05-04 14:38:50.033 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-04 14:38:50.040 +04:00 [INF] CORS policy execution failed.
+2026-05-04 14:38:50.040 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-04 14:38:50.043 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-04 14:38:50.078 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 526.7247ms
+2026-05-04 14:38:50.080 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-04 14:38:50.083 +04:00 [INF] Sending file with download name ''.
+2026-05-04 14:38:50.085 +04:00 [INF] Sending file with download name ''.
+2026-05-04 14:38:50.090 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-04 14:38:50.091 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 59.4993ms
+2026-05-04 14:38:50.109 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-04 14:38:50.113 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 81.4346ms
+2026-05-04 14:38:50.512 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-05-04 14:38:50.515 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-04 14:38:50.691 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-04 14:38:50.692 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 180.4505ms
+2026-05-04 14:48:49.015 +04:00 [INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-04 14:58:49.059 +04:00 [INF] Executed DbCommand (15ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1

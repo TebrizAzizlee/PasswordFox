@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Auth/">
+    <Project Path="auth/AuthServer.Application/AuthServer.Application.csproj" Id="f9f4a729-3008-4b89-a0ac-837b1c9be24a" />
+    <Project Path="auth/AuthServer.Domain/AuthServer.Domain.csproj" Id="c079146f-5148-404b-8310-fe6578fd8770" />
+    <Project Path="auth/AuthServer.Infrastructure/AuthServer.Infrastructure.csproj" Id="99b0fa70-4b51-42e3-b195-f41c0850938d" />
+    <Project Path="auth/AuthServer.WEBapi/AuthServer.WEBapi.csproj" Id="49586f2e-81dd-4202-8be4-f283f03db46a" />
+  </Folder>
+  <Folder Name="/shared/">
+    <Project Path="Infrastructure/Infrastructure.csproj" Id="dc3da238-750b-44ec-9d08-4b0521b46ab0" />
+    <Project Path="shared/SharedLibrary/SharedLibrary.csproj" Id="c1ae22c1-a653-4833-a3b6-c460d50d2d9a" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/NetWorkPassServer.Application/NetWorkPassServer.Application.csproj" Id="3392a516-20d8-4929-b60e-3ea919fdf761" />
+    <Project Path="src/NetWorkPassServer.Domain/NetWorkPassServer.Domain.csproj" Id="37e49203-4a42-46d4-936a-071d519eac90" />
+    <Project Path="src/NetWorkPassServer.Infrastructure/NetWorkPassServer.Infrastructure.csproj" Id="b1b9a245-f513-4afd-83ca-dbcac09afe88" />
+    <Project Path="src/NetWorkPassServer.WEBAPI/NetWorkPassServer.WEBAPI.csproj" Id="1c1f1555-3e1a-4093-afd0-cb9d622d9e80" />
+  </Folder>
+  <Folder Name="/test/" />
+</Solution>

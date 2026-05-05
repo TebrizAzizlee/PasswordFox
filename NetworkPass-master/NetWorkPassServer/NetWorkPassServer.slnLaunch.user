@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "auth\\AuthServer.WEBapi\\AuthServer.WEBapi.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\NetWorkPassServer.WEBAPI\\NetWorkPassServer.WEBAPI.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

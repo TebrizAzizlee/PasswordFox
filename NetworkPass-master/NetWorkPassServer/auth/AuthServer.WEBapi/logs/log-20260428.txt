@@ -1,0 +1,664 @@
+2026-04-28 12:17:55.308 +04:00 [INF] Executed DbCommand (322ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [AuthDbServerDb];
+2026-04-28 12:17:55.438 +04:00 [INF] Executed DbCommand (89ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [AuthDbServerDb] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-04-28 12:17:55.453 +04:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-28 12:17:55.457 +04:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2026-04-28 12:17:55.485 +04:00 [INF] Executed DbCommand (26ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+2026-04-28 12:17:55.548 +04:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+2026-04-28 12:17:55.555 +04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-28 12:17:55.556 +04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-28 12:17:55.565 +04:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-04-28 12:17:55.577 +04:00 [INF] Applying migration '20260428081631_InitailCreate'.
+2026-04-28 12:17:55.617 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [LoginTokens] (
+    [Id] uniqueidentifier NOT NULL,
+    [UserId] uniqueidentifier NOT NULL,
+    [TokenHash] nvarchar(500) NOT NULL,
+    [IsActive] bit NOT NULL,
+    [ExpiresAt] datetimeoffset NOT NULL,
+    [CreatedAt] datetimeoffset NOT NULL,
+    [RevokedAt] datetimeoffset NULL,
+    CONSTRAINT [PK_LoginTokens] PRIMARY KEY ([Id])
+);
+2026-04-28 12:17:55.620 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Users] (
+    [Id] uniqueidentifier NOT NULL,
+    [FirstName] NVarChar(100) NOT NULL,
+    [LastName] NVarChar(100) NOT NULL,
+    [FullName] NVarChar(200) NOT NULL,
+    [Email] nvarchar(256) NOT NULL,
+    [UserName] nvarchar(100) NOT NULL,
+    [PasswordHash] varbinary(max) NOT NULL,
+    [Password_PasswordSalt] varbinary(max) NOT NULL,
+    [Isadmin_value] bit NOT NULL,
+    [TFACode_Value] nvarchar(max) NULL,
+    [TFAConfirmCode_Value] nvarchar(max) NULL,
+    [TFAStatus_Value] bit NOT NULL,
+    [TFAExpiresDate_Value] datetimeoffset NULL,
+    [TFAIsCompleted_Value] bit NULL,
+    [FailedLoginAttempts] int NOT NULL,
+    [LockoutEnd] datetimeoffset NULL,
+    [ResetPasswordTokenHash] nvarchar(max) NULL,
+    [ResetPasswordTokenExpiresAt] datetime2 NULL,
+    [IsResetPasswordCompleted] bit NOT NULL,
+    [IsActive] bit NOT NULL,
+    [CreatedAt] datetimeoffset NOT NULL,
+    [CreatedBy] uniqueidentifier NOT NULL,
+    [UpdatedAt] datetimeoffset NULL,
+    [UpdatedBy] uniqueidentifier NULL,
+    [DeletedAt] datetimeoffset NULL,
+    [DeletedBy] uniqueidentifier NULL,
+    [IsDeleted] bit NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([Id])
+);
+2026-04-28 12:17:55.621 +04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_LoginTokens_TokenHash] ON [LoginTokens] ([TokenHash]);
+2026-04-28 12:17:55.621 +04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_LoginTokens_UserId] ON [LoginTokens] ([UserId]);
+2026-04-28 12:17:55.622 +04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Users_Email] ON [Users] ([Email]);
+2026-04-28 12:17:55.623 +04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Users_Id] ON [Users] ([Id]);
+2026-04-28 12:17:55.624 +04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Users_UserName] ON [Users] ([UserName]);
+2026-04-28 12:17:55.628 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260428081631_InitailCreate', N'9.0.13');
+2026-04-28 12:17:55.634 +04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result
+2026-04-28 12:18:29.323 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-28 12:18:29.375 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-04-28 12:18:31.513 +04:00 [INF] Executed DbCommand (41ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-28 12:18:31.955 +04:00 [INF] Executed DbCommand (83ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTimeOffset), @p4='?' (DbType = Guid), @p5='?' (DbType = Int32), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTimeOffset), @p10='?' (DbType = DateTime2), @p11='?' (Size = 4000), @p12='?' (DbType = DateTimeOffset), @p13='?' (DbType = Guid), @p14='?' (Size = 256), @p15='?' (Size = 100), @p16='?' (Size = 200), @p17='?' (DbType = Boolean), @p18='?' (Size = 100), @p19='?' (Size = 8000) (DbType = Binary), @p20='?' (Size = 8000) (DbType = Binary), @p21='?' (DbType = Boolean), @p22='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([Id], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [FailedLoginAttempts], [IsActive], [IsDeleted], [IsResetPasswordCompleted], [LockoutEnd], [ResetPasswordTokenExpiresAt], [ResetPasswordTokenHash], [UpdatedAt], [UpdatedBy], [Email], [FirstName], [FullName], [Isadmin_value], [LastName], [PasswordHash], [Password_PasswordSalt], [TFAStatus_Value], [UserName])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22);
+2026-04-28 12:18:31.997 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-28 12:18:32.075 +04:00 [INF] Token cleanup started
+2026-04-28 12:18:32.188 +04:00 [INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 12:18:32.405 +04:00 [INF] Now listening on: https://localhost:7232
+2026-04-28 12:18:32.406 +04:00 [INF] Now listening on: http://localhost:5142
+2026-04-28 12:18:32.499 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-28 12:18:32.501 +04:00 [INF] Hosting environment: Development
+2026-04-28 12:18:32.502 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-04-28 12:18:33.397 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-04-28 12:18:35.342 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 12:18:35.534 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-04-28 12:18:35.565 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 12:18:35.574 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 12:18:35.580 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 12:18:35.580 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-04-28 12:18:35.583 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-04-28 12:18:35.587 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 2203.2047ms
+2026-04-28 12:18:35.593 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 12:18:35.597 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:18:35.608 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:18:35.612 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 12:18:35.765 +04:00 [INF] Sending file with download name ''.
+2026-04-28 12:18:35.765 +04:00 [INF] Sending file with download name ''.
+2026-04-28 12:18:35.772 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 12:18:35.774 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 190.7261ms
+2026-04-28 12:18:35.806 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 12:18:35.808 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 228.4422ms
+2026-04-28 12:18:36.268 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-04-28 12:18:36.271 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 12:18:36.456 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 12:18:36.457 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 189.4852ms
+2026-04-28 12:23:38.950 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 58
+2026-04-28 12:23:38.961 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:23:38.961 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:23:38.963 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:23:43.372 +04:00 [INF] Executed DbCommand (21ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-04-28 12:23:43.506 +04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = DateTimeOffset), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTimeOffset), @p5='?' (Size = 500), @p6='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [ExpiresAt], [IsActive], [RevokedAt], [TokenHash], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2026-04-28 12:23:43.536 +04:00 [ERR] Failed executing DbCommand (14ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = DateTimeOffset), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTimeOffset), @p5='?' (Size = 500), @p6='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [ExpiresAt], [IsActive], [RevokedAt], [TokenHash], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2026-04-28 12:23:43.553 +04:00 [ERR] An exception occurred in the database while saving changes for context type 'AuthServer.Infrastructure.Context.AuthServerDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (CgRFomz4ywySRfgVpmlMJIDMITSwnP8ZpEz1zBC/K6M=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (CgRFomz4ywySRfgVpmlMJIDMITSwnP8ZpEz1zBC/K6M=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2026-04-28 12:23:44.589 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:23:48.586 +04:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (CgRFomz4ywySRfgVpmlMJIDMITSwnP8ZpEz1zBC/K6M=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at AuthServer.Infrastructure.Services.AuthenticationService.CreateTokenAsync(String userName, String password, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Infrastructure\Services\AuthenticationService.cs:line 54
+   at AuthServer.Application.Auth.LoginCommandHandler.Handle(LoginCommand request, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Application\Auth\LoginCommand.cs:line 35
+   at SharedLibrary.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\shared\SharedLibrary\Behaviors\ValidationBehavior.cs:line 40
+   at TS.MediatR.Sender.Send[TResponse](IRequest`1 request, CancellationToken cancellationToken)
+   at AuthServer.WEBapi.Modules.AuthModule.<>c.<<MapAuthEndpoint>b__0_1>d.MoveNext() in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\Modules\AuthModule.cs:line 48
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass101_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-04-28 12:23:48.761 +04:00 [ERR] Unhandled exception occurred
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (CgRFomz4ywySRfgVpmlMJIDMITSwnP8ZpEz1zBC/K6M=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at AuthServer.Infrastructure.Services.AuthenticationService.CreateTokenAsync(String userName, String password, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Infrastructure\Services\AuthenticationService.cs:line 54
+   at AuthServer.Application.Auth.LoginCommandHandler.Handle(LoginCommand request, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Application\Auth\LoginCommand.cs:line 35
+   at SharedLibrary.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\shared\SharedLibrary\Behaviors\ValidationBehavior.cs:line 40
+   at TS.MediatR.Sender.Send[TResponse](IRequest`1 request, CancellationToken cancellationToken)
+   at AuthServer.WEBapi.Modules.AuthModule.<>c.<<MapAuthEndpoint>b__0_1>d.MoveNext() in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\Modules\AuthModule.cs:line 48
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass101_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-04-28 12:23:48.802 +04:00 [INF] Request finished HTTP/2 POST https://localhost:7232/auth/login - 500 null application/json 9852.1597ms
+2026-04-28 12:24:15.259 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 58
+2026-04-28 12:24:15.272 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:24:15.273 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:24:15.275 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:24:25.303 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-04-28 12:25:38.042 +04:00 [INF] Executed DbCommand (18ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = DateTimeOffset), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTimeOffset), @p5='?' (Size = 500), @p6='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [ExpiresAt], [IsActive], [RevokedAt], [TokenHash], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2026-04-28 12:25:44.950 +04:00 [ERR] Failed executing DbCommand (24ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = DateTimeOffset), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTimeOffset), @p5='?' (Size = 500), @p6='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [ExpiresAt], [IsActive], [RevokedAt], [TokenHash], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2026-04-28 12:25:44.961 +04:00 [ERR] An exception occurred in the database while saving changes for context type 'AuthServer.Infrastructure.Context.AuthServerDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (/ck7YD1lLWffz7S1jlLea4axlWa/uBCOgqldF8y6KPU=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (/ck7YD1lLWffz7S1jlLea4axlWa/uBCOgqldF8y6KPU=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2026-04-28 12:25:45.774 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:26:51.033 +04:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (/ck7YD1lLWffz7S1jlLea4axlWa/uBCOgqldF8y6KPU=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at AuthServer.Infrastructure.Services.AuthenticationService.CreateTokenAsync(String userName, String password, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Infrastructure\Services\AuthenticationService.cs:line 54
+   at AuthServer.Application.Auth.LoginCommandHandler.Handle(LoginCommand request, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Application\Auth\LoginCommand.cs:line 35
+   at SharedLibrary.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\shared\SharedLibrary\Behaviors\ValidationBehavior.cs:line 40
+   at TS.MediatR.Sender.Send[TResponse](IRequest`1 request, CancellationToken cancellationToken)
+   at AuthServer.WEBapi.Modules.AuthModule.<>c.<<MapAuthEndpoint>b__0_1>d.MoveNext() in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\Modules\AuthModule.cs:line 48
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass101_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-04-28 12:26:51.094 +04:00 [ERR] Unhandled exception occurred
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert duplicate key row in object 'dbo.LoginTokens' with unique index 'IX_LoginTokens_TokenHash'. The duplicate key value is (/ck7YD1lLWffz7S1jlLea4axlWa/uBCOgqldF8y6KPU=).
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:330058b0-1aaa-4c95-8a10-4f760cb07f5b
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at AuthServer.Infrastructure.Services.AuthenticationService.CreateTokenAsync(String userName, String password, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Infrastructure\Services\AuthenticationService.cs:line 54
+   at AuthServer.Application.Auth.LoginCommandHandler.Handle(LoginCommand request, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Application\Auth\LoginCommand.cs:line 35
+   at SharedLibrary.Behaviors.ValidationBehavior`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\shared\SharedLibrary\Behaviors\ValidationBehavior.cs:line 40
+   at TS.MediatR.Sender.Send[TResponse](IRequest`1 request, CancellationToken cancellationToken)
+   at AuthServer.WEBapi.Modules.AuthModule.<>c.<<MapAuthEndpoint>b__0_1>d.MoveNext() in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\Modules\AuthModule.cs:line 48
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass101_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-04-28 12:26:51.117 +04:00 [INF] Request finished HTTP/2 POST https://localhost:7232/auth/login - 500 null application/json 155857.8175ms
+2026-04-28 12:27:09.021 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 58
+2026-04-28 12:27:09.025 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:27:09.026 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:27:09.027 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:27:11.579 +04:00 [INF] Executed DbCommand (18ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-04-28 12:30:15.105 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-28 12:30:15.157 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-04-28 12:30:18.632 +04:00 [INF] Executed DbCommand (50ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-28 12:30:18.694 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-28 12:30:18.800 +04:00 [INF] Token cleanup started
+2026-04-28 12:30:19.043 +04:00 [INF] Executed DbCommand (129ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 12:30:19.244 +04:00 [INF] Now listening on: https://localhost:7232
+2026-04-28 12:30:19.257 +04:00 [INF] Now listening on: http://localhost:5142
+2026-04-28 12:30:19.340 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-28 12:30:19.342 +04:00 [INF] Hosting environment: Development
+2026-04-28 12:30:19.343 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-04-28 12:30:20.512 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-04-28 12:30:22.415 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 12:30:22.576 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-04-28 12:30:22.603 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 12:30:22.613 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 12:30:22.620 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-04-28 12:30:22.620 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-04-28 12:30:22.620 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 12:30:22.625 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 12:30:22.626 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:30:22.631 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:30:22.632 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 2139.5914ms
+2026-04-28 12:30:22.638 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 12:30:22.761 +04:00 [INF] Sending file with download name ''.
+2026-04-28 12:30:22.761 +04:00 [INF] Sending file with download name ''.
+2026-04-28 12:30:22.767 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 12:30:22.770 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 149.9828ms
+2026-04-28 12:30:22.788 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 12:30:22.791 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 171.7715ms
+2026-04-28 12:30:23.178 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-04-28 12:30:23.182 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 12:30:23.357 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 12:30:23.359 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 180.7696ms
+2026-04-28 12:30:36.325 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 58
+2026-04-28 12:30:36.329 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:30:36.329 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:30:36.330 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:30:40.134 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@__userName_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_0
+2026-04-28 12:56:37.001 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-28 12:56:37.058 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-04-28 12:56:38.978 +04:00 [INF] Executed DbCommand (47ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-28 12:56:39.042 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-28 12:56:39.086 +04:00 [INF] Token cleanup started
+2026-04-28 12:56:39.213 +04:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 12:56:39.445 +04:00 [INF] Now listening on: https://localhost:7232
+2026-04-28 12:56:39.448 +04:00 [INF] Now listening on: http://localhost:5142
+2026-04-28 12:56:39.523 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-28 12:56:39.525 +04:00 [INF] Hosting environment: Development
+2026-04-28 12:56:39.526 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-04-28 12:56:40.102 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-04-28 12:56:40.338 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 12:56:40.503 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-04-28 12:56:40.529 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 12:56:40.540 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 12:56:40.546 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 12:56:40.548 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-04-28 12:56:40.548 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-04-28 12:56:40.580 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 491.6182ms
+2026-04-28 12:56:40.583 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:56:40.584 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 12:56:40.588 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:56:40.602 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 12:56:40.605 +04:00 [INF] Sending file with download name ''.
+2026-04-28 12:56:40.605 +04:00 [INF] Sending file with download name ''.
+2026-04-28 12:56:40.610 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 12:56:40.613 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 64.8519ms
+2026-04-28 12:56:40.629 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 12:56:40.634 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 85.8483ms
+2026-04-28 12:56:41.025 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-04-28 12:56:41.029 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 12:56:41.210 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 12:56:41.212 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 186.7012ms
+2026-04-28 12:56:51.386 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 58
+2026-04-28 12:56:51.390 +04:00 [INF] CORS policy execution failed.
+2026-04-28 12:56:51.391 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 12:56:51.393 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:56:55.134 +04:00 [INF] Executed DbCommand (23ms) [Parameters=[@__userNameOrEmail_0='?' (Size = 100), @__userNameOrEmail_0_1='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id], [u].[Email], [u].[Id], [u].[FirstName], [u].[Id], [u].[FullName], [u].[Id], [u].[Isadmin_value], [u].[Id], [u].[LastName], [u].[Id], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id], [u].[TFACode_Value], [u].[Id], [u].[TFAConfirmCode_Value], [u].[Id], [u].[TFAExpiresDate_Value], [u].[Id], [u].[TFAIsCompleted_Value], [u].[Id], [u].[TFAStatus_Value], [u].[Id], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND ([u].[UserName] = @__userNameOrEmail_0 OR [u].[Email] = @__userNameOrEmail_0_1)
+2026-04-28 12:57:24.531 +04:00 [INF] Executed DbCommand (15ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = DateTimeOffset), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTimeOffset), @p5='?' (Size = 500), @p6='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [ExpiresAt], [IsActive], [RevokedAt], [TokenHash], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2026-04-28 12:59:57.060 +04:00 [INF] Setting HTTP status code 200.
+2026-04-28 12:59:57.065 +04:00 [INF] Writing value of type '<>f__AnonymousType0`2' as Json.
+2026-04-28 12:59:57.155 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-04-28 12:59:57.161 +04:00 [INF] Request finished HTTP/2 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 185775.5957ms
+2026-04-28 13:06:39.396 +04:00 [INF] Executed DbCommand (21ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 13:16:39.485 +04:00 [INF] Executed DbCommand (20ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 13:26:39.558 +04:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 13:35:40.321 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/auth/me - null null
+2026-04-28 13:35:40.325 +04:00 [INF] CORS policy execution failed.
+2026-04-28 13:35:40.326 +04:00 [INF] Request origin http://localhost:4200 does not have permission to access the resource.
+2026-04-28 13:35:40.345 +04:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-28 13:35:40.353 +04:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-28 13:35:40.354 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/auth/me - 401 0 null 33.1272ms
+2026-04-28 13:35:50.288 +04:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:7232/auth/login - null null
+2026-04-28 13:35:50.291 +04:00 [INF] CORS policy execution failed.
+2026-04-28 13:35:50.292 +04:00 [INF] Request origin http://localhost:4200 does not have permission to access the resource.
+2026-04-28 13:35:50.293 +04:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:7232/auth/login - 204 null null 11.5629ms
+2026-04-28 13:35:52.338 +04:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:7232/auth/login - null null
+2026-04-28 13:35:52.340 +04:00 [INF] CORS policy execution failed.
+2026-04-28 13:35:52.341 +04:00 [INF] Request origin http://localhost:4200 does not have permission to access the resource.
+2026-04-28 13:35:52.342 +04:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:7232/auth/login - 204 null null 5.0219ms
+2026-04-28 13:35:52.850 +04:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:7232/auth/login - null null
+2026-04-28 13:35:52.853 +04:00 [INF] CORS policy execution failed.
+2026-04-28 13:35:52.854 +04:00 [INF] Request origin http://localhost:4200 does not have permission to access the resource.
+2026-04-28 13:35:52.855 +04:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:7232/auth/login - 204 null null 4.8832ms
+2026-04-28 13:35:53.137 +04:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:7232/auth/login - null null
+2026-04-28 13:35:53.140 +04:00 [INF] CORS policy execution failed.
+2026-04-28 13:35:53.141 +04:00 [INF] Request origin http://localhost:4200 does not have permission to access the resource.
+2026-04-28 13:35:53.142 +04:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:7232/auth/login - 204 null null 4.6422ms
+2026-04-28 13:36:39.601 +04:00 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 13:46:39.646 +04:00 [INF] Executed DbCommand (16ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 15:02:04.912 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-04-28 15:02:04.990 +04:00 [WRN] The WebRootPath was not found: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\wwwroot. Static files may be unavailable.
+2026-04-28 15:02:07.169 +04:00 [INF] Executed DbCommand (104ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = N'admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-28 15:02:07.229 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-28 15:02:07.271 +04:00 [INF] Token cleanup started
+2026-04-28 15:02:07.397 +04:00 [INF] Executed DbCommand (33ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-04-28 15:02:07.660 +04:00 [INF] Now listening on: https://localhost:7232
+2026-04-28 15:02:07.663 +04:00 [INF] Now listening on: http://localhost:5142
+2026-04-28 15:02:07.729 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-28 15:02:07.731 +04:00 [INF] Hosting environment: Development
+2026-04-28 15:02:07.732 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-04-28 15:02:09.177 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-04-28 15:02:09.420 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 15:02:09.586 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-04-28 15:02:09.614 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-04-28 15:02:09.623 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 15:02:09.626 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-04-28 15:02:09.626 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-04-28 15:02:09.633 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-04-28 15:02:09.642 +04:00 [INF] CORS policy execution failed.
+2026-04-28 15:02:09.643 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 15:02:09.647 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-04-28 15:02:09.655 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 489.0797ms
+2026-04-28 15:02:09.658 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 15:02:09.662 +04:00 [INF] Sending file with download name ''.
+2026-04-28 15:02:09.665 +04:00 [INF] Sending file with download name ''.
+2026-04-28 15:02:09.670 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-04-28 15:02:09.672 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 45.9824ms
+2026-04-28 15:02:09.700 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-04-28 15:02:09.706 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 80.397ms
+2026-04-28 15:02:10.161 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-04-28 15:02:10.168 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 15:02:10.403 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-04-28 15:02:10.405 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 243.9238ms
+2026-04-28 15:12:07.598 +04:00 [INF] Executed DbCommand (13ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1

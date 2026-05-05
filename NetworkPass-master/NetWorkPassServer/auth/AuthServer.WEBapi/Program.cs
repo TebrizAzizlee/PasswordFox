@@ -1,0 +1,153 @@
+﻿using AuthServer.Application;
+using AuthServer.Infrastructure;
+using AuthServer.WEBapi;
+using AuthServer.WEBapi.Modules;
+using Microsoft.AspNetCore.RateLimiting;
+using Scalar.AspNetCore;
+using Serilog;
+using SharedLibrary.Configurations;
+using SharedLibrary.Middlewares;
+using Infrastructure.Extensions;
+var builder = WebApplication.CreateBuilder(args);
+
+#region 🔹 Serilog (Logging sistemi)
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day);
+});
+#endregion
+#region 🔹 Global Exception Handler (Qlobal xətaların idarəsi)
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>()
+                .AddProblemDetails();
+#endregion
+
+#region 🔹 JWT Authentication & Authorization
+var tokenOptions = builder.Configuration.GetSection("TokenOption").Get<CustomTokenOptions>();
+Console.WriteLine("Auth KEY: " + tokenOptions!.SecurityKey);
+Console.WriteLine("UTC NOW: " + DateTime.UtcNow);
+builder.Services.AddCustomJwtAuth(tokenOptions!);
+
+builder.Services.AddAuthorization();
+#endregion
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+#region 🔹 Rate Limiter (Sorgu limitləri)
+builder.Services.AddRateLimiter(cfg =>
+{
+    // Default reject cavabı
+    cfg.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            statusCode = 429,
+            message = "Çox tez sorğu göndərdiniz. Zəhmət olmasa bir müddət gözləyin."
+        }, token);
+    };
+
+    // Ümumi sorğu limiti
+    cfg.AddFixedWindowLimiter("fixed", opt =>
+    {
+        opt.PermitLimit = 100;
+        opt.QueueLimit = 100;
+        opt.Window = TimeSpan.FromSeconds(5);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Login üçün xüsusi limit
+    cfg.AddFixedWindowLimiter("login-fixed", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.QueueLimit = 2;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Forgot password
+    cfg.AddFixedWindowLimiter("forgot-password-fixed", opt =>
+    {
+        opt.PermitLimit = 2;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Reset password
+    cfg.AddFixedWindowLimiter("reset-password-fixed", opt =>
+    {
+        opt.PermitLimit = 2;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+
+    // Reset token yoxlama
+    cfg.AddFixedWindowLimiter("CheckResetPasswordToken", opt =>
+    {
+        opt.PermitLimit = 2;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+    cfg.AddFixedWindowLimiter("refresh-token-fixed", opt =>
+    {
+        opt.PermitLimit = 5; // istədiyin limit
+        opt.QueueLimit = 2;  // istədiyin queue limit
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+});
+#endregion
+
+builder.Services.Configure<CustomTokenOptions>(builder.Configuration.GetSection("TokenOption"));
+
+builder.Services.AddHostedService<CheckLoginTokenBackgroundService>();
+
+builder.Services.AddControllers();
+builder.Services.AddCors();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApi();
+builder.Services.AddResponseCompression(opt => opt.EnableForHttps = true);
+
+var app = builder.Build();
+app.UseRouting();
+#region 🔹 Middleware Sırası
+
+app.MapOpenApi().AllowAnonymous();
+app.MapScalarApiReference();
+
+// CORS konfiqurasiyası
+app.UseCors(x => x.WithOrigins("https://localhost:4200")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .SetPreflightMaxAge(TimeSpan.FromMinutes(10))
+);
+
+app.UseResponseCompression();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseHttpsRedirection();
+app.UseExceptionHandler();
+
+
+#endregion
+app.UseRateLimiter();
+
+
+app.MapControllers().RequireRateLimiting("fixed");
+
+app.MapAuthEndpoint();
+
+// SPA fallback
+app.MapFallbackToFile("index.html");
+// İlk istifadəçi yarat
+await app.CreateFirstUser();
+
+app.Run();
