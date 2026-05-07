@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthServer.Infrastructure.Migrations
 {
     [DbContext(typeof(AuthServerDbContext))]
-    [Migration("20260429124633_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20260507133849_InitialCreate1")]
+    partial class InitialCreate1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,23 +84,11 @@ namespace AuthServer.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<Guid?>("ParentTokenId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("RevokedAt")
                         .HasColumnType("datetimeoffset");
@@ -108,26 +96,43 @@ namespace AuthServer.Infrastructure.Migrations
                     b.Property<string>("RevokedReason")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("TokenFamilyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TokenHash")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uniqueidentifier");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("ParentTokenId")
+                        .IsUnique()
+                        .HasFilter("[ParentTokenId] IS NOT NULL");
+
+                    b.HasIndex("TokenFamilyId");
 
                     b.HasIndex("TokenHash")
                         .IsUnique();
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("TokenFamilyId", "RevokedAt");
+
+                    b.HasIndex("UserId", "RevokedAt");
 
                     b.ToTable("LoginTokens");
                 });
@@ -386,6 +391,16 @@ namespace AuthServer.Infrastructure.Migrations
 
                     b.Navigation("UserName")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LoginToken", b =>
+                {
+                    b.HasOne("LoginToken", "ParentToken")
+                        .WithMany()
+                        .HasForeignKey("ParentTokenId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentToken");
                 });
 #pragma warning restore 612, 618
         }

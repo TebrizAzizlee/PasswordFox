@@ -24,7 +24,7 @@ internal sealed class LoginTokenRepository(AuthServerDbContext context) : Reposi
     CancellationToken ct = default)
     {
         return await _context.Set<LoginToken>()
-            .AsNoTracking() // 🔥 read-only
+            
             .FirstOrDefaultAsync(x => x.TokenHash == refreshToken, ct);
     }
 
@@ -32,19 +32,25 @@ internal sealed class LoginTokenRepository(AuthServerDbContext context) : Reposi
      Guid userId,
      CancellationToken cancellationToken = default)
     {
+        var now = DateTimeOffset.UtcNow;
         return await _context.Set<LoginToken>()
-            .Where(x => x.UserId == userId && x.IsActive)
-            .ToListAsync(cancellationToken);
+               .Where(x =>
+                   x.UserId == userId &&
+                   x.RevokedAt == null &&
+                   x.ExpiresAt > now)
+               .ToListAsync(cancellationToken);
     }
-    public async Task<bool> TryDeactivateAsync(string tokenHash, CancellationToken ct = default)
+    public async Task<bool> TryDeactivateAsync(string tokenHash, CancellationToken ct)
     {
         var affected = await _context.Database.ExecuteSqlInterpolatedAsync($@"
         UPDATE LoginTokens
-        SET IsActive = 0, RevokedAt = {DateTimeOffset.UtcNow}
-        WHERE TokenHash = {tokenHash} AND IsActive = 1
+        SET RevokedAt = {DateTime.UtcNow},
+            RevokedReason = {"rotated"}
+        WHERE TokenHash = {tokenHash}
+          AND RevokedAt IS NULL
     ", ct);
 
-        return affected > 0;
+        return affected == 1;
     }
 
     public async Task<int> DeactivateExpiredTokensAsync(CancellationToken ct = default)
@@ -65,5 +71,20 @@ internal sealed class LoginTokenRepository(AuthServerDbContext context) : Reposi
         SET IsActive = 0, RevokedAt = {DateTimeOffset.UtcNow}
         WHERE UserId = {userId} AND IsActive = 1
     ");
+    }
+    public async Task<bool> TryRevokeAsync(
+    string tokenHash,
+    string reason,
+    CancellationToken ct = default)
+    {
+        var affected = await _context.LoginTokens
+            .Where(x =>
+                x.TokenHash == tokenHash &&
+                x.RevokedAt == null)
+            .ExecuteUpdateAsync(x => x
+                .SetProperty(t => t.RevokedAt, DateTime.UtcNow)
+                .SetProperty(t => t.RevokedReason, reason), ct);
+
+        return affected == 1;
     }
 }

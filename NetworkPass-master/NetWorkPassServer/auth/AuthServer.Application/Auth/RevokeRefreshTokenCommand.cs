@@ -24,7 +24,7 @@ namespace AuthServer.Application.Auth
         }
     }
     public sealed class RevokeRefreshTokenCommandHandler(
-     IAuthenticationService authenticationService)
+     IAuthenticationService authenticationService,IUserContext userContext)
      : IRequestHandler<RevokeRefreshTokenCommand, ServiceResult>
     {
         public async Task<ServiceResult> Handle(
@@ -33,7 +33,7 @@ namespace AuthServer.Application.Auth
         {
 
             await authenticationService
-                .RevokeRefreshTokenAsync(request.RefreshToken, cancellationToken);
+                .RevokeRefreshTokenAsync(request.RefreshToken,userContext.GetUserId(), cancellationToken);
 
             // həmişə success qaytar (security üçün)
             return ServiceResult.Success();

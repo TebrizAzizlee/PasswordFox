@@ -11,5 +11,5 @@ public interface IAuthenticationService
 {
     Task<ServiceResult<LoginResult>> CreateTokenAsync(string UserName, string password, CancellationToken cancellationToken);
     Task<ServiceResult<TokenDto>> CreateTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
-    Task<ServiceResult<string>> RevokeRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
+    Task<ServiceResult<string>> RevokeRefreshTokenAsync(string refreshToken, Guid currentUserId, CancellationToken cancellationToken = default);
 }

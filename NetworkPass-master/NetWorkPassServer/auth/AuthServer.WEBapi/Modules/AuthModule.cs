@@ -112,7 +112,7 @@ public static class AuthModule
                 });
             }
 
-            return Results.Ok(new { success = true });
+            return Results.Ok(new { success = true, accessToken = res.Data.Token?.AccessToken });
         });
 
         static bool IsValidCsrf(HttpContext ctx)
@@ -164,19 +164,34 @@ public static class AuthModule
         {
             // 🔒 CSRF CHECK
             if (!IsValidCsrf(ctx))
-                return Results.Unauthorized();
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
 
+            // 🔒 revoke refresh token
             if (ctx.Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
             {
                 await sender.Send(new RevokeRefreshTokenCommand(refreshToken), ct);
             }
 
-            ctx.Response.Cookies.Delete("accessToken");
-            ctx.Response.Cookies.Delete("refreshToken");
-            ctx.Response.Cookies.Delete("X-CSRF-TOKEN");
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/"
+            };
+            var csrfCookieOptions = new CookieOptions
+            {
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/"
+            };
+
+            ctx.Response.Cookies.Delete("refreshToken",cookieOptions);
+            ctx.Response.Cookies.Delete("X-CSRF-TOKEN", csrfCookieOptions);
+            
 
             return Results.NoContent();
-        });
+        }).RequireAuthorization();
 
         // 🔥 RESET PASSWORD
         app.MapPost("/reset-password",

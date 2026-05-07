@@ -12,8 +12,8 @@ using NetWorkPassServer.Infrastructure.Context;
 namespace NetWorkPassServer.Infrastructure.Migrations
 {
     [DbContext(typeof(PasswordDbContext))]
-    [Migration("20260430121823_CreatePass")]
-    partial class CreatePass
+    [Migration("20260507133906_InitialCreate1")]
+    partial class InitialCreate1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

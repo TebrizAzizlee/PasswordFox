@@ -71,4 +71,5 @@ app.Use(async (ctx, next) =>
 app.MapControllers().RequireRateLimiting("fixed");
 
 app.MapBranch();
+app.MapDevice();
 app.Run();

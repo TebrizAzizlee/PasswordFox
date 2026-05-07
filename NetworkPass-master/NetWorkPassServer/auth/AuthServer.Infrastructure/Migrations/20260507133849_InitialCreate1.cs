@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AuthServer.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalCreate : Migration
+    public partial class InitialCreate1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,23 +16,25 @@ namespace AuthServer.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TokenHash = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    TokenFamilyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentTokenId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TokenHash = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     ExpiresAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     RevokedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    RevokedReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    RevokedReason = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LoginTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LoginTokens_LoginTokens_ParentTokenId",
+                        column: x => x.ParentTokenId,
+                        principalTable: "LoginTokens",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,6 +75,33 @@ namespace AuthServer.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_LoginTokens_CreatedAt",
+                table: "LoginTokens",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoginTokens_ExpiresAt",
+                table: "LoginTokens",
+                column: "ExpiresAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoginTokens_ParentTokenId",
+                table: "LoginTokens",
+                column: "ParentTokenId",
+                unique: true,
+                filter: "[ParentTokenId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoginTokens_TokenFamilyId",
+                table: "LoginTokens",
+                column: "TokenFamilyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoginTokens_TokenFamilyId_RevokedAt",
+                table: "LoginTokens",
+                columns: new[] { "TokenFamilyId", "RevokedAt" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LoginTokens_TokenHash",
                 table: "LoginTokens",
                 column: "TokenHash",
@@ -82,6 +111,11 @@ namespace AuthServer.Infrastructure.Migrations
                 name: "IX_LoginTokens_UserId",
                 table: "LoginTokens",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoginTokens_UserId_RevokedAt",
+                table: "LoginTokens",
+                columns: new[] { "UserId", "RevokedAt" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",

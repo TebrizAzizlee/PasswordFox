@@ -34,6 +34,7 @@ public sealed class AuthenticationService(
     {
         var user = await _userRepository.FirstOrDefaultAsync(
             x => x.UserName.Value == userName, cancellationToken);
+       
 
         if (user is null)
             return ServiceResult<LoginResult>.Failure("AuthenticationFailed", "İstifadəçi adı və ya şifrə düzgün deyil.", HttpStatusCode.Unauthorized);
@@ -45,49 +46,75 @@ public sealed class AuthenticationService(
         {
             user.RegisterFailedLogin();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return ServiceResult<LoginResult>.Failure("AuthenticationFailed", "İstifadəçi adı və ya şifrə düzgün deyil.", HttpStatusCode.Unauthorized);
+            return ServiceResult<LoginResult>.Failure(
+                "AuthenticationFailed", 
+                "İstifadəçi adı və ya şifrə düzgün deyil.",
+                HttpStatusCode.Unauthorized);
         }
 
+        // 🔥 PASSWORD DÜZGÜNDÜRSƏ RESET ET
         user.ResetLoginAttempts();
 
-        if (!user.TFAStatus.Value)
-        {
-            var token = await _tokenService.GenerateTokenAsync(user, cancellationToken);
-            // köhnələri deactivate et
-            var loginTokens = await _loginTokenRepository
-                .Where(x => x.UserId == user.Id && x.IsActive)
-                .ExecuteUpdateAsync(x => x.SetProperty(t => t.IsActive, false), 
-                cancellationToken);
-
-            await SaveRefreshTokenAsync(user, token, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            return ServiceResult<LoginResult>.Success(new LoginResult
-            {
-
-                RequiresTFA = false,
-                Token=token
-
-            });
-        }
-        else
+        // 🔥 TFA FLOW
+        if (user.TFAStatus.Value)
         {
             user.CreateTFACode();
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _emailService.SendAsync(
                 user.Email.Value,
                 "Giriş təsdiqi",
-                $"Salam {user.UserName.Value},\nSizin TFA kodunuz: {user.TFAConfirmCode!.Value}\nƏgər bu əməliyyatı siz etməmisinizsə, nəzərə almayın.",
-                cancellationToken
-            );
+                $"""
+            Salam {user.UserName.Value},
 
-            return ServiceResult<LoginResult>.Success(new LoginResult
-            {
+            Sizin TFA kodunuz:
+            {user.TFAConfirmCode!.Value}
 
-                RequiresTFA = true
-            });
+            Əgər bu əməliyyatı siz etməmisinizsə nəzərə almayın.
+            """,
+                cancellationToken);
+
+            return ServiceResult<LoginResult>.Success(
+                new LoginResult
+                {
+                    RequiresTFA = true
+                });
         }
+
+        var now = DateTimeOffset.UtcNow;
+
+        // 🔥 KÖHNƏ AKTİV TOKENLƏRİ REVOKE ET
+        var activeTokens = await _loginTokenRepository
+            .GetActiveByUserIdAsync(user.Id, cancellationToken);
+
+        foreach (var activeToken in activeTokens)
+        {
+            activeToken.Revoke("new-login", now);
+        }
+
+        // 🔥 YENİ SESSION FAMILY
+        var familyId = Guid.NewGuid();
+
+        // 🔥 TOKEN YARAT
+        var token = await _tokenService
+            .GenerateTokenAsync(user, cancellationToken);
+
+        // 🔥 REFRESH TOKEN SAVE
+        await SaveRefreshTokenAsync(
+            user,
+            token,
+            familyId,
+            cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return ServiceResult<LoginResult>.Success(
+            new LoginResult
+            {
+                RequiresTFA = false,
+                Token = token
+            });
     }
   
 
@@ -95,18 +122,21 @@ public sealed class AuthenticationService(
     private async Task SaveRefreshTokenAsync(
      User user,
      TokenDto token,
+     Guid familyId,
      CancellationToken cancellationToken)
     {
         if (token.RefreshToken is null || token.RefreshTokenExpiration is null)
-            throw new Exception("Token is invalid");
+            throw new Exception("   Refresh Token is invalid");
 
         // 🔥 HASH ET
         var hash = TokenHashHelper.Hash(token.RefreshToken);
 
         var refreshToken = new LoginToken(
-            hash,
-            user.Id,
-            token.RefreshTokenExpiration.Value
+            tokenHash:hash,
+           userId: user.Id,
+           tokenFamilyId: familyId,
+           expiresAt: token.RefreshTokenExpiration.Value
+           
         );
 
         await _loginTokenRepository.AddAsync(refreshToken, cancellationToken);
@@ -114,8 +144,10 @@ public sealed class AuthenticationService(
     // 🔹 Refresh token ilə yeni access token
     public async Task<ServiceResult<TokenDto>> CreateTokenByRefreshTokenAsync(
      string refreshToken,
+     
      CancellationToken ct)
     {
+        var now = DateTimeOffset.UtcNow;
         var hash = TokenHashHelper.Hash(refreshToken);
 
         var existingToken = await _loginTokenRepository
@@ -128,36 +160,36 @@ public sealed class AuthenticationService(
                 "Refresh token not found",
                 HttpStatusCode.Unauthorized);
         }
-          if (existingToken.IsExpired())
+          if (existingToken.IsExpired(now))
         {
+            await RevokeFamilyTokensAsync(existingToken.TokenFamilyId, "expired-reuse",now,ct);
+
+            await _unitOfWork.SaveChangesAsync(ct);
+
             return ServiceResult<TokenDto>.Failure(
                 "ExpiredToken",
                 "Refresh token expired",
                 HttpStatusCode.Unauthorized);
         }
-
-        // 🔥 ATOMIC ROTATION (RACE CONDITION FIX)
-        var deactivated = await _loginTokenRepository
-            .TryDeactivateAsync(hash, ct);
-        // 🔥 REUSE DETECTION (CRITICAL)
-        if (!deactivated)
+        // 🔥 REUSE DETECTION
+        if (existingToken.IsRevoked())
         {
-            var allTokens = await _loginTokenRepository
-                .GetAllByUserIdAsync(existingToken.UserId, ct);
-
-            foreach (var t in allTokens)
-                t.Deactivate("reuse-detected");
-
+            await RevokeFamilyTokensAsync(
+                existingToken.TokenFamilyId,
+                "reuse-detected",
+                now,
+                ct);
             await _unitOfWork.SaveChangesAsync(ct);
+
 
             return ServiceResult<TokenDto>.Failure(
                 "ReuseDetected",
-                "Session compromised. All sessions revoked.",
+                 "Refresh token reuse detected",
                 HttpStatusCode.Unauthorized);
         }
 
       
-
+        //User
         var user = await _userRepository
             .GetByIdAsync(existingToken.UserId, ct);
 
@@ -169,29 +201,51 @@ public sealed class AuthenticationService(
                 HttpStatusCode.NotFound);
         }
 
-        // 🔥 ROTATION
-       // existingToken.Deactivate("rotated");
+        // 🔥 ROTATE CURRENT TOKEN
+         existingToken.Revoke("rotated",now);
 
         var newToken = await _tokenService.GenerateTokenAsync(user, ct);
+        if(newToken.RefreshToken is null || newToken.RefreshTokenExpiration is null)
+        {
+            return ServiceResult<TokenDto>.Failure(
+            "TokenGenerationFailed",
+            "Token generation failed",
+             HttpStatusCode.InternalServerError);
+        }
+        // 🔥 HASH NEW REFRESH TOKEN
+        var newHash = TokenHashHelper.Hash(newToken.RefreshToken);
 
-        var newHash = TokenHashHelper.Hash(newToken.RefreshToken!);
-
+        // 🔥 CREATE NEW REFRESH TOKEN NODE
         var newRefreshToken = new LoginToken(
-            newHash,
-            user.Id,
-            newToken.RefreshTokenExpiration!.Value
+           tokenHash: newHash,
+           userId: user.Id,
+           tokenFamilyId:existingToken.TokenFamilyId,
+           expiresAt:newToken.RefreshTokenExpiration.Value,
+            parentTokenId:existingToken.Id
         );
-
+       
+        
         await _loginTokenRepository.AddAsync(newRefreshToken, ct);
 
-        await _unitOfWork.SaveChangesAsync(ct);
+        try
+        {
+            await _unitOfWork.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+
+            return ServiceResult<TokenDto>.Failure(
+         "ConcurrencyFailure",
+         "Refresh token already used",
+         HttpStatusCode.Unauthorized);
+        }
 
         return ServiceResult<TokenDto>.Success(newToken);
     }
 
     // 🔹 Logout / Revoke refresh token
     public async Task<ServiceResult<string>> RevokeRefreshTokenAsync(
-      string refreshToken,
+      string refreshToken,Guid currentUserId,
       CancellationToken ct)
     {
         var hash = TokenHashHelper.Hash(refreshToken);
@@ -199,13 +253,47 @@ public sealed class AuthenticationService(
         var existing = await _loginTokenRepository
             .GetByRefreshTokenAsync(hash, ct);
 
+        // 🔒 token tapılmadı → heç nə demə
         if (existing is null)
-            return ServiceResult<string>.Success("Already revoked");
-
-        existing.Deactivate("logout");
-
-        await _unitOfWork.SaveChangesAsync(ct);
-
-        return ServiceResult<string>.Success("Revoked");
+            return ServiceResult<string>.Success("OK");
+        // 🔒 başqa user tokeni
+        if (existing.UserId != currentUserId)
+            return ServiceResult<string>.Failure("Forbidden", "Invalid token", HttpStatusCode.Forbidden);
+        // 🔒 artıq revoke olunub
+        // 🔒 artıq revoke olunub
+        if (existing.RevokedAt != null)
+        {
+            return ServiceResult<string>.Success("OK");
+        }
+      
+       
+        // 🔥 atomic revoke
+        var revoked = await _loginTokenRepository
+            .TryRevokeAsync(hash, "logout", ct);
+        if (!revoked)
+        {
+            return ServiceResult<string>.Success("OK");
+        }
+        return ServiceResult<string>.Success("OK");
+        
+      
     }
+    private async Task RevokeFamilyTokensAsync(
+       Guid familyId,
+       string reason,
+       DateTimeOffset now,
+       CancellationToken ct)
+    {
+        var familytokens = await _loginTokenRepository
+            .Where(x =>
+                x.TokenFamilyId == familyId &&
+                x.RevokedAt == null)
+            .ToListAsync(ct);
+
+        foreach (var token in familytokens)
+        {
+            token.Revoke(reason, now);
+        }
+    }
+
 }

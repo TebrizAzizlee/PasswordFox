@@ -48,7 +48,7 @@ public static class AuthExtensions
 
                 OnAuthenticationFailed = context =>
                 {
-                    Console.WriteLine("AUTH FAILED: " + context.Exception.Message);
+                    Console.WriteLine("AUTH FAILED FULL: " + context.Exception.ToString());
                     return Task.CompletedTask;
                 }
             };
@@ -61,6 +61,7 @@ public static class AuthExtensions
                 ValidAudiences = tokenOptions.Audience,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
+
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(tokenOptions.SecurityKey)
                 )

@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\auth\AuthServer.Application\AuthServer.Application.csproj" />
-    <ProjectReference Include="..\..\auth\AuthServer.Domain\AuthServer.Domain.csproj" />
+    
+    
     <ProjectReference Include="..\..\shared\SharedLibrary\SharedLibrary.csproj" />
     <ProjectReference Include="..\NetWorkPassServer.Application\NetWorkPassServer.Application.csproj" />
     <ProjectReference Include="..\NetWorkPassServer.Domain\NetWorkPassServer.Domain.csproj" />

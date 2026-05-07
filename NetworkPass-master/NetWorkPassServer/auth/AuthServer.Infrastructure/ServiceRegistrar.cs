@@ -23,6 +23,7 @@ public static class ServiceRegistrar
         });
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddHostedService<RefreshTokenCleanupService>();
         services.AddScoped<IEmailService, EmailService>();
         //services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<AuthServerDbContext>());

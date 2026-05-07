@@ -12,6 +12,8 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.18.0" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Logging" Version="8.18.0" />
     <PackageReference Include="TS.MediatR" Version="9.0.6" />
   </ItemGroup>
 

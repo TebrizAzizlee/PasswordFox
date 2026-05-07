@@ -16,5 +16,8 @@ public interface ILoginTokenRepository: IRepository<LoginToken>
     Task<int> DeactivateExpiredTokensAsync(CancellationToken ct = default);
     Task<int> DeactivateAllByUserIdAsync(Guid userId,CancellationToken cancellationToken);
     Task<bool> TryDeactivateAsync(string tokenHash, CancellationToken ct = default);
-    
+    Task<bool> TryRevokeAsync(string tokenHash, string reason, CancellationToken ct = default);
+
+
+
 }
