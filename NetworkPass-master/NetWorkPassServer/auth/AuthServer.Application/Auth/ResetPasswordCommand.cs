@@ -1,5 +1,6 @@
 ﻿using AuthServer.Domain.LoginTokens;
 using AuthServer.Domain.Users;
+using AuthServer.Domain.Users.ValueObjects;
 using FluentValidation;
 using GenericRepository;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using TS.MediatR;
 
@@ -21,7 +23,7 @@ namespace AuthServer.Application.Auth
     public sealed record ResetPasswordCommand(
      string Token,
      string NewPassword,
-     bool LogoutAllDevices
+     bool RevokeAllSessions
  ) : IRequest<ServiceResult>;
     public sealed class ResetPasswordCommandValidator
     : AbstractValidator<ResetPasswordCommand>
@@ -50,7 +52,7 @@ namespace AuthServer.Application.Auth
                 .Matches("[^a-zA-Z0-9]")
                 .WithMessage("Password must contain at least one special character.");
 
-            RuleFor(x => x.LogoutAllDevices)
+            RuleFor(x => x.RevokeAllSessions)
                 .NotNull();
         }
     }
@@ -67,10 +69,8 @@ namespace AuthServer.Application.Auth
             var now = DateTimeOffset.UtcNow;
             var tokenHash = TokenHashHelper.Hash(request.Token);
 
-            var user = await userRepository.FirstOrDefaultAsync(
-                x => x.ResetPasswordTokenHash == tokenHash &&
-                     x.ResetPasswordTokenExpiresAt > now,
-                ct);
+            var user = await userRepository.GetByResetPasswordTokenAsync(tokenHash, now, ct);
+
 
             if (user is null)
             {
@@ -79,7 +79,13 @@ namespace AuthServer.Application.Auth
                     "Reset password token is invalid or expired.",
                     HttpStatusCode.BadRequest);
             }
-
+            if (user.IsDeleted)
+            {
+                return ServiceResult.Failure(
+                    "UserDeleted",
+                    "User deleted",
+                    HttpStatusCode.BadRequest);
+            }
             // 🔥 eyni password check
             if (user.VerifyPassword(request.NewPassword))
             {
@@ -88,20 +94,55 @@ namespace AuthServer.Application.Auth
                     "New password must be different.",
                     HttpStatusCode.BadRequest);
             }
+            Password newPassword;
 
-            user.ResetPassword(request.NewPassword);
-            user.ClearResetPasswordToken();
-
-            if (request.LogoutAllDevices)
+            try
             {
-                await loginTokenRepository.DeactivateAllByUserIdAsync(user.Id,ct);
+                newPassword = new Password(
+                    request.NewPassword);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult.Failure(
+                    "ValidationError",
+                    ex.Message,
+                    HttpStatusCode.BadRequest);
+            }
+            user.ResetPassword(newPassword);
+            // 🔥 REVOKE SESSIONS
+
+            if (request.RevokeAllSessions)
+            {
+                await loginTokenRepository
+                    .Where(x =>
+                        x.UserId == user.Id &&
+                        x.RevokedAt == null)
+                    .ExecuteUpdateAsync(x => x
+                        .SetProperty(
+                            t => t.RevokedAt,
+                            now)
+                        .SetProperty(
+                            t => t.RevokedReason,
+                            "password-reset"),
+                        ct);
             }
 
-            await unitOfWork.SaveChangesAsync(ct);
+            try
+            {
+                await unitOfWork.SaveChangesAsync(ct);
+
+
+            }
+            catch (DbUpdateException)
+            {
+                return ServiceResult.Failure(
+                    "PasswordResetFailed",
+                    "Password reset failed",
+                    HttpStatusCode.Conflict);
+            }
 
             return ServiceResult.Success();
         }
-
     }
 }
 

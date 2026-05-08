@@ -2,12 +2,13 @@
 using AuthServer.Infrastructure;
 using AuthServer.WEBapi;
 using AuthServer.WEBapi.Modules;
+using Infrastructure.Extensions;
 using Microsoft.AspNetCore.RateLimiting;
 using Scalar.AspNetCore;
 using Serilog;
 using SharedLibrary.Configurations;
 using SharedLibrary.Middlewares;
-using Infrastructure.Extensions;
+using AuthServer.Infrastructure.Persistence.Seeds;
 var builder = WebApplication.CreateBuilder(args);
 
 #region 🔹 Serilog (Logging sistemi)
@@ -149,5 +150,6 @@ app.MapAuthEndpoint();
 app.MapFallbackToFile("index.html");
 // İlk istifadəçi yarat
 await app.CreateFirstUser();
+await app.Services.SeedDatabaseAsync();
 
 app.Run();

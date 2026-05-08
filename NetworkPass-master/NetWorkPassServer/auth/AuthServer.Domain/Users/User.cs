@@ -1,196 +1,361 @@
-﻿using AuthServer.Domain.Users.ValueObjects;
-using Microsoft.AspNetCore.Identity;
+﻿using AuthServer.Domain.UserRoles;
+using AuthServer.Domain.Users.ValueObjects;
 using SharedLibrary.Abstractions.Entity;
 using SharedLibrary.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace AuthServer.Domain.Users;
-public sealed class  User: Entity
+
+public sealed class User : Entity
 {
-    public User(FirstName firstName, LastName lastName, Email email, IsAdmin isAdmin, UserName userName, Password password)
+    private const int MaxFailedAttempts = 5;
+    private const int LockMinutes = 15;
+
+    private User(
+        FirstName firstName,
+        LastName lastName,
+        Email email,
+        UserName userName,
+        
+        Password password)
     {
         SetFirstName(firstName);
         SetLastName(lastName);
         SetEmail(email);
         SetUserName(userName);
-       SetPassword(password);
-        SetIsAdmin(isAdmin);
+        SetPassword(password);
+
         SetFullName();
-        SetTFAStatus(new(false));
+
+       
     }
+
     private User() { }
 
-    public FirstName FirstName { get; private set; } = default!;
-    public LastName LastName { get; private set; } = default!;
-    public FullName FullName { get; private set; } = default!;
-    public Email Email { get; private set; } = default!;
-    public UserName UserName { get; private set; } = default!;
+    // ================= PROFILE =================
+
+    public FirstName FirstName { get; private set; }
+        = default!;
+
+    public LastName LastName { get; private set; }
+        = default!;
+
+    public FullName FullName { get; private set; }
+        = default!;
+
+    public Email Email { get; private set; }
+        = default!;
+
+    public UserName UserName { get; private set; }
+        = default!;
+
+    // ================= PASSWORD =================
+
     [JsonIgnore]
-    public Password Password { get; private set; } = default!;
-    
-    public IsAdmin Isadmin { get; private set; } = default!;
-    public TFACode? TFACode { get; private set; } = default!;
-     public TFAConfirmCode? TFAConfirmCode { get;private set; } = default!;
-    public TFAStatus TFAStatus { get; private set; } = default!;
-    public TFAExpiresDate? TFAExpiresDate { get; private set; } = default!;
-    public TFAIsCompleted? TFAIsCompleted { get; private set; } = default!;
-    public int FailedLoginAttempts { get; private set; }
+    public Password Password { get; private set; }
+        = default!;
 
-    public DateTimeOffset? LockoutEnd { get; private set; }
+    // ================= AUTH =================
 
-    private const int MaxFailedAttempts = 5;
-    private const int LockMinutes = 15;
+    public int FailedLoginAttempts
+    { get; private set; }
 
+    public DateTimeOffset? LockoutEnd
+    { get; private set; }
 
-    //IsLockedOut() metodu
+    // ================= TFA =================
+
+    public bool TFAStatus
+    { get; private set; } = default!;
+
+    public string? TFACodeHash
+    { get; private set; }
+
+    public string? PendingTFATokenHash
+    { get; private set; }
+
+    public DateTimeOffset? TFAExpiresDate
+    { get; private set; }
+
+    public bool TFAIsCompleted
+    { get; private set; }
+
+    // ================= RESET PASSWORD =================
+
+    public string? ResetPasswordTokenHash
+    { get; private set; }
+
+    public DateTimeOffset? ResetPasswordTokenExpiresAt
+    { get; private set; }
+
+    public bool IsResetPasswordCompleted
+    { get; private set; }
+
+    // ================= ROLES =================
+
+    public ICollection<UserRole> UserRoles
+    { get; private set; }
+        = new List<UserRole>();
+
+    // ================= FACTORY =================
+
+    public static User Create(
+        FirstName firstName,
+        LastName lastName,
+        UserName userName,
+        Email email,
+        Password password)
+    {
+        return new User(
+            firstName,
+            lastName,
+            email,
+            userName,
+            password);
+    }
+
+    // ================= PROFILE METHODS =================
+
+    public void SetFirstName(
+        FirstName firstName)
+    {
+        FirstName = firstName;
+
+        SetFullName();
+    }
+
+    public void SetLastName(
+        LastName lastName)
+    {
+        LastName = lastName;
+
+        SetFullName();
+    }
+
+    public void SetEmail(
+        Email email)
+    {
+        Email = email;
+    }
+
+    public void SetUserName(
+        UserName userName)
+    {
+        UserName = userName;
+    }
+
+    private void SetFullName()
+    {
+        FullName = new FullName(
+            $"{FirstName.Value} {LastName.Value}");
+    }
+
+    // ================= PASSWORD METHODS =================
+
+    private void SetPassword(
+        Password password)
+    {
+        Password = password;
+    }
+
+    public bool VerifyPassword(
+        string password)
+    {
+        return Password
+            .VerifyPasswordHash(password);
+    }
+
+    public void ChangePassword(
+        Password newPassword)
+    {
+        Password = newPassword;
+    }
+
+    public void ResetPassword(
+        Password newPassword)
+    {
+        Password = newPassword;
+
+        IsResetPasswordCompleted = true;
+
+        ClearResetPasswordToken();
+    }
+
+    // ================= LOGIN LOCKOUT =================
+
     public bool IsLockedOut()
     {
         if (LockoutEnd is null)
+        {
             return false;
+        }
 
         if (LockoutEnd <= DateTimeOffset.UtcNow)
         {
             FailedLoginAttempts = 0;
+
             LockoutEnd = null;
+
             return false;
         }
 
         return true;
     }
-    //Failed login davranışı
+
     public void RegisterFailedLogin()
     {
         FailedLoginAttempts++;
 
         if (FailedLoginAttempts >= MaxFailedAttempts)
         {
-            LockoutEnd = DateTimeOffset.UtcNow.AddMinutes(LockMinutes);
+            LockoutEnd =
+                DateTimeOffset.UtcNow
+                    .AddMinutes(LockMinutes);
         }
     }
-
-
-    //Uğurlu login reset
 
     public void ResetLoginAttempts()
     {
         FailedLoginAttempts = 0;
+
         LockoutEnd = null;
     }
-    public void SetFirstName(FirstName firstName)
-    {
-        FirstName=firstName;
-    }
-    public void SetLastName(LastName lastName)
-    {
-        LastName=lastName;
-    }
-    public void SetEmail(Email email)
-    {
-        Email=email;
-    }
-    public void SetUserName(UserName userName)
-    {
-        UserName=userName;
-    }
-    public void SetIsAdmin(IsAdmin isAdmin)
-    {
-        Isadmin=isAdmin;
-    }
-    public void SetPassword(Password password)
-    {
-        Password=password;
-    }
-    public void SetTFAStatus(TFAStatus tFAStatus)
-    {
-        TFAStatus=tFAStatus;
-    }
-    public string CreateTFACode()
-    {
-        var code = Random.Shared.Next(100000, 999999).ToString();
-        var confirmCode = Guid.NewGuid().ToString("N");
 
-        TFACode = new TFACode(code);
-        TFAConfirmCode = new TFAConfirmCode(confirmCode);
-        TFAExpiresDate = new TFAExpiresDate(DateTimeOffset.UtcNow.AddMinutes(5));
-        TFAIsCompleted = new TFAIsCompleted(false);
+    // ================= TFA =================
 
-        return confirmCode;
-    }
-    public void SetTFACompleted()
+    public (string Code, string PendingToken)
+        CreateTFAChallenge()
     {
-        TFAIsCompleted=new(true);
+        var rawCode =
+            Random.Shared
+                .Next(100000, 999999)
+                .ToString();
+
+        var pendingToken =
+            Guid.NewGuid()
+                .ToString("N");
+
+        TFACodeHash =
+            TokenHashHelper.Hash(rawCode);
+
+        PendingTFATokenHash =
+            TokenHashHelper.Hash(pendingToken);
+
+        TFAExpiresDate =
+            DateTimeOffset.UtcNow
+                .AddMinutes(5);
+
+        TFAIsCompleted = false;
+
+        return (rawCode, pendingToken);
     }
 
-    // ================= PASSWORD =================
-
-    public bool VerifyPassword(string password)
+    public bool VerifyTFACode(
+        string code)
     {
-        return Password.VerifyPasswordHash(password);
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return false;
+        }
+
+        if (TFACodeHash is null)
+        {
+            return false;
+        }
+
+        if (TFAExpiresDate is null)
+        {
+            return false;
+        }
+
+        if (TFAExpiresDate <=
+            DateTimeOffset.UtcNow)
+        {
+            return false;
+        }
+
+        var hash =
+            TokenHashHelper.Hash(code);
+
+        return TFACodeHash == hash;
     }
 
-    public void ChangePassword(string newPassword)
+    public void CompleteTwoFactorAuthentication()
     {
-        Password = new Password(newPassword);
-        IsResetPasswordCompleted = true;
-        ClearResetPasswordToken();
+        TFAIsCompleted = true;
     }
-    public void SetFullName()
+
+    public void ClearPendingTFA()
     {
-        FullName=new FullName(FirstName.Value+ " "+LastName.Value);
+        TFACodeHash = null;
+
+        PendingTFATokenHash = null;
+
+        TFAExpiresDate = null;
+
+        TFAIsCompleted = false;
     }
-   
 
-
-
-    // ✅ Reset Token sahələri
-    public string? ResetPasswordTokenHash { get; private set; }
-    public DateTime? ResetPasswordTokenExpiresAt { get; private set; }
-    public bool IsResetPasswordCompleted { get; private set; } = default!;
-
+    // ================= RESET PASSWORD =================
 
     public string GenerateResetPasswordToken()
     {
-        var token = Guid.NewGuid().ToString("N");
+        var rawToken =
+            Guid.NewGuid()
+                .ToString("N");
 
-        ResetPasswordTokenHash = TokenHashHelper.Hash(token);
-        ResetPasswordTokenExpiresAt = DateTime.UtcNow.AddMinutes(15);
+        ResetPasswordTokenHash =
+            TokenHashHelper.Hash(rawToken);
+
+        ResetPasswordTokenExpiresAt =
+            DateTimeOffset.UtcNow
+                .AddMinutes(15);
+
         IsResetPasswordCompleted = false;
 
-        return token;
+        return rawToken;
     }
 
-
-    public bool IsResetTokenValid(string token)
+    public bool IsResetTokenValid(
+        string token)
     {
         if (string.IsNullOrWhiteSpace(token))
+        {
             return false;
+        }
 
         if (ResetPasswordTokenHash is null)
+        {
             return false;
+        }
 
-        var tokenHash = TokenHashHelper.Hash(token);
+        if (ResetPasswordTokenExpiresAt is null)
+        {
+            return false;
+        }
 
-        return ResetPasswordTokenHash == tokenHash
-            && ResetPasswordTokenExpiresAt > DateTime.UtcNow
-            && !IsResetPasswordCompleted;
+        if (ResetPasswordTokenExpiresAt <=
+            DateTimeOffset.UtcNow)
+        {
+            return false;
+        }
+
+        if (IsResetPasswordCompleted)
+        {
+            return false;
+        }
+
+        var tokenHash =
+            TokenHashHelper.Hash(token);
+
+        return tokenHash ==
+               ResetPasswordTokenHash;
     }
 
     public void ClearResetPasswordToken()
     {
         ResetPasswordTokenHash = null;
-        ResetPasswordTokenExpiresAt = null;
-    }
 
-    // ✅ Yeni şifrə təyin etmə
-    public void ResetPassword(string newPassword)
-    {
-        Password = new Password(newPassword);
-        ClearResetPasswordToken();
+        ResetPasswordTokenExpiresAt = null;
     }
 }

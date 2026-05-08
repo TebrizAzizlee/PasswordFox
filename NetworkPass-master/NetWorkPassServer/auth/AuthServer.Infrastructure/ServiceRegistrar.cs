@@ -25,7 +25,7 @@ public static class ServiceRegistrar
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddHostedService<RefreshTokenCleanupService>();
         services.AddScoped<IEmailService, EmailService>();
-        //services.AddScoped<IUserService, UserService>();
+       
         services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<AuthServerDbContext>());
         services.Scan(action => action.FromAssemblies(typeof(ServiceRegistrar).Assembly)
         .AddClasses(publicOnly: false)

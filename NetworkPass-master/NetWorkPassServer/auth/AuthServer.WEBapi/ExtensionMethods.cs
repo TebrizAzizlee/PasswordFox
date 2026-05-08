@@ -1,4 +1,6 @@
-﻿using AuthServer.Domain.Users;
+﻿using AuthServer.Domain.Roles;
+using AuthServer.Domain.UserRoles;
+using AuthServer.Domain.Users;
 using AuthServer.Domain.Users.ValueObjects;
 using GenericRepository;
 
@@ -11,20 +13,32 @@ public static class ExtensionMethods
         using var scoped = application.Services.CreateScope();
 
         var userRepository = scoped.ServiceProvider.GetRequiredService<IUserRepository>();
+        var roleRepository = scoped.ServiceProvider.GetRequiredService<IRoleRepository>();
+        var userRoleRepository = scoped.ServiceProvider.GetRequiredService<IUserRoleRepository>();
         var unitOfWork = scoped.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var adminExists =
+          await userRepository.ExistsByUserNameAsync(new UserName("admin"));
 
-        if (!await userRepository.AnyAsync(p => p.UserName != null && p.UserName.Value == "admin"))
+        if (adminExists)
         {
-            FirstName firstName = new("Admin");
-            LastName lastName = new("Admin");
-            Email email = new("Azizlee.t@gmail.com");
-            UserName userName = new("admin");
-            Password password = new("12345678");
-            IsAdmin isAdmin=new(true);
-
-            var user = new User(firstName, lastName, email, isAdmin,  userName, password);
-            userRepository.Add(user);
-            await unitOfWork.SaveChangesAsync();
+            return;
         }
+        var adminRole= await roleRepository.GetByNameAsync(SystemRoles.Admin)??throw new Exception(
+                "Admin role not found");
+        var user = User.Create(
+           new FirstName("Admin"),
+           new LastName("Admin"),
+           new UserName("admin"),
+           new Email("Azizlee.t@gmail.com"),
+           new Password("12345678"));
+        
+        
+        await userRepository.AddAsync(user);
+
+        var userRole = new UserRole(user.Id, adminRole.Id);
+
+        await userRoleRepository.AddAsync(userRole);
+        await unitOfWork.SaveChangesAsync();
+
     }
 }

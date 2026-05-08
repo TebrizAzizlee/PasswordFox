@@ -1,5 +1,9 @@
 ﻿
 
+using AuthServer.Domain.Permissions;
+using AuthServer.Domain.RolePermissions;
+using AuthServer.Domain.Roles;
+using AuthServer.Domain.UserRoles;
 using AuthServer.Domain.Users;
 using GenericRepository;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +18,14 @@ public sealed class AuthServerDbContext(DbContextOptions<AuthServerDbContext> op
 
 {
 
-    public DbSet<User> Users { get; set; } = default!;
+    public DbSet<User> Users  => Set<User>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<Permission> Permissions => Set<Permission>();
+    public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<LoginToken> LoginTokens => Set<LoginToken>();
+    public DbSet<Role>Roles => Set<Role>();
 
-    public DbSet<LoginToken> LoginTokens { get; set; } = default!;
 
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AuthServerDbContext).Assembly);

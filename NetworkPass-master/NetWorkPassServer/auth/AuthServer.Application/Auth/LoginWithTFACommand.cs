@@ -1,73 +1,104 @@
 ﻿using AuthServer.Application.Dtos;
 using AuthServer.Application.Services;
 using AuthServer.Domain.Users;
+using FluentValidation;
 using GenericRepository;
 using SharedLibrary;
+using SharedLibrary.Security;
 using System.Net;
 using TS.MediatR;
 
 namespace AuthServer.Application.Auth;
-public sealed record LoginWithTFACommand(string UserName, string TFACode) : IRequest<ServiceResult<LoginResult>>;
+public sealed record LoginWithTFACommand(string PendingToken, string TFACode) : IRequest<ServiceResult<LoginResult>>;
 
+public sealed class LoginWithTFACommandValidator
+    : AbstractValidator<LoginWithTFACommand>
+{
+    public LoginWithTFACommandValidator()
+    {
+        RuleFor(x => x.PendingToken)
+            .NotEmpty();
 
+        RuleFor(x => x.TFACode)
+            .NotEmpty()
+            .Length(6);
+    }
+}
 
 public sealed class LoginWithTFACommandHandler(IUserRepository userRepository, ITokenService tokenService, IUnitOfWork unitOfWork) : IRequestHandler<LoginWithTFACommand, ServiceResult<LoginResult>>
 
 {
     public async Task<ServiceResult<LoginResult>> Handle(LoginWithTFACommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.FirstOrDefaultAsync(
-            x => x.Email.Value == request.UserName || x.UserName.Value == request.UserName,
-            cancellationToken
-        );
+        var now = DateTimeOffset.UtcNow;
+        // 🔥 HASH PENDING TOKEN
+
+        var pendingTokenHash =
+            TokenHashHelper.Hash(
+                request.PendingToken);
+
+        //GET USER
+        var user = await userRepository.GetPendingTfaUserAsync(request.PendingToken,now, cancellationToken);
+
+
+        
 
         if (user is null)
             return ServiceResult<LoginResult>.Failure(
-                "Authentication Failed",
-                "İstifadəçi adı və ya şifrə düzgün deyil.",
+               "InvalidChallenge",
+                "Authentication challenge is invalid or expired",
                 HttpStatusCode.Unauthorized
             );
-
-        if (user.TFAIsCompleted is null || user.TFAExpiresDate is null || user.TFACode is null)
+        if (user.IsDeleted)
+        {
             return ServiceResult<LoginResult>.Failure(
-                "TFA Error",
-                "TFA Kodu etibarsızdır.",
-                HttpStatusCode.BadRequest
-            );
-
-        if (user.TFAIsCompleted.Value)
+                "UserDeleted",
+                "User deleted",
+                HttpStatusCode.BadRequest);
+        }
+       
+       
+        if (user.TFAIsCompleted)
             return ServiceResult<LoginResult>.Failure(
                 "TFA Error",
                 "TFA Kodu artıq istifadə edilib.",
                 HttpStatusCode.BadRequest
             );
+        // 🔥 VERIFY MFA CODE
 
-        if (user.TFAExpiresDate.Value < DateTimeOffset.Now)
+        var isValidCode = user
+            .VerifyTFACode(
+                request.TFACode);
+        if (!isValidCode)
+        {
             return ServiceResult<LoginResult>.Failure(
-                "TFA Error",
-                "TFA Kodu vaxtı keçmişdir.",
-                HttpStatusCode.BadRequest
-            );
+                "InvalidCode",
+                "Two factor authentication code is invalid",
+                HttpStatusCode.BadRequest);
+        }
+        // 🔥 COMPLETE MFA
 
-        if (user.TFACode.Value != request.TFACode)
-            return ServiceResult<LoginResult>.Failure(
-                "TFA Error",
-                "TFA Kodu düzgün deyil.",
-                HttpStatusCode.BadRequest
-            );
-        //TFA tamamlandı
-        user.SetTFACompleted();
-        userRepository.Update(user);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        user.CompleteTwoFactorAuthentication();
+        // 🔥 CLEAR TEMP MFA STATE
+
+        user.ClearPendingTFA();
+        // 🔥 RESET FAILED LOGIN STATE
+
+        user.ResetLoginAttempts();
+
+        // 🔥 ISSUE TOKENS
 
         var token = await tokenService.GenerateTokenAsync(user, cancellationToken);
-        var res = new LoginResult
-        {
-            
-            RequiresTFA = false,
-            Token= token,
-        };
+        await unitOfWork
+          .SaveChangesAsync(
+              cancellationToken);
 
-        return ServiceResult<LoginResult>.Success(res) ;
+        return ServiceResult<LoginResult>
+           .Success(
+               new LoginResult
+               {
+                   RequiresTFA = false,
+                   Token = token
+               });
     }
 }

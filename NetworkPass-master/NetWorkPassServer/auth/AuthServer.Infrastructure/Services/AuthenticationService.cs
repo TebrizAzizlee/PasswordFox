@@ -32,9 +32,9 @@ public sealed class AuthenticationService(
     public async Task<ServiceResult<LoginResult>> CreateTokenAsync(
         string userName, string password, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.FirstOrDefaultAsync(
-            x => x.UserName.Value == userName, cancellationToken);
-       
+        var user = await _userRepository.GetForAuthenticationAsync(userName, cancellationToken);
+
+
 
         if (user is null)
             return ServiceResult<LoginResult>.Failure("AuthenticationFailed", "İstifadəçi adı və ya şifrə düzgün deyil.", HttpStatusCode.Unauthorized);
@@ -56,9 +56,9 @@ public sealed class AuthenticationService(
         user.ResetLoginAttempts();
 
         // 🔥 TFA FLOW
-        if (user.TFAStatus.Value)
+        if (user.TFAStatus)
         {
-            user.CreateTFACode();
+            var challenge = user.CreateTFAChallenge();
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -68,17 +68,19 @@ public sealed class AuthenticationService(
                 $"""
             Salam {user.UserName.Value},
 
-            Sizin TFA kodunuz:
-            {user.TFAConfirmCode!.Value}
+            Sizin təsdiq kodunuz:
+            {challenge.Code}
 
-            Əgər bu əməliyyatı siz etməmisinizsə nəzərə almayın.
+            Əgər bu giriş sizə aid deyilsə,
+            bu emaili nəzərə almayın.
             """,
                 cancellationToken);
 
             return ServiceResult<LoginResult>.Success(
                 new LoginResult
                 {
-                    RequiresTFA = true
+                    RequiresTFA = true,
+                    PendingToken=challenge.PendingToken
                 });
         }
 

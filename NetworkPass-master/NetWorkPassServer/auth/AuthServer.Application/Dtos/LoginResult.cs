@@ -9,7 +9,8 @@ namespace AuthServer.Application.Dtos
     public sealed record LoginResult
     {
         public bool RequiresTFA { get; init; }
-        
+        public string? PendingToken
+        { get; set; }
         public TokenDto? Token { get; init; }
     }
 }

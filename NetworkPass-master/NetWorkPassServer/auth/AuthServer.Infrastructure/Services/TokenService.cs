@@ -1,4 +1,5 @@
-﻿using AuthServer.Application.Dtos;
+﻿using AuthServer.Application.Authorization;
+using AuthServer.Application.Dtos;
 using AuthServer.Application.Services;
 using AuthServer.Domain.Users;
 using Microsoft.Extensions.Options;
@@ -15,18 +16,38 @@ public sealed class TokenService(IOptions<CustomTokenOptions> options) : ITokenS
     private readonly CustomTokenOptions customTokenOptions = options.Value;
     private static List<Claim> GetClaims(User user)
     {
-        var userList = new List<Claim>
+        var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier,user.Id.Value.ToString()),
-            new("userId", user.Id.Value.ToString()),
+            new(CustomClaimTypes.UserId,user.Id.Value.ToString()),
+            
             new (JwtRegisteredClaimNames.Email,user.Email.Value),
             new (ClaimTypes.Name,user.UserName.Value),
-            new(ClaimTypes.Role, "User"), // 🔥 gələcək üçün vacib
+            
             
         };
-        //if (audiences != null)
-        //    userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
-        return userList;
+        var roles = user.UserRoles.Select(x => x.Role.Name.Value).Distinct();
+
+        foreach (var role in roles)
+        {
+            new Claim(CustomClaimTypes.Role, role);
+        }
+        // 🔥 PERMISSIONS
+
+        var permissions = user.UserRoles
+            .SelectMany(x =>
+                x.Role.RolePermissions)
+            .Select(x =>
+                x.Permission.Name.Value)
+            .Distinct();
+
+        foreach (var permission in permissions)
+        {
+            claims.Add(
+                new Claim(CustomClaimTypes.Permission, permission));
+
+
+        }
+        return claims;
     }
     public string CreateRefreshToken()
     {

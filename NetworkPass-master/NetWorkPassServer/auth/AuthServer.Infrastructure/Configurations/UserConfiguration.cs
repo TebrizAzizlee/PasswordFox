@@ -41,29 +41,53 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
             fn.HasIndex(p => p.Value).IsUnique();
         });
+       
+
+
         builder.OwnsOne(x => x.UserName, u =>
         {
             u.Property(p => p.Value)
              .HasColumnName("UserName")
              .HasMaxLength(EntityConsts.MaxNameLength)
              .IsRequired();
-
             u.HasIndex(p => p.Value).IsUnique();
+
         });
+       
+
         builder.OwnsOne(x => x.Password, p =>
         {
             p.Property(x => x.PasswordHash)
              .HasColumnName("PasswordHash")
+             .HasMaxLength(512)
              .IsRequired();
         });
-        builder.OwnsOne(x => x.Isadmin);
-        builder.OwnsOne(x => x.TFAStatus);
-        builder.OwnsOne(x => x.TFACode);
-        builder.OwnsOne(x => x.TFAConfirmCode);
-        builder.OwnsOne(x => x.TFAExpiresDate);
-        builder.OwnsOne(x => x.TFAIsCompleted);
+        builder.Property(x => x.TFAStatus)
+    .IsRequired();
+        builder.Property(x => x.TFACodeHash)
+    .HasMaxLength(256);
 
-        builder.HasIndex(x => x.Id);
+        builder.Property(x => x.PendingTFATokenHash)
+            .HasMaxLength(256);
+        builder.HasIndex(x => x.PendingTFATokenHash).IsUnique()
+
+    .HasFilter("[PendingTFATokenHash] IS NOT NULL");
+        builder.Property(x => x.TFAExpiresDate);
+
+        builder.Property(x => x.TFAIsCompleted)
+            .IsRequired();
+
+        builder.Property(x => x.ResetPasswordTokenHash)
+            .HasMaxLength(256);
+        builder.HasIndex(x => x.ResetPasswordTokenHash).IsUnique()
+
+    .HasFilter("[ResetPasswordTokenHash] IS NOT NULL");
+        builder.Property(x => x.ResetPasswordTokenExpiresAt);
+
+        builder.Property(x => x.IsResetPasswordCompleted)
+            .IsRequired();
+
+       
     }
 
    
