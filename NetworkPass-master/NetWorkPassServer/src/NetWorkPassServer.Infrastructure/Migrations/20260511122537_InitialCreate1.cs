@@ -47,7 +47,6 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                     IpAddress = table.Column<string>(type: "NVarChar(100)", maxLength: 100, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    BranchId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -66,12 +65,6 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Devices_Branches_BranchId1",
-                        column: x => x.BranchId1,
-                        principalTable: "Branches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -84,11 +77,6 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                 name: "IX_Devices_BranchId",
                 table: "Devices",
                 column: "BranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Devices_BranchId1",
-                table: "Devices",
-                column: "BranchId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Devices_IpAddress",

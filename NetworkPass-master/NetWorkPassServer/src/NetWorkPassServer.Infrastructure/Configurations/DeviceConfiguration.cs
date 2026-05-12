@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Devices;
+using SharedLibrary.Abstractions.Entity;
 using SharedLibrary.Consts;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ internal class DeviceConfiguration : IEntityTypeConfiguration<Device>
         builder.ToTable("Devices");
         //Pk
         builder.HasKey(x => x.Id);
+       
+        
         // DeviceName (ValueObject)
         builder.OwnsOne(x => x.Name, fn =>
         {
@@ -27,19 +30,29 @@ internal class DeviceConfiguration : IEntityTypeConfiguration<Device>
                 .HasMaxLength(EntityConsts.MaxNameLength)
                 .IsRequired();
         });
+      
+        
+        
         // IpAddress (ValueObject)
         builder.OwnsOne(x => x.Ip_Address, fn => {
             fn.Property(p => p.Value)
             .HasColumnType(SqlDbType.NVarChar.ToString())
+
             .HasColumnName("IpAddress")
             .HasMaxLength(EntityConsts.MaxNameLength).IsRequired();
             fn.HasIndex(p => p.Value);
 
         });
+       
+        
         // Branch relation (FK)
-        builder.Property(x => x.BranchId).IsRequired();
+        builder.Property(x => x.BranchId)
+               .HasConversion(x=>x.Value,x=>new IdentityId(x))
+               .IsRequired();
         builder.HasIndex(x => x.BranchId);
         //Enum
+     
+        
         builder.Property(x => x.Type)
               .HasConversion<string>() // və ya string
               .IsRequired();
@@ -50,9 +63,12 @@ internal class DeviceConfiguration : IEntityTypeConfiguration<Device>
 
         // Audit (Entity-dən gəlir)
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.HasOne<Branch>()
-       .WithMany()
+
+        builder.HasOne(x=>x.Branch)
+       .WithMany(x=>x.Devices)
        .HasForeignKey(x => x.BranchId)
        .OnDelete(DeleteBehavior.Restrict);
+
+     
     }
 }

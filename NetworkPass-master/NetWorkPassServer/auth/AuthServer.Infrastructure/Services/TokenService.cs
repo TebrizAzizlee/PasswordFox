@@ -21,7 +21,7 @@ public sealed class TokenService(IOptions<CustomTokenOptions> options) : ITokenS
             new(CustomClaimTypes.UserId,user.Id.Value.ToString()),
             
             new (JwtRegisteredClaimNames.Email,user.Email.Value),
-            new (ClaimTypes.Name,user.UserName.Value),
+            new (CustomClaimTypes.UserName,user.UserName.Value),
             
             
         };
@@ -29,7 +29,7 @@ public sealed class TokenService(IOptions<CustomTokenOptions> options) : ITokenS
 
         foreach (var role in roles)
         {
-            new Claim(CustomClaimTypes.Role, role);
+            claims.Add(new Claim(CustomClaimTypes.Role, role));
         }
         // 🔥 PERMISSIONS
 
@@ -60,8 +60,8 @@ public sealed class TokenService(IOptions<CustomTokenOptions> options) : ITokenS
     
     public  Task<TokenDto> GenerateTokenAsync(User user, CancellationToken cancellationToken)
     {
-        var now = DateTime.UtcNow;
-        Console.WriteLine("AUTH UTC NOW: " + now); // 🔥 BURAYA QOY
+        var now = DateTimeOffset.UtcNow;
+        
         var accessTokenExpiration = now.AddMinutes(customTokenOptions.AccessTokenExpiration);
         var refreshTokenExpiration = now.AddDays(customTokenOptions.RefreshTokenExpiration);
         var securityKey = SignService.GetSymmetricSecurityKey(customTokenOptions.SecurityKey);
@@ -69,8 +69,8 @@ public sealed class TokenService(IOptions<CustomTokenOptions> options) : ITokenS
         JwtSecurityToken jwtSecurityToken = new(
             issuer: customTokenOptions.Issuer,
             audience: customTokenOptions.Audience[0],
-            expires: accessTokenExpiration,
-            notBefore: now.AddMinutes(-2),
+            expires: accessTokenExpiration.UtcDateTime,
+            notBefore: now.AddMinutes(-2).UtcDateTime,
             claims: GetClaims(user).Append(new Claim(JwtRegisteredClaimNames.Jti,Guid.CreateVersion7().ToString())),
             signingCredentials: signingCredentials
             );

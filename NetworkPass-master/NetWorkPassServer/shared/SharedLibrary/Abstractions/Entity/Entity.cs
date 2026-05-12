@@ -58,9 +58,19 @@ public abstract class Entity
         DeletedAt = now;
         IsDeleted = true;
     }
+
+    protected void ActivateEntity()
+    {
+        IsActive = true;
+    }
+
+    protected void DeactivateEntity()
+    {
+        IsActive = false;
+    }
 }
 
-
+  
 
 public sealed record IdentityId(Guid Value)
 {

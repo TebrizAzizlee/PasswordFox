@@ -29,8 +29,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>()
 
 #region 🔹 JWT Authentication & Authorization
 var tokenOptions = builder.Configuration.GetSection("TokenOption").Get<CustomTokenOptions>();
-Console.WriteLine("Auth KEY: " + tokenOptions!.SecurityKey);
-Console.WriteLine("UTC NOW: " + DateTime.UtcNow);
+
 builder.Services.AddCustomJwtAuth(tokenOptions!);
 
 builder.Services.AddAuthorization();
@@ -117,29 +116,30 @@ builder.Services.AddOpenApi();
 builder.Services.AddResponseCompression(opt => opt.EnableForHttps = true);
 
 var app = builder.Build();
-app.UseRouting();
-#region 🔹 Middleware Sırası
-
-app.MapOpenApi().AllowAnonymous();
-app.MapScalarApiReference();
-
-// CORS konfiqurasiyası
+await app.Services.SeedDatabaseAsync();
+await app.CreateFirstUser();
+app.UseExceptionHandler();
+app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseCors(x => x.WithOrigins("https://localhost:4200")
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
     .SetPreflightMaxAge(TimeSpan.FromMinutes(10))
 );
-
 app.UseResponseCompression();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHttpsRedirection();
-app.UseExceptionHandler();
+//app.UseRouting();
 
 
-#endregion
-app.UseRateLimiter();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi().AllowAnonymous();
+    app.MapScalarApiReference();
+
+}
 
 
 app.MapControllers().RequireRateLimiting("fixed");
@@ -147,9 +147,9 @@ app.MapControllers().RequireRateLimiting("fixed");
 app.MapAuthEndpoint();
 
 // SPA fallback
-app.MapFallbackToFile("index.html");
-// İlk istifadəçi yarat
-await app.CreateFirstUser();
-await app.Services.SeedDatabaseAsync();
+//app.MapFallbackToFile("index.html");
+// İlk istifadəçi yaratawait
+
+
 
 app.Run();

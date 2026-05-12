@@ -31,7 +31,7 @@ public static class AuthExtensions
                     if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
                     {
                         context.Token = authHeader.Substring("Bearer ".Length).Trim();
-                        Console.WriteLine("TOKEN FROM HEADER ✔");
+                        
                     }
                     else
                     {
@@ -42,13 +42,13 @@ public static class AuthExtensions
                 },
                 OnTokenValidated = context =>
                 {
-                    Console.WriteLine("TOKEN VALID ✔");
+                    
                     return Task.CompletedTask;
                 },
 
                 OnAuthenticationFailed = context =>
                 {
-                    Console.WriteLine("AUTH FAILED FULL: " + context.Exception.ToString());
+                    
                     return Task.CompletedTask;
                 }
             };

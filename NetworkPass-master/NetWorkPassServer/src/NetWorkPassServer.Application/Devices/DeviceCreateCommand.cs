@@ -5,12 +5,7 @@ using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
 using SharedLibrary.Abstractions.Entity;
 using SharedLibrary.Consts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TS.MediatR;
 using static NetWorkPassServer.Domain.Devices.Device;
 
@@ -18,7 +13,7 @@ namespace NetWorkPassServer.Application.Devices;
 public sealed record DeviceCreateCommand(Guid BranchId,
     string Name,
     string IpAddress,
-    int Type,
+    DeviceType Type,
     string? Description):IRequest<ServiceResult<Guid>>;
 
 public sealed class DeviceCreateCommandValidator : AbstractValidator<DeviceCreateCommand>
@@ -38,7 +33,7 @@ public sealed class DeviceCreateCommandValidator : AbstractValidator<DeviceCreat
             .WithMessage("IP address düzgün formatda deyil");
 
         RuleFor(x => x.Type)
-            .IsInEnum().WithMessage("Device tipi düzgün deyil");
+            .IsInEnum();
 
         RuleFor(x => x.Description)
             .MaximumLength(EntityConsts.MaxDesrictionLength).WithMessage("Açıqlama maksimum 500 simvol ola bilər"); ;
@@ -54,9 +49,11 @@ internal sealed class DeviceCreateCommandHandler(
         DeviceCreateCommand request,
         CancellationToken cancellationToken)
     {
+        var branchId =
+            new IdentityId(request.BranchId);
         // 🔥 1. Branch var? (çox adam bunu unudur)
         var branchExists = await branchRepository.AnyAsync(
-            x => x.Id == request.BranchId,
+            x => x.Id == branchId,
             cancellationToken);
 
         if (!branchExists)
@@ -83,18 +80,28 @@ internal sealed class DeviceCreateCommandHandler(
                 HttpStatusCode.BadRequest);
         }
 
-        // 🔥 3. ValueObject yarat
-        var name = new DeviceName(request.Name);
-        var ipAddress = new IpAddress(request.IpAddress);
+        DeviceName deviceName;
+        IpAddress ipAddress;
+      
+        try
+        {
+            // 🔥 3. ValueObject yarat
+            deviceName = new DeviceName(request.Name);
+            ipAddress = new IpAddress(request.IpAddress);
+        }
+        catch (Exception ex)
+        {
 
-        var type = (DeviceType)request.Type;
+            return ServiceResult<Guid>.Failure("ValidationError",ex.Message,HttpStatusCode.BadRequest);
+        }
+       
 
         // 🔥 4. Entity yarat
         var device = new Device(
             new IdentityId(request.BranchId),
-            name,
+            deviceName,
             ipAddress,
-            type,
+            request.Type,
             request.Description
         );
 

@@ -35,7 +35,7 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
     public async Task<ServiceResult<Guid>> Handle(BranchCreateCommand request, CancellationToken cancellationToken)
     {
         
-        var exists = await branchRepository.AnyAsync(p => p.Name.Value == request.Name, cancellationToken);
+        var exists = await branchRepository.AnyAsync(p => p.Name.Value == request.Name , cancellationToken);
         if (exists)
         {
             return ServiceResult<Guid>.Failure(

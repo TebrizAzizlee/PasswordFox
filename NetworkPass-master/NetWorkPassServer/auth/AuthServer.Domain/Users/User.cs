@@ -146,6 +146,12 @@ public sealed class User : Entity
 
     private void SetFullName()
     {
+        if (FirstName is null ||
+            LastName is null)
+        {
+            return;
+        }
+
         FullName = new FullName(
             $"{FirstName.Value} {LastName.Value}");
     }

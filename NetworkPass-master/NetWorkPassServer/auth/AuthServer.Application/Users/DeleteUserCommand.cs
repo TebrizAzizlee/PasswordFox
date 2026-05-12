@@ -24,8 +24,21 @@ public sealed class DeleteUserCommandHandler(
         DeleteUserCommand request,
         CancellationToken cancellationToken)
     {
-        var userId = new IdentityId(request.UserId);
+        // 🔥 SELF DELETE PROTECTION
 
+        if (request.UserId ==
+            request.CurrentUserId)
+        {
+            return ServiceResult.Failure(
+                "SelfDeleteForbidden",
+                "You cannot delete your own account",
+                HttpStatusCode.BadRequest);
+        }
+        var userId = new IdentityId(request.UserId);
+        var currentUserId =
+           new IdentityId(request.CurrentUserId);
+
+        //GET USER
         var user = await userRepository
             .GetByIdAsync(
                 userId,
@@ -38,12 +51,20 @@ public sealed class DeleteUserCommandHandler(
                 "User not found",
                 HttpStatusCode.NotFound);
         }
-
+        // 🔥 ALREADY DELETED
         if (user.IsDeleted)
         {
             return ServiceResult.Success();
         }
+        // 🔥 PROTECT ROOT ADMIN
 
+        if (user.UserName.Value == "admin")
+        {
+            return ServiceResult.Failure(
+                "ProtectedAccount",
+                "Default admin account cannot be deleted",
+                HttpStatusCode.BadRequest);
+        }
         var now = DateTimeOffset.UtcNow;
 
         // 🔥 SOFT DELETE

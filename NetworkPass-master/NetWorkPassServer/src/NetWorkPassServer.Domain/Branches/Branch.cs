@@ -1,4 +1,5 @@
 ﻿using NetWorkPassServer.Domain.Branches.ValueObjects;
+using NetWorkPassServer.Domain.Devices;
 using SharedLibrary.Abstractions.Entity;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ public sealed class Branch : Entity
     }
     public Name Name { get; private set; } = default!;
     public Address Address { get; private set; } = default!;
+    public ICollection<Device> Devices
+    { get; private set; } = [];
     public void SetName(Name name)
     {
         if (name is null) throw new ArgumentNullException(nameof(name));
@@ -46,7 +49,7 @@ public sealed class Branch : Entity
     {
         if (!IsActive) return;
 
-        SetStatus(false);
+        DeactivateEntity();
         // gələcəkdə audit əlavə edə bilərsən
     }
 }

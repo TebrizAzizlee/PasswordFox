@@ -38,12 +38,38 @@ public sealed partial class Device:Entity
         Type = type;
         Description = description;
     }
+    public void ChangeBranch(
+       IdentityId branchId)
+    {
+        BranchId = branchId;
+    }
+    public void Deactivate()
+    {
+        if (!IsActive)
+        {
+            return;
+        }
 
+        DeactivateEntity();
+    }
+
+    public void Activate()
+    {
+        if (IsActive)
+        {
+            return;
+        }
+
+        ActivateEntity();
+    }
     public enum DeviceType
     {
-        Router,
-        AccessPoint,
-        Switch,
-        Server
+        Router = 1,
+        Switch = 2,
+        AccessPoint = 3,
+        Firewall = 4,
+        Server = 5,
+        Printer = 6,
+        Camera = 7
     }
 }

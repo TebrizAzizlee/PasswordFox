@@ -64,9 +64,6 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -102,8 +99,6 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BranchId");
-
-                    b.HasIndex("BranchId1");
 
                     b.ToTable("Devices", (string)null);
                 });
@@ -187,16 +182,10 @@ namespace NetWorkPassServer.Infrastructure.Migrations
 
             modelBuilder.Entity("NetWorkPassServer.Domain.Devices.Device", b =>
                 {
-                    b.HasOne("NetWorkPassServer.Domain.Branches.Branch", null)
-                        .WithMany()
+                    b.HasOne("NetWorkPassServer.Domain.Branches.Branch", "Branch")
+                        .WithMany("Devices")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("NetWorkPassServer.Domain.Branches.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId1")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.OwnsOne("NetWorkPassServer.Domain.Devices.Device+DeviceName", "Name", b1 =>
@@ -246,6 +235,11 @@ namespace NetWorkPassServer.Infrastructure.Migrations
 
                     b.Navigation("Name")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("NetWorkPassServer.Domain.Branches.Branch", b =>
+                {
+                    b.Navigation("Devices");
                 });
 #pragma warning restore 612, 618
         }

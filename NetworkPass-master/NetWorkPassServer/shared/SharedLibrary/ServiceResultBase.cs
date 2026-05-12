@@ -15,12 +15,17 @@ namespace SharedLibrary
         [JsonIgnore]
         public bool IsSuccess => Error is null;
 
-        protected static ProblemDetails CreateProblem(string title, string detail, HttpStatusCode status)
-            => new()
+        protected static ProblemDetails CreateProblem(string code, string detail, HttpStatusCode status)
+        {
+            var problem = new ProblemDetails
             {
-                Title = title,
+                Title = code,
                 Detail = detail,
                 Status = (int)status
             };
+
+            problem.Extensions["code"] = code;
+            return problem;
+        }
     }
 }

@@ -8,13 +8,15 @@ public static class ServiceResultExtensions
    
         public static IResult ToResult<T>(this ServiceResult<T> result)
         {
-            if (!result.IsSuccess)
-            {
-                return Results.Problem(
-                    title: result.Error!.Title,
-                    detail: result.Error.Detail,
-                    statusCode: result.Error.Status
-                );
+        if (!result.IsSuccess)
+        {
+            return Results.Problem(
+                title: result.Error!.Title,
+                detail: result.Error.Detail,
+                statusCode: result.Error.Status,
+                extensions: result.Error.Extensions);
+              
+                
             }
 
             return Results.Ok(result.Data);
@@ -28,10 +30,11 @@ public static class ServiceResultExtensions
             return Results.Problem(
                 title: result.Error!.Title,
                 detail: result.Error.Detail,
-                statusCode: result.Error.Status
+                statusCode: result.Error.Status,
+                  extensions:result.Error.Extensions
             );
         }
 
-        return Results.NoContent();
+        return Results.Ok();
     }
 }

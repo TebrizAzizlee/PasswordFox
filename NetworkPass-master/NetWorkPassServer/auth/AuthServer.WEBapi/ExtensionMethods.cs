@@ -38,7 +38,16 @@ public static class ExtensionMethods
         var userRole = new UserRole(user.Id, adminRole.Id);
 
         await userRoleRepository.AddAsync(userRole);
-        await unitOfWork.SaveChangesAsync();
+        try
+        {
+            await unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+
+          
+        }
+       
 
     }
 }

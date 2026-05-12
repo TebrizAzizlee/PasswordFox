@@ -30,7 +30,7 @@ internal sealed class UserRepository(AuthServerDbContext context) : AuditableRep
         return await _dbContext
             .Set<User>()
             .AnyAsync(
-                x => x.UserName == userName,
+                x => x.UserName.Value == userName.Value,
                 cancellationToken);
     }
 
