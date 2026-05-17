@@ -1,7 +1,7 @@
 ﻿using NetWorkPassServer.Domain.Branches;
 
 
-namespace NetWorkPassServer.Application.Dtos;
+namespace NetWorkPassServer.Application.Dtos.BranchDtos;
 public sealed record BranchDto(
     Guid Id,
 

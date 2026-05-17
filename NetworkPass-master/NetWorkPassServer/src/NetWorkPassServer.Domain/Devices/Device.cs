@@ -42,7 +42,7 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
     public IpAddress IpAddress { get; private set; } = default!;
 
     public string? Description { get; private set; }
-
+    public bool IsActive { get; private set; } = default;
     public string Model { get; private set; } = default!;
 
     public DeviceVendor Vendor { get; private set; }= default!;

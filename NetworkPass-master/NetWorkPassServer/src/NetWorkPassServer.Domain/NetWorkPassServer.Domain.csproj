@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Abp" Version="10.4.0" />
     <PackageReference Include="TS.EntityFrameworkCore.GenericRepository" Version="9.0.4" />
   </ItemGroup>
 

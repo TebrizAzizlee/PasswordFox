@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NetWorkPassServer.Application.Dtos;
+using NetWorkPassServer.Application.Dtos.BranchDtos;
 using NetWorkPassServer.Domain.Branches;
 using SharedLibrary;
 using SharedLibrary.Abstractions.Pagination;

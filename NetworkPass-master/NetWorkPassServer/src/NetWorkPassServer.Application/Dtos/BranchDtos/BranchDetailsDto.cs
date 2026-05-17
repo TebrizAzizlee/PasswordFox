@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetWorkPassServer.Application.Dtos;
+namespace NetWorkPassServer.Application.Dtos.BranchDtos;
 public sealed record BranchDetailsDto
 {
     public Guid Id { get; set; }

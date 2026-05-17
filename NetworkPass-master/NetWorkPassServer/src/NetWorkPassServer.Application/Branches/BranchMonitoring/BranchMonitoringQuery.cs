@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Application.Dtos;
+using NetWorkPassServer.Application.Dtos.BranchDtos;
 using SharedLibrary;
 using System.Net;
 using TS.MediatR;

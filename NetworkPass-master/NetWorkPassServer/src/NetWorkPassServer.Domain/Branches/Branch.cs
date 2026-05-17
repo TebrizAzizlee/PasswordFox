@@ -137,4 +137,59 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
 
         IsMonitoringEnabled = false;
     }
+
+    public void RecalculateDeviceStats()
+    {
+        TotalDeviceCount =
+            Devices.Count(x => !x.IsDeleted);
+
+        OnlineDeviceCount =
+            Devices.Count(x =>
+                !x.IsDeleted &&
+                x.Status == DeviceStatus.Online);
+
+        OfflineDeviceCount =
+            Devices.Count(x =>
+                !x.IsDeleted &&
+                x.Status == DeviceStatus.Offline);
+
+        WarningDeviceCount =
+            Devices.Count(x =>
+                !x.IsDeleted &&
+                x.Status == DeviceStatus.Warning);
+
+        UpdateBranchStatus();
+    }
+    private void UpdateBranchStatus()
+    {
+        if (TotalDeviceCount == 0)
+        {
+            Status = BranchStatus.Unknown;
+
+            return;
+        }
+
+        if (OfflineDeviceCount == TotalDeviceCount)
+        {
+            Status = BranchStatus.Offline;
+
+            return;
+        }
+
+        if (WarningDeviceCount > 0)
+        {
+            Status = BranchStatus.Warning;
+
+            return;
+        }
+
+        if (OnlineDeviceCount > 0)
+        {
+            Status = BranchStatus.Online;
+
+            return;
+        }
+
+        Status = BranchStatus.Unknown;
+    }
 }

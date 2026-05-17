@@ -1,6 +1,6 @@
 ﻿using NetWorkPassServer.Domain.Devices;
 
-namespace NetWorkPassServer.Application.Dtos;
+namespace NetWorkPassServer.Application.Dtos.DeviesDtos;
 
 public sealed record DeviceMonitoringDto(
     Guid Id,

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NetWorkPassServer.Application.Dtos;
+using NetWorkPassServer.Application.Dtos.DeviesDtos;
 using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
 using SharedLibrary.Abstractions.Pagination;

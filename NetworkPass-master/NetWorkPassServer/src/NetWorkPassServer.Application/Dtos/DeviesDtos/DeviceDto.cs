@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static NetWorkPassServer.Domain.Devices.Device;
 
-namespace NetWorkPassServer.Application.Dtos;
-public sealed record DeviceDetailDto(
-    Guid Id,
+namespace NetWorkPassServer.Application.Dtos.DeviesDtos;
+public sealed record DeviceDto(Guid Id,
     Guid BranchId,
-    string BranchName,
     string Name,
     string IpAddress,
-    string Type,
+    DeviceType? Type,
     string? Description,
-    bool IsActive,
-    DateTimeOffset CreatedAt
-);
+    bool IsActive);
+

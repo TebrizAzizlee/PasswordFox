@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetWorkPassServer.Application.Context;
-using NetWorkPassServer.Application.Dtos;
+using NetWorkPassServer.Application.Dtos.DeviesDtos;
 using SharedLibrary;
 using System;
 using System.Collections.Generic;

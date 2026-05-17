@@ -1,10 +1,8 @@
-﻿
-
-using NetWorkPassServer.Domain.Branches;
+﻿using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Branches.ValueObjects;
 using NetWorkPassServer.Domain.Devices;
 
-namespace NetWorkPassServer.Application.Dtos;
+namespace NetWorkPassServer.Application.Dtos.BranchDtos;
 public sealed record BranchListDto
 (
      Guid Id ,

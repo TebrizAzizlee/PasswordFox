@@ -1,7 +1,8 @@
-﻿using NetWorkPassServer.Domain.Branches;
+﻿using NetWorkPassServer.Application.Dtos.DeviesDtos;
+using NetWorkPassServer.Domain.Branches;
 
 
-namespace NetWorkPassServer.Application.Dtos;
+namespace NetWorkPassServer.Application.Dtos.BranchDtos;
 public sealed record BranchMonitoringDto(
     Guid Id,
 

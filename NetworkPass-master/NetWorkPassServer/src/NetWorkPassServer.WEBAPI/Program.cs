@@ -1,11 +1,12 @@
 ﻿
+using Infrastructure.Extensions;
 using Microsoft.AspNetCore.RateLimiting;
 using NetWorkPassServer.Application;
 using NetWorkPassServer.Infrastructure;
+using NetWorkPassServer.Infrastructure.Hubs;
 using NetWorkPassServer.WEBAPI.Modules;
 using Scalar.AspNetCore;
 using SharedLibrary.Configurations;
-using Infrastructure.Extensions;
 using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,4 +73,6 @@ app.MapControllers().RequireRateLimiting("fixed");
 
 app.MapBranch();
 app.MapDevice();
+app.MapHub<AlertHub>(
+    "/hubs/alerts");
 app.Run();
