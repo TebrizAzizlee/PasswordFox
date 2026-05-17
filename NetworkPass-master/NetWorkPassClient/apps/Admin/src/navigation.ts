@@ -7,12 +7,12 @@ export interface NavigationModel{
 }
 export const navigations:NavigationModel[]=[
   {
-    title:"Idarəetmə Paneli",
+    title:"Dashboard",
     url:"/",
     icon:"bi-speedometer2"
 
   },{
-    title:"Şöbələr",
+    title:"Branches",
     url:"/departments",
     icon:"bi-buildings-fill"
   }

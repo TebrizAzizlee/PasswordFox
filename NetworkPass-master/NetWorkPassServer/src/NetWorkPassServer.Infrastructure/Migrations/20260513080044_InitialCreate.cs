@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NetWorkPassServer.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate1 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,9 +20,13 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     District = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     FullAddress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Address_PhoneNumber1 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Address_PhoneNumber2 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    ContactInfo_PhoneNumber1 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ContactInfo_PhoneNumber2 = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    WanIp = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Subnet = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Gateway = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DnsServer = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),

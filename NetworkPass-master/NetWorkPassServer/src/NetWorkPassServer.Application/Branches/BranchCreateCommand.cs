@@ -17,7 +17,12 @@ public sealed record BranchCreateCommand(string Name,
     string FullAddress,
     string PhoneNumber1,
     string? PhoneNumber2,
-    string Email) : IRequest<ServiceResult<Guid>>;
+    string Email,
+    string WanIp,
+    string Subnet,
+    string Gateway,
+    string DnsServer
+    ) : IRequest<ServiceResult<Guid>>;
 
 public sealed class BranchCreateCommmandValidator : AbstractValidator<BranchCreateCommand>
 {
@@ -35,7 +40,7 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
     public async Task<ServiceResult<Guid>> Handle(BranchCreateCommand request, CancellationToken cancellationToken)
     {
         
-        var exists = await branchRepository.AnyAsync(p => p.Name.Value == request.Name , cancellationToken);
+        var exists = await branchRepository.AnyAsync(p => p.Name == request.Name , cancellationToken);
         if (exists)
         {
             return ServiceResult<Guid>.Failure(
@@ -43,17 +48,24 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
                 "Bu adda şöbə sistemdə var",
                 System.Net.HttpStatusCode.BadRequest);
         }
-        Name name = new(request.Name);
+        BranchName name = new(request.Name);
         var address = new Address
         (request.City,
     request.District,
-    request.FullAddress,
-    request.PhoneNumber1,
-    request.PhoneNumber2,
-    request.Email);
-          
-   
-        Branch branch = new(name, address);
+    request.FullAddress
+    );
+        var contactInfo = new ContactInfo(
+            request.PhoneNumber1,
+            request.PhoneNumber2,
+            request.Email
+            );
+        var networkInfo = new NetworkInfo(
+            request.WanIp,
+            request.Subnet,
+            request.Gateway,
+            request.DnsServer
+            );
+        Branch branch = new(name, address,contactInfo,networkInfo);
        await branchRepository.AddAsync(branch,cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

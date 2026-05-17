@@ -8,7 +8,7 @@ import Blank from '../../components/blank/blank';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class Dashboard implements OnInit {
+export  class Dashboard implements OnInit {
 readonly #breadcrumb=inject(Breadcrumbservice);
 
   ngOnInit(): void {

@@ -122,26 +122,41 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                                 .HasColumnType("nvarchar(100)")
                                 .HasColumnName("District");
 
-                            b1.Property<string>("Email")
-                                .IsRequired()
-                                .HasMaxLength(256)
-                                .HasColumnType("nvarchar(256)")
-                                .HasColumnName("Email");
-
                             b1.Property<string>("FullAddress")
                                 .IsRequired()
                                 .HasMaxLength(200)
                                 .HasColumnType("nvarchar(200)")
                                 .HasColumnName("FullAddress");
 
+                            b1.HasKey("BranchId");
+
+                            b1.ToTable("Branches");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BranchId");
+                        });
+
+                    b.OwnsOne("NetWorkPassServer.Domain.Branches.ValueObjects.ContactInfo", "ContactInfo", b1 =>
+                        {
+                            b1.Property<Guid>("BranchId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasMaxLength(256)
+                                .HasColumnType("nvarchar(256)")
+                                .HasColumnName("Email");
+
                             b1.Property<string>("PhoneNumber1")
                                 .IsRequired()
                                 .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)");
+                                .HasColumnType("nvarchar(20)")
+                                .HasColumnName("PhoneNumber1");
 
                             b1.Property<string>("PhoneNumber2")
                                 .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)");
+                                .HasColumnType("nvarchar(20)")
+                                .HasColumnName("PhoneNumber2");
 
                             b1.HasKey("BranchId");
 
@@ -173,10 +188,53 @@ namespace NetWorkPassServer.Infrastructure.Migrations
                                 .HasForeignKey("BranchId");
                         });
 
+                    b.OwnsOne("NetWorkPassServer.Domain.Branches.ValueObjects.NetworkInfo", "NetworkInfo", b1 =>
+                        {
+                            b1.Property<Guid>("BranchId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("DnsServer")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("DnsServer");
+
+                            b1.Property<string>("Gateway")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("Gateway");
+
+                            b1.Property<string>("Subnet")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Subnet");
+
+                            b1.Property<string>("WanIp")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("WanIp");
+
+                            b1.HasKey("BranchId");
+
+                            b1.ToTable("Branches");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BranchId");
+                        });
+
                     b.Navigation("Address")
                         .IsRequired();
 
+                    b.Navigation("ContactInfo")
+                        .IsRequired();
+
                     b.Navigation("Name")
+                        .IsRequired();
+
+                    b.Navigation("NetworkInfo")
                         .IsRequired();
                 });
 

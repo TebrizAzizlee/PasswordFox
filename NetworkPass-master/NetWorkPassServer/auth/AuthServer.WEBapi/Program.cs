@@ -108,9 +108,21 @@ builder.Services.AddRateLimiter(cfg =>
 builder.Services.Configure<CustomTokenOptions>(builder.Configuration.GetSection("TokenOption"));
 
 builder.Services.AddHostedService<CheckLoginTokenBackgroundService>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://localhost:4200"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+    });
+});
 builder.Services.AddControllers();
-builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddResponseCompression(opt => opt.EnableForHttps = true);
@@ -120,13 +132,9 @@ await app.Services.SeedDatabaseAsync();
 await app.CreateFirstUser();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
+app.UseCors("Frontend");
 app.UseRateLimiter();
-app.UseCors(x => x.WithOrigins("https://localhost:4200")
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials()
-    .SetPreflightMaxAge(TimeSpan.FromMinutes(10))
-);
+
 app.UseResponseCompression();
 
 app.UseAuthentication();
@@ -144,7 +152,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers().RequireRateLimiting("fixed");
 
-app.MapAuthEndpoint();
+app.MapAuthEndpoint().RequireCors("Frontend"); 
 
 // SPA fallback
 //app.MapFallbackToFile("index.html");

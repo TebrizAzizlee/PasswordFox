@@ -15,7 +15,7 @@ readonly breadcrumbdata=signal<BreadcrumbModel[]>([]);
 
 addHome(){
   const dashboard:BreadcrumbModel={
-    title:"Idarəetmə Paneli",
+    title:"Dashboard",
     url:'/',
     icon:'bi-speedometer2'
   }
@@ -25,7 +25,7 @@ addHome(){
 setDashboard() {
     this.breadcrumbdata.set([
       {
-        title: 'Idarəetmə Paneli',
+        title: 'Dashboard',
         url: '/dashboard',
         icon: 'bi-speedometer2',
         isActive: true
@@ -36,7 +36,7 @@ setDashboard() {
     this.breadcrumbdata.set([
 
       {
-        title: 'Şöbələr',
+        title: 'Branches',
         url: '/department',
         icon: 'bi-diagram-3',
         isActive: true

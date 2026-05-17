@@ -1,6 +1,5 @@
 ﻿namespace NetWorkPassServer.Domain.Devices;
-public sealed partial class Device
-{
+
     public sealed record IpAddress
     {
         public string Value { get; }
@@ -15,4 +14,4 @@ public sealed partial class Device
 
         public override string ToString() => Value;
     }
-}
+

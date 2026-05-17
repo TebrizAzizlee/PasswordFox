@@ -1,0 +1,164 @@
+2026-05-14 09:39:18.971 +04:00 [WRN] The foreign key property 'UserRole.RoleId1' was created in shadow state because a conflicting property with the simple name 'RoleId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-05-14 09:39:20.967 +04:00 [INF] Executed DbCommand (36ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Name]
+FROM [Permissions] AS [p]
+WHERE [p].[IsDeleted] = CAST(0 AS bit)
+2026-05-14 09:39:21.052 +04:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Roles] AS [r]
+        WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'Admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-14 09:39:21.063 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Roles] AS [r]
+        WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'User') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-14 09:39:21.142 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [r].[Id], [r].[CreatedAt], [r].[CreatedBy], [r].[DeletedAt], [r].[DeletedBy], [r].[Description], [r].[IsActive], [r].[IsDeleted], [r].[IsSystem], [r].[Name], [r].[UpdatedAt], [r].[UpdatedBy]
+FROM [Roles] AS [r]
+WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'Admin'
+2026-05-14 09:39:21.235 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[CreatedAt], [p].[CreatedBy], [p].[DeletedAt], [p].[DeletedBy], [p].[Description], [p].[IsActive], [p].[IsDeleted], [p].[Name], [p].[UpdatedAt], [p].[UpdatedBy]
+FROM [Permissions] AS [p]
+WHERE [p].[IsDeleted] = CAST(0 AS bit)
+2026-05-14 09:39:21.343 +04:00 [INF] Executed DbCommand (70ms) [Parameters=[@__adminRole_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [r].[PermissionId]
+FROM [RolePermissions] AS [r]
+WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[RoleId] = @__adminRole_Id_0
+2026-05-14 09:39:21.423 +04:00 [INF] Executed DbCommand (5ms) [Parameters=[@__userName_Value_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_Value_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-14 09:39:21.538 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-14 09:39:21.571 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-14 09:39:21.623 +04:00 [INF] Token cleanup started
+2026-05-14 09:39:21.708 +04:00 [INF] Executed DbCommand (7ms) [Parameters=[@__cutoff_0='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM [l]
+FROM [LoginTokens] AS [l]
+WHERE [l].[RevokedAt] IS NOT NULL AND [l].[ExpiresAt] < @__cutoff_0
+2026-05-14 09:39:21.710 +04:00 [ERR] Failed executing DbCommand (55ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-14 09:39:21.848 +04:00 [ERR] Error during token cleanup
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'IsActive'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__210_1(IAsyncResult result)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.ExecuteSqlRawAsync(DatabaseFacade databaseFacade, String sql, IEnumerable`1 parameters, CancellationToken cancellationToken)
+   at AuthServer.Infrastructure.Repositories.LoginTokenRepository.DeactivateExpiredTokensAsync(CancellationToken ct) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Infrastructure\Repositories\LoginTokenRepository.cs:line 58
+   at AuthServer.WEBapi.CheckLoginTokenBackgroundService.ExecuteAsync(CancellationToken stoppingToken) in D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\CheckLoginTokenBackgroundService.cs:line 19
+ClientConnectionId:17c0358b-b6ab-469c-944d-5fab5c90ebb1
+Error Number:207,State:1,Class:16
+2026-05-14 09:39:22.105 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-14 09:39:22.111 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-14 09:39:22.188 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-14 09:39:22.190 +04:00 [INF] Hosting environment: Development
+2026-05-14 09:39:22.191 +04:00 [INF] Content root path: D:\NetworkPass-master\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-14 09:39:22.434 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-14 09:39:24.296 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-14 09:39:24.482 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-05-14 09:39:24.513 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-14 09:39:24.522 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-14 09:39:24.526 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-05-14 09:39:24.526 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-05-14 09:39:24.529 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-14 09:39:24.533 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-14 09:39:24.534 +04:00 [INF] CORS policy execution failed.
+2026-05-14 09:39:24.537 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-14 09:39:24.538 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 2117.5815ms
+2026-05-14 09:39:24.541 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-14 09:39:24.657 +04:00 [INF] Sending file with download name ''.
+2026-05-14 09:39:24.657 +04:00 [INF] Sending file with download name ''.
+2026-05-14 09:39:24.665 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-14 09:39:24.667 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 141.6083ms
+2026-05-14 09:39:24.698 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-14 09:39:24.701 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 175.748ms
+2026-05-14 09:39:25.073 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-05-14 09:39:25.077 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-14 09:39:25.264 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-14 09:39:25.266 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 192.9889ms
+2026-05-14 09:39:32.131 +04:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:7232/auth/login - null null
+2026-05-14 09:39:32.134 +04:00 [INF] CORS policy execution successful.
+2026-05-14 09:39:32.136 +04:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:7232/auth/login - 204 null null 5.6211ms
+2026-05-14 09:39:32.138 +04:00 [INF] Request starting HTTP/2 POST https://localhost:7232/auth/login - application/json 49
+2026-05-14 09:39:32.141 +04:00 [INF] CORS policy execution successful.
+2026-05-14 09:39:32.143 +04:00 [INF] Executing endpoint 'HTTP: POST /auth/login'
+2026-05-14 09:39:32.348 +04:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-05-14 09:39:32.424 +04:00 [INF] Executed DbCommand (21ms) [Parameters=[@__loginIdentifier_0='?' (Size = 256), @__loginIdentifier_0_1='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT [u1].[Id], [u1].[CreatedAt], [u1].[CreatedBy], [u1].[DeletedAt], [u1].[DeletedBy], [u1].[FailedLoginAttempts], [u1].[IsActive], [u1].[IsDeleted], [u1].[IsResetPasswordCompleted], [u1].[LockoutEnd], [u1].[PendingTFATokenHash], [u1].[ResetPasswordTokenExpiresAt], [u1].[ResetPasswordTokenHash], [u1].[TFACodeHash], [u1].[TFAExpiresDate], [u1].[TFAIsCompleted], [u1].[TFAStatus], [u1].[UpdatedAt], [u1].[UpdatedBy], [u1].[Id0], [u1].[Email], [u1].[Id1], [u1].[FirstName], [u1].[Id2], [u1].[FullName], [u1].[Id3], [u1].[LastName], [u1].[Id4], [u1].[PasswordHash], [u1].[Password_PasswordSalt], [u1].[Id5], [u1].[UserName], [s0].[Id], [s0].[CreatedAt], [s0].[CreatedBy], [s0].[DeletedAt], [s0].[DeletedBy], [s0].[IsActive], [s0].[IsDeleted], [s0].[RoleId], [s0].[RoleId1], [s0].[UpdatedAt], [s0].[UpdatedBy], [s0].[UserId], [s0].[Id0], [s0].[CreatedAt0], [s0].[CreatedBy0], [s0].[DeletedAt0], [s0].[DeletedBy0], [s0].[Description], [s0].[IsActive0], [s0].[IsDeleted0], [s0].[IsSystem], [s0].[Name], [s0].[UpdatedAt0], [s0].[UpdatedBy0], [s0].[Id1], [s0].[CreatedAt1], [s0].[CreatedBy1], [s0].[DeletedAt1], [s0].[DeletedBy1], [s0].[IsActive1], [s0].[IsDeleted1], [s0].[PermissionId], [s0].[RoleId0], [s0].[UpdatedAt1], [s0].[UpdatedBy1], [s0].[Id00], [s0].[CreatedAt00], [s0].[CreatedBy00], [s0].[DeletedAt00], [s0].[DeletedBy00], [s0].[Description0], [s0].[IsActive00], [s0].[IsDeleted00], [s0].[Name0], [s0].[UpdatedAt00], [s0].[UpdatedBy00]
+FROM (
+    SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[FailedLoginAttempts], [u].[IsActive], [u].[IsDeleted], [u].[IsResetPasswordCompleted], [u].[LockoutEnd], [u].[PendingTFATokenHash], [u].[ResetPasswordTokenExpiresAt], [u].[ResetPasswordTokenHash], [u].[TFACodeHash], [u].[TFAExpiresDate], [u].[TFAIsCompleted], [u].[TFAStatus], [u].[UpdatedAt], [u].[UpdatedBy], [u].[Id] AS [Id0], [u].[Email], [u].[Id] AS [Id1], [u].[FirstName], [u].[Id] AS [Id2], [u].[FullName], [u].[Id] AS [Id3], [u].[LastName], [u].[Id] AS [Id4], [u].[PasswordHash], [u].[Password_PasswordSalt], [u].[Id] AS [Id5], [u].[UserName]
+    FROM [Users] AS [u]
+    WHERE [u].[IsDeleted] = CAST(0 AS bit) AND ([u].[Email] = @__loginIdentifier_0 OR [u].[UserName] = @__loginIdentifier_0_1)
+) AS [u1]
+LEFT JOIN (
+    SELECT [u0].[Id], [u0].[CreatedAt], [u0].[CreatedBy], [u0].[DeletedAt], [u0].[DeletedBy], [u0].[IsActive], [u0].[IsDeleted], [u0].[RoleId], [u0].[RoleId1], [u0].[UpdatedAt], [u0].[UpdatedBy], [u0].[UserId], [r0].[Id] AS [Id0], [r0].[CreatedAt] AS [CreatedAt0], [r0].[CreatedBy] AS [CreatedBy0], [r0].[DeletedAt] AS [DeletedAt0], [r0].[DeletedBy] AS [DeletedBy0], [r0].[Description], [r0].[IsActive] AS [IsActive0], [r0].[IsDeleted] AS [IsDeleted0], [r0].[IsSystem], [r0].[Name], [r0].[UpdatedAt] AS [UpdatedAt0], [r0].[UpdatedBy] AS [UpdatedBy0], [s].[Id] AS [Id1], [s].[CreatedAt] AS [CreatedAt1], [s].[CreatedBy] AS [CreatedBy1], [s].[DeletedAt] AS [DeletedAt1], [s].[DeletedBy] AS [DeletedBy1], [s].[IsActive] AS [IsActive1], [s].[IsDeleted] AS [IsDeleted1], [s].[PermissionId], [s].[RoleId] AS [RoleId0], [s].[UpdatedAt] AS [UpdatedAt1], [s].[UpdatedBy] AS [UpdatedBy1], [s].[Id0] AS [Id00], [s].[CreatedAt0] AS [CreatedAt00], [s].[CreatedBy0] AS [CreatedBy00], [s].[DeletedAt0] AS [DeletedAt00], [s].[DeletedBy0] AS [DeletedBy00], [s].[Description] AS [Description0], [s].[IsActive0] AS [IsActive00], [s].[IsDeleted0] AS [IsDeleted00], [s].[Name] AS [Name0], [s].[UpdatedAt0] AS [UpdatedAt00], [s].[UpdatedBy0] AS [UpdatedBy00]
+    FROM [UserRoles] AS [u0]
+    INNER JOIN (
+        SELECT [r].[Id], [r].[CreatedAt], [r].[CreatedBy], [r].[DeletedAt], [r].[DeletedBy], [r].[Description], [r].[IsActive], [r].[IsDeleted], [r].[IsSystem], [r].[Name], [r].[UpdatedAt], [r].[UpdatedBy]
+        FROM [Roles] AS [r]
+        WHERE [r].[IsDeleted] = CAST(0 AS bit)
+    ) AS [r0] ON [u0].[RoleId] = [r0].[Id]
+    LEFT JOIN (
+        SELECT [r1].[Id], [r1].[CreatedAt], [r1].[CreatedBy], [r1].[DeletedAt], [r1].[DeletedBy], [r1].[IsActive], [r1].[IsDeleted], [r1].[PermissionId], [r1].[RoleId], [r1].[UpdatedAt], [r1].[UpdatedBy], [p0].[Id] AS [Id0], [p0].[CreatedAt] AS [CreatedAt0], [p0].[CreatedBy] AS [CreatedBy0], [p0].[DeletedAt] AS [DeletedAt0], [p0].[DeletedBy] AS [DeletedBy0], [p0].[Description], [p0].[IsActive] AS [IsActive0], [p0].[IsDeleted] AS [IsDeleted0], [p0].[Name], [p0].[UpdatedAt] AS [UpdatedAt0], [p0].[UpdatedBy] AS [UpdatedBy0]
+        FROM [RolePermissions] AS [r1]
+        INNER JOIN (
+            SELECT [p].[Id], [p].[CreatedAt], [p].[CreatedBy], [p].[DeletedAt], [p].[DeletedBy], [p].[Description], [p].[IsActive], [p].[IsDeleted], [p].[Name], [p].[UpdatedAt], [p].[UpdatedBy]
+            FROM [Permissions] AS [p]
+            WHERE [p].[IsDeleted] = CAST(0 AS bit)
+        ) AS [p0] ON [r1].[PermissionId] = [p0].[Id]
+        WHERE [r1].[IsDeleted] = CAST(0 AS bit)
+    ) AS [s] ON [r0].[Id] = [s].[RoleId]
+    WHERE [u0].[IsDeleted] = CAST(0 AS bit)
+) AS [s0] ON [u1].[Id] = [s0].[UserId]
+ORDER BY [u1].[Id], [s0].[Id], [s0].[Id0], [s0].[Id1]
+2026-05-14 09:39:32.605 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@__userId_0='?' (DbType = Guid), @__now_1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+SELECT [l].[Id], [l].[CreatedAt], [l].[ExpiresAt], [l].[ParentTokenId], [l].[RevokedAt], [l].[RevokedReason], [l].[TokenFamilyId], [l].[TokenHash], [l].[UserId], [l].[Version]
+FROM [LoginTokens] AS [l]
+WHERE CAST([l].[UserId] AS uniqueidentifier) = @__userId_0 AND [l].[RevokedAt] IS NULL AND [l].[ExpiresAt] > @__now_1
+2026-05-14 09:39:32.917 +04:00 [INF] Executed DbCommand (10ms) [Parameters=[@p2='?' (DbType = Guid), @p0='?' (DbType = DateTimeOffset), @p1='?' (Size = 4000), @p3='?' (Size = 8) (DbType = Binary), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTimeOffset), @p6='?' (DbType = DateTimeOffset), @p7='?' (DbType = Guid), @p8='?' (DbType = DateTimeOffset), @p9='?' (Size = 4000), @p10='?' (DbType = Guid), @p11='?' (Size = 128), @p12='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+UPDATE [LoginTokens] SET [RevokedAt] = @p0, [RevokedReason] = @p1
+OUTPUT INSERTED.[Version]
+WHERE [Id] = @p2 AND [Version] = @p3;
+INSERT INTO [LoginTokens] ([Id], [CreatedAt], [ExpiresAt], [ParentTokenId], [RevokedAt], [RevokedReason], [TokenFamilyId], [TokenHash], [UserId])
+OUTPUT INSERTED.[Version]
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12);
+2026-05-14 09:39:32.961 +04:00 [INF] Setting HTTP status code 200.
+2026-05-14 09:39:32.965 +04:00 [INF] Writing value of type '<>f__AnonymousType0`3' as Json.
+2026-05-14 09:39:32.969 +04:00 [INF] Executed endpoint 'HTTP: POST /auth/login'
+2026-05-14 09:39:32.974 +04:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:7232/auth/me - null null
+2026-05-14 09:39:32.975 +04:00 [INF] Request finished HTTP/2 POST https://localhost:7232/auth/login - 200 null application/json; charset=utf-8 837.0977ms
+2026-05-14 09:39:32.977 +04:00 [INF] CORS policy execution successful.
+2026-05-14 09:39:32.981 +04:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:7232/auth/me - 204 null null 7.0204ms
+2026-05-14 09:39:32.983 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/auth/me - null null
+2026-05-14 09:39:32.986 +04:00 [INF] CORS policy execution successful.
+2026-05-14 09:39:33.051 +04:00 [INF] Executing endpoint 'HTTP: GET /auth/me'
+2026-05-14 09:39:33.060 +04:00 [INF] Setting HTTP status code 200.
+2026-05-14 09:39:33.062 +04:00 [INF] Writing value of type '<>f__AnonymousType3`3' as Json.
+2026-05-14 09:39:33.064 +04:00 [INF] Executed endpoint 'HTTP: GET /auth/me'
+2026-05-14 09:39:33.065 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/auth/me - 200 null application/json; charset=utf-8 82.5414ms

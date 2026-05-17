@@ -1,0 +1,236 @@
+<app-blank
+  pageTitle="Branches"
+  pageDescription="Manage and monitor your network branches"
+  pageIcon="bi-buildings-fill"
+>
+  <div class="branches-page">
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <button routerLink="add" type="button" class="btn btn-primary add-btn">
+        <i class="bi bi-plus-lg"></i>
+
+        Add Branch
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="row g-3 mb-4">
+      <!-- TOTAL -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <i class="bi bi-building"></i>
+          </div>
+
+          <div>
+            <span class="stat-label"> Total Branches </span>
+
+            <h3 class="stat-value">{{ branches().length }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- ONLINE -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+          <div class="stat-icon success">
+            <i class="bi bi-check-circle"></i>
+          </div>
+
+          <div>
+            <span class="stat-label"> Online Branches </span>
+
+            <h3 class="stat-value text-success">{{ branches().length }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- OFFLINE -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+          <div class="stat-icon danger">
+            <i class="bi bi-x-circle"></i>
+          </div>
+
+          <div>
+            <span class="stat-label"> Offline Branches </span>
+
+            <h3 class="stat-value text-danger">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEVICES -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <i class="bi bi-router"></i>
+          </div>
+
+          <div>
+            <span class="stat-label"> Total Devices </span>
+
+            <h3 class="stat-value">0</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="card filter-card mb-4">
+      <div class="card-body">
+        <div class="row g-3 align-items-center">
+          <!-- SEARCH -->
+          <div class="col-xl-4">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search branches..."
+              />
+            </div>
+          </div>
+
+          <!-- STATUS -->
+          <div class="col-xl-2">
+            <select class="form-select">
+              <option>All Status</option>
+
+              <option>Online</option>
+
+              <option>Offline</option>
+            </select>
+          </div>
+
+          <!-- TYPE -->
+          <div class="col-xl-2">
+            <select class="form-select">
+              <option>All Types</option>
+
+              <option>Head Office</option>
+
+              <option>Branch</option>
+            </select>
+          </div>
+
+          <!-- SORT -->
+          <div class="col-xl-2">
+            <select class="form-select">
+              <option>Name (A-Z)</option>
+
+              <option>Last Seen</option>
+            </select>
+          </div>
+
+          <!-- FILTER BTN -->
+          <div class="col-xl-2 text-end">
+            <button type="button" class="btn btn-outline-secondary">
+              <i class="bi bi-funnel"></i>
+
+              Filter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="table align-middle branch-table">
+          <thead>
+            <tr>
+              <th>Branch</th>
+
+              <th>City</th>
+
+              <th>District</th>
+
+              <th>Phone</th>
+
+              <th>WAN IP</th>
+
+              <th>Email</th>
+
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- LOADING -->
+            @if (branches().length === 0) {
+
+            <tr>
+              <td colspan="7" class="text-center py-5">
+                <div class="empty-state">
+                  <i class="bi bi-buildings"></i>
+
+                  <h5>No Branches Found</h5>
+
+                  <p>Create your first branch to start monitoring.</p>
+                </div>
+              </td>
+            </tr>
+
+            }
+
+            <!-- DATA -->
+            @for ( branch of branches(); track branch.id ) {
+
+            <tr>
+              <!-- BRANCH -->
+              <td>
+                <div class="branch-info">
+                  <h6>{{ branch.name }}</h6>
+
+                  <small> {{ branch.fullAddress }} </small>
+                </div>
+              </td>
+
+              <!-- CITY -->
+              <td>{{ branch.city }}</td>
+
+              <!-- DISTRICT -->
+              <td>{{ branch.district }}</td>
+
+              <!-- PHONE -->
+              <td>{{ branch.phoneNumber }}</td>
+
+              <!-- WAN -->
+              <td>{{ branch.wanIp }}</td>
+
+              <!-- EMAIL -->
+              <td>{{ branch.email }}</td>
+
+              <!-- ACTIONS -->
+              <td class="text-end">
+                <div class="table-actions">
+                  <!-- DETAILS -->
+                  <button type="button" class="btn btn-icon">
+                    <i class="bi bi-eye"></i>
+                  </button>
+
+                  <!-- EDIT -->
+                  <button type="button" class="btn btn-icon">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+
+                  <!-- DELETE -->
+                  <button type="button" class="btn btn-icon text-danger">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</app-blank>

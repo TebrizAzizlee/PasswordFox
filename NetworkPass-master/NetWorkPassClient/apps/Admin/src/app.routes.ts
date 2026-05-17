@@ -1,40 +1,67 @@
-import { Route } from '@angular/router';
-import { authGuard } from './guards/auth-guard';
 
+import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
 
-  // 🔓 PUBLIC
+  // 🔓 PUBLIC ROUTES
   {
     path: 'login',
-    loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent)
+
+    loadComponent: () =>
+      import('./pages/login/login')
+        .then(m => m.LoginComponent)
   },
 
-  // 🔒 PROTECTED
+  // 🔒 AUTH ORCHESTRATION LAYOUT
   {
     path: '',
-    loadComponent: () => import('./pages/layouts/layouts'),
-    // canActivate: [authGuard],        // 🔥 əlavə et
-    canActivateChild: [authGuard],
+
+    loadComponent: () =>
+      import(
+        './pages/layouts/protected-layout/protected-layout'
+      ).then(
+        m => m.ProtectedLayoutComponent
+      ),
+
     children: [
 
+      // 🔥 MAIN APP LAYOUT
       {
         path: '',
-        loadComponent: () => import('./pages/dashboard/dashboard'),
-      },
 
-      {
-        path: 'departments',
-        loadComponent: () => import('./pages/department/department'),
-        
+        loadComponent: () =>
+          import('./pages/layouts/layouts')
+            .then(m => m.default),
+
+        children: [
+
+          // DASHBOARD
+          {
+            path: '',
+
+            loadComponent: () =>
+              import('./pages/dashboard/dashboard')
+                .then(m => m.Dashboard)
+          },
+
+          // DEPARTMENTS
+          {
+            path: 'departments',
+
+            loadChildren: () =>
+              import('./pages/department/router').then(m=>m.default)
+
+          }
+        ]
       }
-
-    ],
+    ]
   },
 
-  // fallback
+  // 🔥 FALLBACK
   {
     path: '**',
+
     redirectTo: ''
   }
 ];
+

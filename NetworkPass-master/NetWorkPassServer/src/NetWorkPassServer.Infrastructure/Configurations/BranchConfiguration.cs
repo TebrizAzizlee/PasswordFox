@@ -46,18 +46,52 @@ internal class BranchConfiguration : IEntityTypeConfiguration<Branch>
               .HasMaxLength(EntityConsts.MaxFullNameLength)
               .IsRequired();
 
+         
+           
+        });
+
+        //ContactInfo
+        builder.OwnsOne(x => x.ContactInfo, fn =>
+        {
             fn.Property(p => p.PhoneNumber1)
+            .HasColumnName("PhoneNumber1")
               .HasMaxLength(20)
               .IsRequired();
 
             fn.Property(p => p.PhoneNumber2)
+            .HasColumnName("PhoneNumber2")
                 .HasMaxLength(20);
 
             fn.Property(p => p.Email)
                .HasColumnName("Email")
                .HasMaxLength(EntityConsts.MaxEmailLength)
                .IsRequired();
-           
+
+        });
+
+        //NetworkInfo
+        builder.OwnsOne(x => x.NetworkInfo, fn =>
+        {
+            fn.Property(p => p.WanIp)
+                .HasColumnName("WanIp")
+                .HasMaxLength(EntityConsts.MaxNameLength)
+                .IsRequired();
+            fn.Property(p => p.Gateway)
+
+               .HasColumnName("Gateway")
+               .HasMaxLength(EntityConsts.MaxNameLength)
+               .IsRequired();
+
+            fn.Property(p => p.Subnet)
+              .HasColumnName("Subnet")
+              .HasMaxLength(EntityConsts.MaxFullNameLength)
+              .IsRequired();
+
+            fn.Property(p => p.DnsServer)
+               .HasColumnName("DnsServer")
+               .HasMaxLength(EntityConsts.MaxFullNameLength)
+               .IsRequired();
+
         });
     }
 }

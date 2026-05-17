@@ -1,55 +1,140 @@
-﻿using NetWorkPassServer.Domain.Branches.ValueObjects;
+﻿using Abp.Domain.Entities.Auditing;
+using NetWorkPassServer.Domain.Alerts;
+using NetWorkPassServer.Domain.Branches;
+using NetWorkPassServer.Domain.Branches.ValueObjects;
 using NetWorkPassServer.Domain.Devices;
-using SharedLibrary.Abstractions.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using NetWorkPassServer.Domain.VpnTunnels;
 
-namespace NetWorkPassServer.Domain.Branches;
-public sealed class Branch : Entity
+public sealed class Branch : FullAuditedAggregateRoot<Guid>
 {
     private Branch()
     {
-
     }
-    public Branch(Name name, Address address)
+
+    public Branch(
+            BranchName name,
+        Address address,
+        ContactInfo contactInfo,
+        NetworkInfo networkInfo)
     {
-        ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(address);
-        Name = name;
-        Address = address;
+        SetName(name);
 
+        Address = address ?? throw new ArgumentNullException(nameof(address));
+        ContactInfo = contactInfo ?? throw new ArgumentNullException(nameof(contactInfo));
+        NetworkInfo = networkInfo ?? throw new ArgumentNullException(nameof(networkInfo));
+
+        Devices = new List<Device>();
+        Alerts = new List<Alert>();
+        VpnTunnels = new List<VpnTunnel>();
+
+        Status = BranchStatus.Unknown;
+
+        IsActive = true;
+        IsMonitoringEnabled = true;
     }
-    public Name Name { get; private set; } = default!;
+
+    // BASIC
+
+    public string Name { get; private set; } = default!;
+
+    public string Code { get; private set; } = default!;
+
+    public string Description { get; private set; } = default!;
+   
+
+    // VALUE OBJECTS
+
     public Address Address { get; private set; } = default!;
-    public ICollection<Device> Devices
-    { get; private set; } = [];
-    public void SetName(Name name)
+
+    public ContactInfo ContactInfo { get; private set; } = default!;
+
+    public NetworkInfo NetworkInfo { get; private set; } = default!;
+
+
+    // STATUS
+
+    public BranchStatus Status { get; private set; } = default!;    
+
+    public BranchType Type { get; private set; }= default!;
+
+    public DateTime? LastSeenAt { get; private set; }
+
+    public bool IsMonitoringEnabled { get; private set; } = default!;
+
+    public bool IsActive { get; private set; } = default!;
+
+
+    // STATS
+
+    public int OnlineDeviceCount { get; private set; } = default!;
+
+    public int OfflineDeviceCount { get; private set; } = default!;
+
+    public int WarningDeviceCount { get; private set; } = default!;
+    public int TotalDeviceCount { get; private set; }
+    public int AlertCount { get; private set; } = default!;
+
+
+    // RELATIONS
+
+    public ICollection<Device> Devices { get; private set; } = default!;
+
+    public ICollection<Alert> Alerts { get; private set; } = default!;
+
+    public ICollection<VpnTunnel> VpnTunnels { get; private set; } = default!;
+
+
+    public void SetName(BranchName name)
     {
-        if (name is null) throw new ArgumentNullException(nameof(name));
-        Name = name; // VO daxilində validasiya olmalıdır
+        if (string.IsNullOrWhiteSpace(name.Value))
+            throw new ArgumentException(nameof(name));
+
+        Name = name.Value.Trim();
     }
-    public void SetAddress(Address address)
+
+    public void Update(
+        BranchName name,
+        Address address,
+        ContactInfo contactInfo,
+        NetworkInfo networkInfo)
     {
-        if (address is null) throw new ArgumentNullException(nameof(address));
-        Address = address;
+        SetName(name);
+
+        Address = address ?? throw new ArgumentNullException(nameof(address));
+
+        ContactInfo = contactInfo ?? throw new ArgumentNullException(nameof(contactInfo));
+
+        NetworkInfo = networkInfo ?? throw new ArgumentNullException(nameof(networkInfo));
     }
-    public void Update(Name name, Address address)
+
+    public void Activate()
     {
-        ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(address);
-        Name=name;
-        Address=address;
+        IsActive = true;
     }
+
     public void Deactivate()
     {
-        if (!IsActive) return;
+        IsActive = false;
+    }
+    public void IncreaseDeviceCount()
+    {
+        TotalDeviceCount++;
+    }
 
-        DeactivateEntity();
-        // gələcəkdə audit əlavə edə bilərsən
+    public void DecreaseDeviceCount()
+    {
+        if (TotalDeviceCount > 0)
+            TotalDeviceCount--;
+    }
+    public void MarkAsDeleted()
+    {
+        if (IsDeleted)
+            return;
+
+        IsDeleted = true;
+
+        IsActive = false;
+
+        IsMonitoringEnabled = false;
     }
 }

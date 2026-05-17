@@ -21,11 +21,11 @@
           }
         ],
         "styles": ["apps/Admin/src/styles.css"]
-       
- 
+
+
 
       },
-       "scripts": { "dev": "vite"},
+
       "configurations": {
         "production": {
           "budgets": [
@@ -46,6 +46,7 @@
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true
+
         }
       },
       "defaultConfiguration": "production"

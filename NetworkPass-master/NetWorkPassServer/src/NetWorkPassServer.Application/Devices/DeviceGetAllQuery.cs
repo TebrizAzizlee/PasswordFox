@@ -57,7 +57,7 @@ internal sealed class DeviceGetAllQueryHandler(
 
         // 🔥 5. Pagination + projection
         var items = await query
-            .OrderBy(x => x.Name.Value)
+            .OrderBy(x => x.Name)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(x => new DeviceDto(

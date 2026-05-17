@@ -2,12 +2,7 @@
 using NetWorkPassServer.Application.Dtos;
 using NetWorkPassServer.Domain.Branches;
 using SharedLibrary;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.Branches;
@@ -21,14 +16,31 @@ internal sealed class BranchGetQueryHandler(IBranchRepository branchRepository) 
         var branch = await branchRepository
          .Where(x => x.Id == request.Id)
          .Select(x => new BranchDto(
-             x.Id,
-             x.Name.Value,
-             x.Address.City,
-             x.Address.FullAddress,
-             x.Address.PhoneNumber1,
-             x.Address.Email,
-             x.IsActive
-         ))
+    x.Id,
+    x.Name,
+    x.Address.City,
+    x.Address.District,
+    x.Address.FullAddress,
+    x.ContactInfo.PhoneNumber1,
+    x.ContactInfo.PhoneNumber2,
+    x.ContactInfo.Email,
+    x.NetworkInfo.WanIp,
+    x.NetworkInfo.Subnet,
+    x.NetworkInfo.Gateway,
+    x.NetworkInfo.DnsServer,
+    x.Type,
+    x.Status,
+    x.TotalDeviceCount,
+    x.OnlineDeviceCount,
+    x.OfflineDeviceCount,
+    x.WarningDeviceCount,
+    x.AlertCount,
+    x.LastSeenAt,
+    x.IsMonitoringEnabled,
+    x.IsActive,
+    x.CreationTime,
+    x.LastModificationTime
+))
          .SingleOrDefaultAsync(cancellationToken);
 
         if (branch is null)

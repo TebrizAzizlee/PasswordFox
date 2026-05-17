@@ -1,0 +1,15 @@
+@if (isLoading()) {
+
+<div class="auth-loading">
+
+  <div class="spinner-border"></div>
+
+  <p>Loading...</p>
+
+</div>
+
+} @else {
+
+<router-outlet />
+
+}

@@ -1,86 +1,94 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../AuthServices/authservice';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { Router } from '@angular/router';
+
+import { finalize } from 'rxjs';
+
+import { AuthService } from '../../AuthServices/data-access/auth.service';
+
+import { AuthStore } from '../../AuthServices/data-access/auth.store';
 
 @Component({
+  selector: 'app-login',
+
   standalone: true,
+
   imports: [ReactiveFormsModule],
-  templateUrl: './login.html'
+
+  templateUrl: './login.html',
+
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
- 
-  private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
 
-  isLoading = false;
-  requiresTfa = false;
+  private readonly authService = inject(AuthService);
 
-  // 🔥 TFA code
-  tfaCodeArray: string[] = ['', '', '', '', '', ''];
+  private readonly authStore = inject(AuthStore);
 
-  form = this.fb.group({
-    loginIdentifier: ['', Validators.required],
-    password: ['', Validators.required]
+  private readonly router = inject(Router);
+
+  readonly loading = signal(false);
+
+  readonly errorMessage = signal<string | null>(null);
+
+  readonly form = this.fb.nonNullable.group({
+    loginIdentifier: ['', [Validators.required]],
+
+    password: ['', [Validators.required]],
   });
 
-  submit() {
-    if (this.form.invalid) return;
+  readonly isAuthenticated = computed(() => this.authStore.isAuthenticated());
 
-    this.isLoading = true;
-
-    const { loginIdentifier, password } = this.form.value;
-
-    // 🔥 TFA mərhələsi
-    if (this.requiresTfa) {
-      const tfaCode = this.tfaCodeArray.join('');
-
-      this.auth.loginWithTfa({
-        userName: loginIdentifier!,
-        tfaCode: tfaCode
-      }).subscribe({
-        next: () => this.afterLogin(),
-        error: () => this.isLoading = false
+  constructor() {
+    // 🔥 artıq login olubsa redirect
+    if (this.isAuthenticated()) {
+      queueMicrotask(() => {
+        this.router.navigateByUrl('/');
       });
+    }
+  }
+
+  submit() {
+    // 🔥 spam protection
+    if (this.loading()) {
+      return;
+    }
+
+    // 🔥 invalid form
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
 
       return;
     }
 
-    // 🔥 normal login
-    this.auth.login({
-      loginIdentifier: loginIdentifier!,
-      password: password!
-    }).subscribe({
-      next: (res: any) => {
-        if (res.requiresTfa) {
-          this.requiresTfa = true;
-          this.isLoading = false;
-        } else {
-          this.afterLogin();
-        }
-      },
-      error: () => this.isLoading = false
-    });
-  }
+    this.loading.set(true);
 
-  private afterLogin() {
-    
-    this.auth.fetchMe().subscribe(() => {
-      this.router.navigate(['/dashboard'])
-    });
-  }
+    this.errorMessage.set(null);
 
-  // 🔥 TFA input handling
-  onTfaInput(event: any, index: number) {
-    const value = event.target.value;
+    this.authService
+      .login(this.form.getRawValue())
+      .pipe(
+        finalize(() => {
+          this.loading.set(false);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigateByUrl('/');
+        },
 
-    if (!value) return;
-
-    this.tfaCodeArray[index] = value;
-
-    const next = event.target.nextElementSibling;
-    if (next) next.focus();
+        error: () => {
+          this.errorMessage.set('İstifadəçi adı və ya şifrə yanlışdır.');
+        },
+      });
   }
 }

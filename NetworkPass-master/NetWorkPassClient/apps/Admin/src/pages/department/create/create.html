@@ -1,0 +1,443 @@
+
+<app-blank
+  pageTitle="Add Branch"
+  pageDescription="Create a new branch to monitor and manage"
+  pageIcon="bi-buildings-fill"
+>
+
+  <div class="add-branch-page">
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <div class="row g-4">
+
+        <!-- LEFT -->
+        <div class="col-xl-9">
+
+          <div class="card custom-card">
+
+            <div class="card-body">
+
+              <!-- BRANCH INFO -->
+              <div class="section-block">
+
+                <div class="section-title">
+
+                  <i class="bi bi-building"></i>
+
+                  <span>
+                    Branch Information
+                  </span>
+
+                </div>
+
+                <div class="row g-3 mt-1">
+
+                  <div class="col-12">
+
+                    <span class="form-label">
+                      Branch Name
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="name"
+                      placeholder="Head Office" />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- ADDRESS -->
+              <div
+                class="section-block mt-5"
+                formGroupName="address">
+
+                <div class="section-title">
+
+                  <i class="bi bi-geo-alt"></i>
+
+                  <span>
+                    Address
+                  </span>
+
+                </div>
+
+                <div class="row g-3 mt-1">
+
+                  <!-- CITY -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      City
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="city"
+                      placeholder="Baku" />
+
+                  </div>
+
+                  <!-- DISTRICT -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      District
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="district"
+                      placeholder="Nasimi" />
+
+                  </div>
+
+                  <!-- FULL ADDRESS -->
+                  <div class="col-12">
+
+                    <span class="form-label">
+                      Full Address
+                    </span>
+
+                    <textarea
+                      rows="3"
+                      class="form-control"
+                      formControlName="fullAddress"
+                      placeholder="Enter full address">
+                    </textarea>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- CONTACT -->
+              <div
+                class="section-block mt-5"
+                formGroupName="contactInfo">
+
+                <div class="section-title">
+
+                  <i class="bi bi-telephone"></i>
+
+                  <span>
+                    Contact Information
+                  </span>
+
+                </div>
+
+                <div class="row g-3 mt-1">
+
+                  <!-- PHONE 1 -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      Phone Number 1
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="phoneNumber1"
+                      placeholder="+994501112233" />
+
+                  </div>
+
+                  <!-- PHONE 2 -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      Phone Number 2
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="phoneNumber2"
+                      placeholder="+994551112233" />
+
+                  </div>
+
+                  <!-- EMAIL -->
+                  <div class="col-12">
+
+                    <span class="form-label">
+                      Email
+                    </span>
+
+                    <input
+                      type="email"
+                      class="form-control"
+                      formControlName="email"
+                      placeholder="branch@company.com" />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- NETWORK -->
+              <div
+                class="section-block mt-5"
+                formGroupName="networkInfo">
+
+                <div class="section-title">
+
+                  <i class="bi bi-router"></i>
+
+                  <span>
+                    Network Information
+                  </span>
+
+                </div>
+
+                <div class="row g-3 mt-1">
+
+                  <!-- WAN -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      WAN IP
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="wanIp"
+                      placeholder="85.132.10.25" />
+
+                  </div>
+
+                  <!-- SUBNET -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      Subnet
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="subnet"
+                      placeholder="192.168.1.0/24" />
+
+                  </div>
+
+                  <!-- GATEWAY -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      Gateway
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="gateway"
+                      placeholder="192.168.1.1" />
+
+                  </div>
+
+                  <!-- DNS -->
+                  <div class="col-md-6">
+
+                    <span class="form-label">
+                      DNS Server
+                    </span>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="dnsServer"
+                      placeholder="8.8.8.8" />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- ACTIONS -->
+              <div class="action-buttons mt-5">
+
+                <!-- CANCEL -->
+                <button
+                  type="button"
+                  class="btn btn-light cancel-btn">
+
+                  <i class="bi bi-x-lg"></i>
+
+                  Cancel
+
+                </button>
+
+                <!-- SAVE -->
+                <button
+                  type="submit"
+                  class="btn btn-primary save-btn"
+                  [disabled]="loading">
+
+                  <i class="bi bi-floppy"></i>
+
+                  @if (!loading) {
+
+                    <span>
+                      Save Branch
+                    </span>
+
+                  } @else {
+
+                    <span>
+                      Saving...
+                    </span>
+
+                    <span
+                      class="spinner-border spinner-border-sm">
+                    </span>
+
+                  }
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-xl-3">
+
+          <div class="card summary-card sticky-top">
+
+            <div class="card-body">
+
+              <h5 class="summary-title">
+                Branch Summary
+              </h5>
+
+              <div class="summary-icon">
+                <i class="bi bi-buildings-fill"></i>
+              </div>
+
+              <div class="summary-list">
+
+                <!-- NAME -->
+                <div class="summary-item">
+
+                  <span>
+                    Branch Name
+                  </span>
+
+                  <strong>
+                    {{ form.value.name || '-' }}
+                  </strong>
+
+                </div>
+
+                <!-- CITY -->
+                <div class="summary-item">
+
+                  <span>
+                    City
+                  </span>
+
+                  <strong>
+                    {{ form.value.address?.city }}
+                  </strong>
+
+                </div>
+
+                <!-- DISTRICT -->
+                <div class="summary-item">
+
+                  <span>
+                    District
+                  </span>
+
+                  <strong>
+                    {{ form.value.address?.district || '-' }}
+                  </strong>
+
+                </div>
+
+                <!-- PHONE -->
+                <div class="summary-item">
+
+                  <span>
+                    Phone
+                  </span>
+
+                  <strong>
+                    {{ form.value.contactInfo?.phoneNumber1 || '-' }}
+                  </strong>
+
+                </div>
+
+                <!-- EMAIL -->
+                <div class="summary-item">
+
+                  <span>
+                    Email
+                  </span>
+
+                  <strong>
+                    {{ form.value.contactInfo?.email || '-' }}
+                  </strong>
+
+                </div>
+
+                <!-- WAN -->
+                <div class="summary-item">
+
+                  <span>
+                    WAN IP
+                  </span>
+
+                  <strong>
+                    {{ form.value.networkInfo?.wanIp || '-' }}
+                  </strong>
+
+                </div>
+
+                <!-- SUBNET -->
+                <div class="summary-item">
+
+                  <span>
+                    Subnet
+                  </span>
+
+                  <strong>
+                    {{ form.value.networkInfo?.subnet || '-' }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</app-blank>
+

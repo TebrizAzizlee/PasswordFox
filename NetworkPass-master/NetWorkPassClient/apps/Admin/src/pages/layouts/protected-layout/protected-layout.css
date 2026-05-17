@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.auth-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}

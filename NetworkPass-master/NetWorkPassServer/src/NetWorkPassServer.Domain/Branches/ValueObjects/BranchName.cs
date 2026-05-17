@@ -1,9 +1,9 @@
 ﻿namespace NetWorkPassServer.Domain.Branches.ValueObjects;
 
-public sealed record Name
+public sealed record BranchName
 {
     public string Value { get; }
-    public Name(string value)
+    public BranchName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {

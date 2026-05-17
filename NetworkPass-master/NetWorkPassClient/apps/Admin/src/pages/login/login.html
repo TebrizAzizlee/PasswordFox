@@ -1,166 +1,226 @@
 <div class="login-part">
-        <!-- Admin Login -->
-        <div class="admin-login-wrapper">
-            <div class="admin-login-container">
-                <!-- Left Side - Login Form -->
-                <div class="admin-login-form">
-                    <div class="login-header">
-                        <div class="admin-brand">
-                            <i class="bi bi-hdd-network"></i>
-                            <h1>NetWorkPass</h1>
-                            <span class="admin-label">Admin Panel</span>
-                        </div>
-                        <h2>Xoş Geldiniz</h2>
-                        <p>Admin paneline erişim için giriş yapın</p>
-                    </div>
-
-                    <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
-                        <!-- Email Input -->
-                        <div class="form-group">
-                            <!-- <label for="loginIdentifier" class="form-label">Istifadəçi Adı:</label> -->
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="bi bi-person"></i>
-                                </span>
-                                 <input class="form-control"   formControlName="loginIdentifier" placeholder="Istifadəçi adı" required>
-                                    
-                            </div>
-                        </div>
-
-                        <!-- Password Input -->
-                        <div class="form-group">
-                            <!-- <label for="adminPassword" class="form-label">Şifre</label> -->
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="bi bi-lock"></i>
-                                </span>
-                                <input type="password" class="form-control" formControlName="password" placeholder="Şifrenizi girin"
-                                    required>
-                                <button type="button" class="input-group-text password-toggle" data-target="adminPassword">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Login Options -->
-                        <div class="login-options">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rememberMe">
-                                <label class="form-check-label" for="rememberMe">
-                                    Beni hatırla
-                                </label>
-                            </div>
-                            <a href="#" class="forgot-password" data-bs-toggle="modal"
-                                data-bs-target="#forgotPasswordModal">
-                                Şifremi unuttum
-                            </a>
-                        </div>
-
-                        <!-- Login Button -->
-                        <button type="submit" class="btn btn-admin-primary w-100">
-                            <i class="bi bi-shield-lock me-2"></i>
-                            Admin Girişi
-                        </button>
-
-                        <!-- Two Factor -->
-                        <div class="two-factor-section d-none">
-                            <div class="two-factor-header">
-                                <i class="bi bi-shield-check text-success"></i>
-                                <h6>İki Faktörlü Doğrulama</h6>
-                                <p>Telefonunuza gönderilen 6 haneli kodu girin</p>
-                            </div>
-                            <div class="verification-code">
-                                <input type="text" class="code-input" maxlength="1">
-                                <input type="text" class="code-input" maxlength="1">
-                                <input type="text" class="code-input" maxlength="1">
-                                <input type="text" class="code-input" maxlength="1">
-                                <input type="text" class="code-input" maxlength="1">
-                                <input type="text" class="code-input" maxlength="1">
-                            </div>
-                            <div class="verification-actions">
-                                <button type="button" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left me-1"></i>Geri
-                                </button>
-                                <button type="button" class="btn btn-admin-primary">
-                                    <i class="bi bi-check-circle me-1"></i>Doğrula
-                                </button>
-                            </div>
-                            <div class="resend-section">
-                                <p>Kod gelmedi mi?</p>
-                                <button type="button" class="btn btn-link">
-                                    Yeniden gönder <span class="countdown">(30s)</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Footer Links -->
-                    <div class="login-footer">
-                        <div class="footer-links">
-                            <a href="#">Yardım</a>
-                            <a href="#">Gizlilik</a>
-                            <a href="#">İletişim</a>
-                        </div>
-                        <p class="copyright">© 2025 RentCar. Tüm hakları saklıdır.</p>
-                    </div>
-                </div>
-
-                <!-- Right Side - Info -->
-                <div class="admin-login-info">
-
-  <img src="assets/images/login.png"
-         alt="Admin Giriş Görseli"
-         class="img-fluid"
-         style="max-width: 100%; height: 100%; border-radius: 8px;">
-
-                </div>
-            </div>
+  <!-- Admin Login -->
+  <div class="admin-login-wrapper">
+    <div class="admin-login-container">
+      <!-- Left Side - Login Form -->
+      <div class="admin-login-form">
+        <div class="login-header">
+          <div class="admin-brand">
+            <i class="bi bi-hdd-network"></i>
+            <h1>NetWorkPass</h1>
+            <span class="admin-label">Admin Panel</span>
+          </div>
+          <h2>Xoş Geldiniz</h2>
+          <p>“Admin panelinə giriş etmək üçün daxil olun</p>
         </div>
 
-        <!-- Forgot Password Modal -->
-        <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="forgotPasswordModalLabel">
-                            <i class="bi bi-key text-primary me-2"></i>
-                            Şifre Sıfırlama
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="reset-form">
-                            <div class="reset-header">
-                                <i class="bi bi-envelope-check text-primary"></i>
-                                <h6>E-posta Adresinizi Girin</h6>
-                                <p class="text-muted">Şifre sıfırlama bağlantısını e-posta adresinize göndereceğiz</p>
-                            </div>
-                            <form>
-                                <div class="form-group">
-                                    <!-- <label for="email" class="form-label">Admin E-posta Adresi</label> -->
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="bi bi-envelope"></i>
-                                        </span>
-                                        <input type="email" class="form-control"  placeholder="admin@rentcar.com" required>
-                                    </div>
-                                </div>
-                                <div class="security-note">
-                                    <i class="bi bi-info-circle text-info"></i>
-                                    <small>Güvenlik nedeniyle sadece kayıtlı admin e-posta adreslerine sıfırlama bağlantısı
-                                        gönderilir.</small>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                        <button type="button" class="btn btn-primary">
-                            <i class="bi bi-send me-1"></i>Sıfırlama Bağlantısı Gönder
-                        </button>
-                    </div>
-                </div>
+        <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+          <!-- Email Input -->
+          <div class="form-group">
+            <!-- <label for="loginIdentifier" class="form-label">Istifadəçi Adı:</label> -->
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-person"></i>
+              </span>
+              <input
+                class="form-control"
+                formControlName="loginIdentifier"
+                placeholder="Istifadəçi adı"
+
+              />
             </div>
+            @if ( form.controls.loginIdentifier.touched &&
+            form.controls.loginIdentifier.invalid ) {
+            <small class="text-danger"> İstifadəçi adı tələb olunur. </small> }
+          </div>
+
+          <!-- Password Input -->
+          <div class="form-group">
+            <!-- <label for="adminPassword" class="form-label">Şifre</label> -->
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password"
+                placeholder="Şifrənizi daxil edin"
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="input-group-text password-toggle"
+                data-target="adminPassword"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            @if ( form.controls.password.touched &&
+            form.controls.password.invalid ) {
+            <small class="text-danger"> Şifrə tələb olunur. </small> }
+          </div>
+          @if (errorMessage()) {
+          <div class="alert alert-danger">{{ errorMessage() }}</div>
+          }
+
+          <!-- Login Options -->
+          <div class="login-options">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="rememberMe" />
+              <label class="form-check-label" for="rememberMe">
+                Məni xatırla
+              </label>
+            </div>
+            <button
+
+              class="forgot-password"
+              data-bs-toggle="modal"
+              data-bs-target="#forgotPasswordModal"
+            >
+              Şifrəmi unutdum
+            </button>
+          </div>
+
+          <!-- Login Button -->
+          <button type="submit" class="btn btn-admin-primary w-100" [disabled]="loading()">
+
+             @if (loading()) {
+            <span class="spinner-border spinner-border-sm me-2">
+
+            </span>
+            Giriş edilir...
+           }
+            @else { <i class="bi bi-shield-lock me-2"></i>
+            Admin Girişi
+           }
+          </button>
+
+          <!-- Two Factor -->
+          <div class="two-factor-section d-none">
+            <div class="two-factor-header">
+              <i class="bi bi-shield-check text-success"></i>
+              <h6>İki faktorlu doğrulama</h6>
+              <p>E-poçt ünvanınıza göndərilən 6 rəqəmli kodu daxil edin”</p>
+            </div>
+            <div class="verification-code">
+              <input type="text" class="code-input" maxlength="1" />
+              <input type="text" class="code-input" maxlength="1" />
+              <input type="text" class="code-input" maxlength="1" />
+              <input type="text" class="code-input" maxlength="1" />
+              <input type="text" class="code-input" maxlength="1" />
+              <input type="text" class="code-input" maxlength="1" />
+            </div>
+            <div class="verification-actions">
+              <button type="button" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Geri
+              </button>
+              <button type="button" class="btn btn-admin-primary">
+                <i class="bi bi-check-circle me-1"></i>Doğrula
+              </button>
+            </div>
+            <div class="resend-section">
+              <p>Kod gelmedi mi?</p>
+              <button type="button" class="btn btn-link">
+                Yeniden gönder <span class="countdown">(30s)</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Footer Links -->
+        <div class="login-footer">
+          <div class="footer-links">
+            <a href="#">Yardım</a>
+            <a href="#">Məxfilik</a>
+            <a href="#">Əlaqə</a>
+          </div>
+          <p class="copyright">
+            © 2026 NeptWorkPass . Bütün hüquqlar qorunur.
+          </p>
         </div>
+      </div>
+
+      <!-- Right Side - Info -->
+      <div class="admin-login-info">
+        <img
+          src="assets/images/login.png"
+          alt="Admin Giriş Görseli"
+          class="img-fluid"
+          style="max-width: 100%; height: 100%; border-radius: 8px"
+        />
+      </div>
     </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div
+    class="modal fade"
+    id="forgotPasswordModal"
+    tabindex="-1"
+    aria-labelledby="forgotPasswordModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="forgotPasswordModalLabel">
+            <i class="bi bi-key text-primary me-2"></i>
+            Şifre Sıfırlama
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="reset-form">
+            <div class="reset-header">
+              <i class="bi bi-envelope-check text-primary"></i>
+              <h6>E-poçt ünvanınızı daxil edin</h6>
+              <p class="text-muted">
+                Şifrə sıfırlama keçidini e-poçt ünvanınıza göndərəcəyik
+              </p>
+            </div>
+            <form>
+              <div class="form-group">
+                <!-- <label for="email" class="form-label">Admin e-poçt ünvanı</label> -->
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-envelope"></i>
+                  </span>
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="admin@rentcar.com"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="security-note">
+                <i class="bi bi-info-circle text-info"></i>
+                <small
+                  >Təhlükəsizlik səbəbindən sıfırlama keçidi yalnız qeydiyyatdan
+                  keçmiş admin e-poçt ünvanlarına göndərilir.</small
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            İptal
+          </button>
+          <button type="button" class="btn btn-primary">
+            <i class="bi bi-send me-1"></i>Sıfırlama keçidini göndər
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

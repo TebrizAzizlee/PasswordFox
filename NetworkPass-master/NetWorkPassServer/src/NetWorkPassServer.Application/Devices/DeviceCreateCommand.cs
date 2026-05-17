@@ -3,11 +3,12 @@ using GenericRepository;
 using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
-using SharedLibrary.Abstractions.Entity;
+
 using SharedLibrary.Consts;
 using System.Net;
 using TS.MediatR;
-using static NetWorkPassServer.Domain.Devices.Device;
+
+
 
 namespace NetWorkPassServer.Application.Devices;
 public sealed record DeviceCreateCommand(Guid BranchId,
@@ -49,8 +50,8 @@ internal sealed class DeviceCreateCommandHandler(
         DeviceCreateCommand request,
         CancellationToken cancellationToken)
     {
-        var branchId =
-            new IdentityId(request.BranchId);
+        var branchId = request.BranchId;
+
         // 🔥 1. Branch var? (çox adam bunu unudur)
         var branchExists = await branchRepository.AnyAsync(
             x => x.Id == branchId,
@@ -69,7 +70,7 @@ internal sealed class DeviceCreateCommandHandler(
 
         var exists = await deviceRepository.AnyAsync(
             x => x.BranchId == request.BranchId &&
-                 x.Ip_Address.Value == ip,
+                 x.IpAddress.Value == ip,
             cancellationToken);
 
         if (exists)
@@ -98,7 +99,7 @@ internal sealed class DeviceCreateCommandHandler(
 
         // 🔥 4. Entity yarat
         var device = new Device(
-            new IdentityId(request.BranchId),
+            request.BranchId,
             deviceName,
             ipAddress,
             request.Type,

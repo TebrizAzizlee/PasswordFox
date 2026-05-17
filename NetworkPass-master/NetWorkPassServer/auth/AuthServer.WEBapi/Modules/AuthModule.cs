@@ -16,7 +16,7 @@ namespace AuthServer.WEBapi.Modules;
 public static class AuthModule
 {
    
-    public static void MapAuthEndpoint(this IEndpointRouteBuilder builder)
+    public static RouteGroupBuilder MapAuthEndpoint(this IEndpointRouteBuilder builder)
     {
         var app = builder.MapGroup("/auth").WithTags("Auth");
 
@@ -24,14 +24,7 @@ public static class AuthModule
         // 🔐 Cookie helper
         static void SetAuthCookies(HttpContext ctx, TokenDto token)
         {
-            //ctx.Response.Cookies.Append("accessToken", token.AccessToken!, new CookieOptions
-            //{
-            //    HttpOnly = true,
-            //    Secure = true,
-            //    SameSite = SameSiteMode.None,
-            //    Expires = token.AccessTokenExpiration?.UtcDateTime,
-            //    Path = "/"
-            //});
+          
 
             ctx.Response.Cookies.Append("refreshToken", token.RefreshToken!, new CookieOptions
             {
@@ -155,8 +148,11 @@ public static class AuthModule
 
             SetAuthCookies(ctx, res.Data);
 
-            return Results.NoContent(); // 🔥 əsas dəyişiklik
-        });
+            return Results.Ok(new
+            {
+                accessToken = res.Data.AccessToken
+            }); // 🔥 əsas dəyişiklik
+        }).RequireRateLimiting("refresh-token-fixed");
 
         // 🔥 LOGOUT
         app.MapPost("/logout",
@@ -176,13 +172,13 @@ public static class AuthModule
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Path = "/"
             };
             var csrfCookieOptions = new CookieOptions
             {
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Path = "/"
             };
 
@@ -228,5 +224,7 @@ public static class AuthModule
 
             });
         });
+        return app;
     }
+    
 }
