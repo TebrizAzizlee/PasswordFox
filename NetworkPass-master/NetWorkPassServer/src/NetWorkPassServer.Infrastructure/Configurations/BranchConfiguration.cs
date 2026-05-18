@@ -21,7 +21,7 @@ internal class BranchConfiguration : IEntityTypeConfiguration<Branch>
         builder.OwnsOne(x => x.Name, fn =>
         {
             fn.Property(p => p.Value)
-                .HasColumnName("Name")
+                .HasColumnName("BranchName")
                 .HasMaxLength(EntityConsts.MaxNameLength)
                 .IsRequired();
             fn.HasIndex(p => p.Value).IsUnique();

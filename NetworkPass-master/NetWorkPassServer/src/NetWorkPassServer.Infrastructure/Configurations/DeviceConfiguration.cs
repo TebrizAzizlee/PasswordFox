@@ -25,7 +25,7 @@ internal class DeviceConfiguration : IEntityTypeConfiguration<Device>
         builder.OwnsOne(x => x.Name, fn =>
         {
             fn.Property(p => p.Value)
-            .HasColumnType(SqlDbType.NVarChar.ToString())
+            .HasColumnType("nvarchar")
                 .HasColumnName("Name")
                 .HasMaxLength(EntityConsts.MaxNameLength)
                 .IsRequired();
@@ -34,7 +34,7 @@ internal class DeviceConfiguration : IEntityTypeConfiguration<Device>
         
         
         // IpAddress (ValueObject)
-        builder.OwnsOne(x => x.Ip_Address, fn => {
+        builder.OwnsOne(x => x.IpAddress, fn => {
             fn.Property(p => p.Value)
             .HasColumnType(SqlDbType.NVarChar.ToString())
 
@@ -46,8 +46,7 @@ internal class DeviceConfiguration : IEntityTypeConfiguration<Device>
        
         
         // Branch relation (FK)
-        builder.Property(x => x.BranchId)
-               .HasConversion(x=>x.Value,x=>new IdentityId(x))
+        builder.Property(x => x.BranchId)      
                .IsRequired();
         builder.HasIndex(x => x.BranchId);
         //Enum
@@ -62,7 +61,7 @@ internal class DeviceConfiguration : IEntityTypeConfiguration<Device>
        
 
         // Audit (Entity-dən gəlir)
-        builder.Property(x => x.CreatedAt).IsRequired();
+        builder.Property(x => x.CreationTime).IsRequired();
 
         builder.HasOne(x=>x.Branch)
        .WithMany(x=>x.Devices)

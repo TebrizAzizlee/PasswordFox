@@ -35,7 +35,7 @@ internal sealed class GetBranchAlertsQueryHandler(
                 x.DeviceId,
                 x.BranchId,
                 x.Device.Name.Value,
-                x.Branch.Name,
+                x.Branch.Name.Value,
                 x.Type,
                 x.Severity,
                 x.Message,

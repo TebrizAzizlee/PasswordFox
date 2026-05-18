@@ -36,7 +36,7 @@ IBranchRepository branchRepository
 
             query = query.Where(x =>
                 EF.Functions.Like(
-                    x.Name,
+                    x.Name.Value,
                     $"%{search}%"));
         }
         if (request.Status.HasValue)
@@ -57,7 +57,7 @@ IBranchRepository branchRepository
             .Take(pageSize)
             .Select(x => new BranchListDto(
                 x.Id,
-                x.Name,
+                x.Name.Value,
                x.Address.City,
                x.Type,
                 x.Status,

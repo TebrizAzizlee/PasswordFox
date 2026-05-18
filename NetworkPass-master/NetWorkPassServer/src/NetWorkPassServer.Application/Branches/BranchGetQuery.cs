@@ -17,7 +17,7 @@ internal sealed class BranchGetQueryHandler(IBranchRepository branchRepository) 
          .Where(x => x.Id == request.Id)
          .Select(x => new BranchDto(
     x.Id,
-    x.Name,
+    x.Name.Value,
     x.Address.City,
     x.Address.District,
     x.Address.FullAddress,

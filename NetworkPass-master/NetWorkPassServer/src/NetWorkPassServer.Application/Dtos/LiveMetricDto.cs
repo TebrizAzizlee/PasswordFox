@@ -8,15 +8,16 @@ namespace NetWorkPassServer.Application.Dtos
 {
     public sealed record LiveMetricDto(
      Guid DeviceId,
-
+      DateTime Timestamp,
      double? CpuUsage,
 
      double? MemoryUsage,
+     double? DiskUsage ,
 
-     double? Temperature,
+    double? Temperature,
 
-     long? PingLatency,
+     long? PingLatency
 
-     DateTime Timestamp
+    
  );
 }

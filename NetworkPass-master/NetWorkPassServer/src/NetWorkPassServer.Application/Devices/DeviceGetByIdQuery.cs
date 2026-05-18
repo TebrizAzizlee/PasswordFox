@@ -28,7 +28,7 @@ internal sealed class DeviceGetByIdQueryHandler(
             .Select(x => new DeviceDetailDto(
                 x.Id,
                 x.BranchId,
-                x.Branch.Name, // 🔥 join burda olur
+                x.Branch.Name.Value, // 🔥 join burda olur
                 x.Name.Value,
                 x.IpAddress.Value,
                 x.Type.ToString(),

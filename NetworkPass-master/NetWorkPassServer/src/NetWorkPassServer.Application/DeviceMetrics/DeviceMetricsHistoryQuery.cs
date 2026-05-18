@@ -32,11 +32,11 @@ internal sealed class DeviceMetricsHistoryQueryHandler(
             .AsNoTracking()
             .Where(x =>
                 x.DeviceId == request.DeviceId &&
-                x.Timestamp >= request.StartDate &&
-                x.Timestamp <= request.EndDate)
-            .OrderBy(x => x.Timestamp)
+                x.OccurredAtUtc >= request.StartDate &&
+                x.OccurredAtUtc <= request.EndDate)
+            .OrderBy(x => x.OccurredAtUtc)
             .Select(x => new MetricPointDto(
-                x.Timestamp,
+                x.OccurredAtUtc,
                 x.CpuUsage,
                 x.MemoryUsage,
                 x.Temperature,

@@ -25,14 +25,15 @@ namespace NetWorkPassServer.Infrastructure.Services
 
             // optional persistence
 
-            var entity = new DeviceMetric(
+            var entity = DeviceMetric.Create(
                 metric.DeviceId,
                 metric.Timestamp,
                 metric.CpuUsage,
                 metric.MemoryUsage,
+                metric.DiskUsage,
                 metric.Temperature,
-                metric.PingLatency,
-                metric.Timestamp);
+                metric.PingLatency
+                );
 
             await metricRepository.AddAsync(
                 entity,

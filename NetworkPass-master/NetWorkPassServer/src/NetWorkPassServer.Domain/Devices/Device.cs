@@ -47,15 +47,15 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
     public bool IsActive { get; private set; } = default;
     public string Model { get; private set; } = default!;
 
-    public DeviceVendor Vendor { get; private set; }= default!;
+    public DeviceVendor Vendor { get; private set; }
 
-    public DeviceType Type { get; private set; } = default!;
+    public DeviceType Type { get; private set; }
 
-    public DeviceRole Role { get; private set; } = default!;
+    public DeviceRole Role { get; private set; }
 
     public bool IsCritical { get; private set; } = default!;
     public int ConsecutiveFailureCount { get; private set; }
-    public DeviceStatus Status { get; private set; } = default!;
+    public DeviceStatus Status { get; private set; }
 
     public DateTime? LastSeenAt { get; private set; } = default!;
 

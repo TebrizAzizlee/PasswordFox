@@ -45,7 +45,7 @@ internal sealed class BranchUpdateCommandHandler(IBranchRepository branchReposit
             return ServiceResult.Failure("Tapılmadı", "Şöbə tapılmadı", HttpStatusCode.NotFound);
         }
         
-        var exists=await branchRepository.AnyAsync(x=>x.Id!=request.Id && !x.IsDeleted && x.Name==request.BranchName,cancellationToken);
+        var exists=await branchRepository.AnyAsync(x=>x.Id!=request.Id && !x.IsDeleted && x.Name.Value==request.BranchName,cancellationToken);
       if(exists)
         {
             return ServiceResult.Failure(

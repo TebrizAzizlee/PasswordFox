@@ -26,7 +26,7 @@ internal sealed class BranchMonitoringQueryHandler(
             .Where(x => x.Id == request.Id)
             .Select(x => new BranchMonitoringDto(
                 x.Id,
-                x.Name,
+                x.Name.Value,
                 x.Status,
                 x.TotalDeviceCount,
                 x.OnlineDeviceCount,

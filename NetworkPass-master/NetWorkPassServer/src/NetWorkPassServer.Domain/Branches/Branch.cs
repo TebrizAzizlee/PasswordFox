@@ -12,7 +12,7 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
     }
 
     public Branch(
-            BranchName name,
+        BranchName name,
         Address address,
         ContactInfo contactInfo,
         NetworkInfo networkInfo)
@@ -31,11 +31,12 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
 
         IsActive = true;
         IsMonitoringEnabled = true;
+       
     }
 
     // BASIC
 
-    public string Name { get; private set; } = default!;
+    public BranchName Name { get; private set; } = default!;
 
     public string Code { get; private set; } = default!;
 
@@ -77,7 +78,7 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
 
     // RELATIONS
 
-    public ICollection<Device> Devices { get; private set; } = default!;
+    public ICollection<Device> Devices { get; private set; }=default! ;
 
     public ICollection<Alert> Alerts { get; private set; } = default!;
 
@@ -89,7 +90,7 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
         if (string.IsNullOrWhiteSpace(name.Value))
             throw new ArgumentException(nameof(name));
 
-        Name = name.Value.Trim();
+        Name = name;
     }
 
     public void Update(
