@@ -2,6 +2,7 @@
 using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Application.Dtos;
 using NetWorkPassServer.Application.Dtos.BranchDtos;
+using NetWorkPassServer.Application.Dtos.DeviesDtos;
 using SharedLibrary;
 using System.Net;
 using TS.MediatR;

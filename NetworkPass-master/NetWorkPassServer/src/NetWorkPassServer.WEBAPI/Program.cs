@@ -75,4 +75,6 @@ app.MapBranch();
 app.MapDevice();
 app.MapHub<AlertHub>(
     "/hubs/alerts");
+app.MapHub<MonitoringHub>(
+    "/hubs/monitoring");
 app.Run();

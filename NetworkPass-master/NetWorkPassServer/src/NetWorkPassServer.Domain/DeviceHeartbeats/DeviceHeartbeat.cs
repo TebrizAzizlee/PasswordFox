@@ -12,7 +12,7 @@ public sealed class DeviceHeartbeat : Entity<Guid>
         Guid deviceId,
         DeviceStatus status,
         bool isReachable,
-        int? responseTimeMs,
+        long? responseTimeMs,
         string? errorMessage)
     {
         DeviceId = deviceId;
@@ -32,7 +32,7 @@ public sealed class DeviceHeartbeat : Entity<Guid>
 
     public bool IsReachable { get; private set; }
 
-    public int? ResponseTimeMs { get; private set; }
+    public long? ResponseTimeMs { get; private set; }
 
     public string? ErrorMessage { get; private set; }
 

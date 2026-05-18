@@ -1,12 +1,13 @@
 ﻿using GenericRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetWorkPassServer.Application.Context;
+using NetWorkPassServer.Domain.Alerts;
+using NetWorkPassServer.Domain.DeviceMetricss;
 using SharedLibrary;
 using SharedLibrary.Abstractions.Entity;
 using SharedLibrary.BaseContext;
 using SharedLibrary.Constants;
-using NetWorkPassServer.Application.Context;
-using NetWorkPassServer.Domain.Alerts;
 
 namespace NetWorkPassServer.Infrastructure.Context;
 public sealed class PasswordDbContext(DbContextOptions<PasswordDbContext> options) : BaseDbContext(options),IPasswordDbContext, IUnitOfWork
@@ -23,6 +24,7 @@ public sealed class PasswordDbContext(DbContextOptions<PasswordDbContext> option
     public DbSet<Device> Devices { get; set; }
 
     public DbSet<Alert> Alerts { get; set; }
+    public DbSet<DeviceMetric> DeviceMetrics { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static NetWorkPassServer.Domain.Devices.Device;
+﻿using NetWorkPassServer.Domain.Devices;
+
+
 
 namespace NetWorkPassServer.Application.Dtos.DeviesDtos;
 public sealed record DeviceDto(Guid Id,

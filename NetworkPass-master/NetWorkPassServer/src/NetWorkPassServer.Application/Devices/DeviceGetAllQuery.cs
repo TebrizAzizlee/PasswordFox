@@ -49,7 +49,7 @@ internal sealed class DeviceGetAllQueryHandler(
 
             query = query.Where(x =>
                EF.Functions.Like( x.Name.Value, $"%{search}%") ||
-               EF.Functions.Like(x.Ip_Address.Value, $"%{search}%"));
+               EF.Functions.Like(x.IpAddress.Value, $"%{search}%"));
         }
 
         // 🔥 4. Count
@@ -64,8 +64,8 @@ internal sealed class DeviceGetAllQueryHandler(
                 x.Id,
                 x.BranchId,
                 x.Name.Value,
-                x.Ip_Address.Value,
-                (int)x.Type,
+                x.IpAddress.Value,
+                x.Type,
                 x.Description,
                 x.IsActive
             ))

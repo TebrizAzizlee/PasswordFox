@@ -1,8 +1,9 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using NetWorkPassServer.Domain.Alerts;
 using NetWorkPassServer.Domain.DeviceHeartbeats;
-using NetWorkPassServer.Domain.DeviceMetrics;
+using NetWorkPassServer.Domain.DeviceMetricss;
 using NetWorkPassServer.Domain.Devices;
+using SharedLibrary.Abstractions.Entity;
 
 
 
@@ -17,14 +18,15 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
         DeviceName name,
         IpAddress ipAddress,
         DeviceType type,
-        string? description)
+        string? description
+        )
     {
         BranchId = branchId;
         Name = name;
         IpAddress = ipAddress;
         Type = type;
         Description = description;
-
+       
         Metrics = new List<DeviceMetric>();
         Heartbeats = new List<DeviceHeartbeat>();
         Alerts = new List<Alert>();
@@ -32,7 +34,7 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
         Status = DeviceStatus.Unknown;
 
         IsMonitoringEnabled = true;
-       
+        IsActive=true;
     }
 
     public Guid BranchId { get; private set; } = default;
@@ -67,7 +69,7 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
 
     public double? Temperature { get; private set; } = default!;
 
-    public double? PingLatency { get; private set; } = default!;
+    public long? PingLatency { get; private set; } = default!;
 
     public Branch Branch { get; private set; } = default!;
 
@@ -88,9 +90,24 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
         Type = type;
         Description = description;
     }
+    public void Deactivate()
+    {
+        IsActive = false;
 
+        IsMonitoringEnabled = false;
+
+        Status = DeviceStatus.Unknown;
+    }
+    public void Activate()
+    {
+        IsActive = true;
+
+        IsMonitoringEnabled = true;
+
+        Status = DeviceStatus.Unknown;
+    }
     public void MarkHeartbeatSuccess(
-     int? responseTimeMs)
+     long? responseTimeMs)
     {
         ConsecutiveFailureCount = 0;
 
@@ -117,4 +134,6 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
             Status = DeviceStatus.Offline;
         }
     }
+
+   
 }

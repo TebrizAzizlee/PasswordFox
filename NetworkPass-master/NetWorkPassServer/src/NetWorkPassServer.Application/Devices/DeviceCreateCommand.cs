@@ -104,6 +104,7 @@ internal sealed class DeviceCreateCommandHandler(
             ipAddress,
             request.Type,
             request.Description
+            
         );
 
         await deviceRepository.AddAsync(device, cancellationToken);

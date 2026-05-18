@@ -1,14 +1,10 @@
 ﻿using GenericRepository;
 using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
-using SharedLibrary.Abstractions.Entity;
 using SharedLibrary.Constants;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.Devices;
@@ -44,10 +40,8 @@ internal sealed class DeviceDeleteCommandHandler(
                 "Device artıq silinmişdir",
                 HttpStatusCode.BadRequest);
         }
-        var userId = SystemUser.Id; // necə inject edirsənsə
-        var now = DateTimeOffset.UtcNow;
-        // 🔥 3. soft delete
-        device.Delete(new IdentityId(userId),now); // Entity method
+
+        device.Deactivate();
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

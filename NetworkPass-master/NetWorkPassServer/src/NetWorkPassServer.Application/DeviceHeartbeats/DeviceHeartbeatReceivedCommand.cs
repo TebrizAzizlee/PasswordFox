@@ -12,7 +12,7 @@ public sealed record DeviceHeartbeatReceivedCommand(
 
     bool IsReachable,
 
-    int? ResponseTimeMs,
+    long? ResponseTimeMs,
 
     string? ErrorMessage
 ) : IRequest<ServiceResult>;

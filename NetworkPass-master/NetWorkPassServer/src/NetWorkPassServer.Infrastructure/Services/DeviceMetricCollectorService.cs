@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using NetWorkPassServer.Application.Dtos;
 using NetWorkPassServer.Application.Services;
-using NetWorkPassServer.Domain.DeviceMetrics;
+using NetWorkPassServer.Domain.DeviceMetricss;
+using NetWorkPassServer.Infrastructure.Hubs;
 
 
 namespace NetWorkPassServer.Infrastructure.Services
@@ -26,6 +27,7 @@ namespace NetWorkPassServer.Infrastructure.Services
 
             var entity = new DeviceMetric(
                 metric.DeviceId,
+                metric.Timestamp,
                 metric.CpuUsage,
                 metric.MemoryUsage,
                 metric.Temperature,

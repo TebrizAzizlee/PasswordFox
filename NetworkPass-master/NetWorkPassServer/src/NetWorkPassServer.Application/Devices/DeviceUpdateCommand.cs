@@ -3,14 +3,8 @@ using GenericRepository;
 using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TS.MediatR;
-using static NetWorkPassServer.Domain.Devices.Device;
 
 namespace NetWorkPassServer.Application.Devices;
 public sealed record DeviceUpdateCommand(Guid Id,
@@ -88,7 +82,7 @@ internal sealed class DeviceUpdateCommandHandler(
         var exists = await deviceRepository.AnyAsync(
             x => x.Id != request.Id &&
                  x.BranchId == request.BranchId &&
-                 x.Ip_Address.Value == ip,
+                 x.IpAddress.Value == ip,
             cancellationToken);
 
         if (exists)

@@ -1,11 +1,7 @@
 ﻿using Abp.Domain.Entities;
 using NetWorkPassServer.Domain.Devices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static NetWorkPassServer.Domain.Devices.Device;
+
+
 
 namespace NetWorkPassServer.Domain.DeviceInterfaces;
 public sealed class DeviceInterface : Entity<Guid>

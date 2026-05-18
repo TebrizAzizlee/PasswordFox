@@ -1,29 +1,42 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Application.DeviceHeartbeats;
+using NetWorkPassServer.Application.Devices;
 using System.Net.NetworkInformation;
+using TS.MediatR;
 
-namespace NetWorkPassServer.Infrastructure.Services.Monitoring
+namespace NetWorkPassServer.Infrastructure.Monitoring.BackgroundServices;
+
+public sealed class DevicePollingBackgroundService
+    : BackgroundService
 {
-    public sealed class DevicePollingBackgroundService
-     : BackgroundService
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    private readonly ILogger<DevicePollingBackgroundService>
+        _logger;
+
+    public DevicePollingBackgroundService(
+        IServiceScopeFactory scopeFactory,
+        ILogger<DevicePollingBackgroundService> logger)
     {
-        private readonly IServiceScopeFactory _scopeFactory;
+        _scopeFactory = scopeFactory;
 
-        public DevicePollingBackgroundService(
-            IServiceScopeFactory scopeFactory)
-        {
-            _scopeFactory = scopeFactory;
-        }
+        _logger = logger;
+    }
 
-        protected override async Task ExecuteAsync(
-            CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(
+        CancellationToken stoppingToken)
+    {
+        _logger.LogInformation(
+            "Device polling worker started");
+
+        while (!stoppingToken.IsCancellationRequested)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
                 using var scope =
                     _scopeFactory.CreateScope();
@@ -37,6 +50,8 @@ namespace NetWorkPassServer.Infrastructure.Services.Monitoring
                     scope.ServiceProvider
                         .GetRequiredService<IMediator>();
 
+                // 🔥 yalnız aktiv monitoring device-lər
+
                 var devices = await context.Devices
                     .AsNoTracking()
                     .Where(x =>
@@ -49,22 +64,36 @@ namespace NetWorkPassServer.Infrastructure.Services.Monitoring
                     })
                     .ToListAsync(stoppingToken);
 
-                foreach (var device in devices)
+                _logger.LogInformation(
+                    "Polling started for {Count} devices",
+                    devices.Count);
+
+                // 🔥 concurrency limit
+
+                using var semaphore =
+                    new SemaphoreSlim(20);
+
+                var tasks = devices.Select(async device =>
                 {
+                    await semaphore.WaitAsync(
+                        stoppingToken);
+
                     try
                     {
                         using var ping = new Ping();
 
-                        var reply = await ping.SendPingAsync(
-                            device.IpAddress,
-                            3000);
+                        var reply =
+                            await ping.SendPingAsync(
+                                device.IpAddress,
+                                3000);
 
                         bool isReachable =
-                            reply.Status == IPStatus.Success;
+                            reply.Status ==
+                            IPStatus.Success;
 
-                        int? latency =
+                        long? latency =
                             isReachable
-                                ? (int)reply.RoundtripTime
+                                ? reply.RoundtripTime
                                 : null;
 
                         await mediator.Send(
@@ -80,6 +109,11 @@ namespace NetWorkPassServer.Infrastructure.Services.Monitoring
                     }
                     catch (Exception ex)
                     {
+                        _logger.LogError(
+                            ex,
+                            "Polling failed for device {DeviceId}",
+                            device.Id);
+
                         await mediator.Send(
                             new DeviceHeartbeatReceivedCommand(
                                 device.Id,
@@ -89,12 +123,29 @@ namespace NetWorkPassServer.Infrastructure.Services.Monitoring
                             ),
                             stoppingToken);
                     }
-                }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
 
-                await Task.Delay(
-                    TimeSpan.FromSeconds(30),
-                    stoppingToken);
+                await Task.WhenAll(tasks);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Critical polling worker error");
+            }
+
+            // 🔥 polling interval
+
+            await Task.Delay(
+                TimeSpan.FromSeconds(30),
+                stoppingToken);
         }
+
+        _logger.LogInformation(
+            "Device polling worker stopped");
     }
 }
