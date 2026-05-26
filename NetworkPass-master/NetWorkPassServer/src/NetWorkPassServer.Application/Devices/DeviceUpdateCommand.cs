@@ -2,16 +2,21 @@
 using GenericRepository;
 using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Devices;
+using NetWorkPassServer.Domain.Shared;
 using SharedLibrary;
 using System.Net;
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.Devices;
-public sealed record DeviceUpdateCommand(Guid Id,
-    Guid BranchId,
+public sealed record DeviceUpdateCommand(
+    Guid Id,
     string Name,
     string IpAddress,
-    int Type,
+    DeviceType Type,
+    string Vendor,
+    DeviceRole Role,
+    string Model,
+    bool IsCritical,
     string? Description):IRequest<ServiceResult>;
 
 public sealed class DeviceUpdateCommandValidator : AbstractValidator<DeviceUpdateCommand>
@@ -21,8 +26,6 @@ public sealed class DeviceUpdateCommandValidator : AbstractValidator<DeviceUpdat
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Device tapılmadı");
 
-        RuleFor(x => x.BranchId)
-            .NotEmpty().WithMessage("Branch seçilməlidir");
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Device adı boş ola bilməz")
@@ -35,6 +38,12 @@ public sealed class DeviceUpdateCommandValidator : AbstractValidator<DeviceUpdat
 
         RuleFor(x => x.Type)
             .IsInEnum().WithMessage("Device tipi düzgün deyil");
+        RuleFor(x => x.Vendor).NotEmpty().MaximumLength(100);
+
+        RuleFor(x => x.Model).NotEmpty().MaximumLength(100);
+
+        RuleFor(x => x.Role).IsInEnum();
+
 
         RuleFor(x => x.Description)
             .MaximumLength(500).WithMessage("Açıqlama maksimum 500 simvol ola bilər");
@@ -42,7 +51,7 @@ public sealed class DeviceUpdateCommandValidator : AbstractValidator<DeviceUpdat
 }
 internal sealed class DeviceUpdateCommandHandler(
     IDeviceRepository deviceRepository,
-    IBranchRepository branchRepository,
+   
     IUnitOfWork unitOfWork
 ) : IRequestHandler<DeviceUpdateCommand, ServiceResult>
 {
@@ -52,7 +61,7 @@ internal sealed class DeviceUpdateCommandHandler(
     {
         // 🔥 1. Device var?
         var device = await deviceRepository.FirstOrDefaultAsync(
-            x => x.Id == request.Id,
+            x => x.Id == request.Id && !x.IsDeleted,
             cancellationToken);
 
         if (device is null)
@@ -62,44 +71,32 @@ internal sealed class DeviceUpdateCommandHandler(
                 "Device mövcud deyil",
                 HttpStatusCode.NotFound);
         }
-
+        var ip =
+           request.IpAddress.Trim();
         // 🔥 2. Branch var?
-        var branchExists = await branchRepository.AnyAsync(
-            x => x.Id == request.BranchId,
-            cancellationToken);
+        var duplicateIpExists =
+            await deviceRepository.AnyAsync(
+                x =>
+                    x.Id != request.Id &&
+                    !x.IsDeleted &&
+                    x.BranchId == device.BranchId &&
+                    x.IpAddress.Value == ip,
+                cancellationToken);
 
-        if (!branchExists)
-        {
-            return ServiceResult.Failure(
-                "Branch tapılmadı",
-                "Bu branch mövcud deyil",
-                HttpStatusCode.NotFound);
-        }
-
-        // 🔥 3. Duplicate IP (ən kritik hissə)
-        var ip = request.IpAddress.Trim();
-
-        var exists = await deviceRepository.AnyAsync(
-            x => x.Id != request.Id &&
-                 x.BranchId == request.BranchId &&
-                 x.IpAddress.Value == ip,
-            cancellationToken);
-
-        if (exists)
+        if (duplicateIpExists)
         {
             return ServiceResult.Failure(
                 "IP artıq mövcuddur",
-                "Bu IP artıq istifadə olunur",
+                "Bu IP artıq branch daxilində istifadə olunur",
                 HttpStatusCode.BadRequest);
         }
 
         // 🔥 4. ValueObject yarat
         var name = new DeviceName(request.Name);
         var ipAddress = new IpAddress(ip);
-        var type = (DeviceType)request.Type;
-
+       
         // 🔥 5. Update et
-        device.Update(name, ipAddress, type, request.Description);
+        device.Update(name, ipAddress, request.Type,request.Vendor,request.Role, request.Model,request.IsCritical ,request.Description);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -13,5 +13,6 @@ public enum DeviceType
     Firewall = 4,
     Server = 5,
     Printer = 6,
-    Camera = 7
+    Camera = 7,
+    FingerPrint=8
 }

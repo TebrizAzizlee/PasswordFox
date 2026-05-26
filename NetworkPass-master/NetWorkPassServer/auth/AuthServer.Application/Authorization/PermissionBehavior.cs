@@ -47,7 +47,7 @@ public sealed class PermissionBehavior<TRequest, TResponse>(
         if (!userPermissions.Contains(
             permissionAttribute.Permission))
         {
-            throw new AuthorizationException(
+            throw new ForbiddenException(
                 $"Required permission: {permissionAttribute.Permission}");
         }
 

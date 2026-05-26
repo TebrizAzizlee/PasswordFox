@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using GenericRepository;
+using NetWorkPassServer.Application.Services;
 using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Devices;
+using NetWorkPassServer.Domain.Shared;
 using SharedLibrary;
 
 using SharedLibrary.Consts;
@@ -15,7 +17,11 @@ public sealed record DeviceCreateCommand(Guid BranchId,
     string Name,
     string IpAddress,
     DeviceType Type,
-    string? Description):IRequest<ServiceResult<Guid>>;
+    string Vendor,
+    DeviceRole Role,
+     string Model ,
+     bool IsCritical,
+string? Description):IRequest<ServiceResult<Guid>>;
 
 public sealed class DeviceCreateCommandValidator : AbstractValidator<DeviceCreateCommand>
 {
@@ -33,6 +39,10 @@ public sealed class DeviceCreateCommandValidator : AbstractValidator<DeviceCreat
             .Must(ip => System.Net.IPAddress.TryParse(ip, out _))
             .WithMessage("IP address düzgün formatda deyil");
 
+        RuleFor(x => x.Model)
+    .NotEmpty()
+    .MaximumLength(100);
+
         RuleFor(x => x.Type)
             .IsInEnum();
 
@@ -42,6 +52,7 @@ public sealed class DeviceCreateCommandValidator : AbstractValidator<DeviceCreat
 }
 internal sealed class DeviceCreateCommandHandler(
     IDeviceRepository deviceRepository,
+    IBranchStatsService branchStatsService,
     IBranchRepository branchRepository,
     IUnitOfWork unitOfWork
 ) : IRequestHandler<DeviceCreateCommand, ServiceResult<Guid>>
@@ -103,13 +114,20 @@ internal sealed class DeviceCreateCommandHandler(
             deviceName,
             ipAddress,
             request.Type,
+            request.Vendor,
+            request.Role,
+            request.Model,
+            request.IsCritical,
             request.Description
             
         );
 
         await deviceRepository.AddAsync(device, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-
+        await branchStatsService
+    .RecalculateAsync(
+        request.BranchId,
+        cancellationToken);
         return ServiceResult<Guid>.Success(device.Id);
     }
 }

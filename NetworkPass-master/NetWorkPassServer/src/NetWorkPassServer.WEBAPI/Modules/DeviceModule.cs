@@ -1,4 +1,6 @@
-﻿using NetWorkPassServer.Application.Devices;
+﻿
+using NetWorkPassServer.Application.Devices;
+using NetWorkPassServer.Application.Dtos.DeviesDtos;
 using NetWorkPassServer.WEBAPI.Extensions;
 using TS.MediatR;
 
@@ -24,15 +26,23 @@ public static class DeviceModule
 
         // 🔥 UPDATE
         group.MapPut("{id:guid}",
-            async (Guid id, DeviceUpdateCommand request, ISender sender, CancellationToken ct) =>
+            async (Guid id, UpdateDeviceRequest request, ISender sender, CancellationToken ct) =>
             {
-                if (request.Id != Guid.Empty && request.Id != id)
-                    return Results.BadRequest("Id mismatch");
+                var command =
+     new DeviceUpdateCommand(
+         id,
+        request.Name,
+        request.IpAddress,
+        request.Type,
+      request.Vendor,
+      request.Role,
+        request.Model,
+        request.IsCritical,
+         request.Description);
+                var result =
+       await sender.Send(command, ct);
 
-                request = request with { Id = id };
-
-                var res = await sender.Send(request, ct);
-                return res.ToNoContentResult();
+                return result.ToNoContentResult();
             }).RequireAuthorization();
 
         // 🔥 DELETE

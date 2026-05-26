@@ -1,0 +1,184 @@
+2026-05-23 10:41:17.286 +04:00 [WRN] The foreign key property 'UserRole.RoleId1' was created in shadow state because a conflicting property with the simple name 'RoleId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-05-23 10:41:19.375 +04:00 [INF] Executed DbCommand (50ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Name]
+FROM [Permissions] AS [p]
+WHERE [p].[IsDeleted] = CAST(0 AS bit)
+2026-05-23 10:41:19.468 +04:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Roles] AS [r]
+        WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'Admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-23 10:41:19.479 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Roles] AS [r]
+        WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'User') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-23 10:41:19.561 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [r].[Id], [r].[CreatedAt], [r].[CreatedBy], [r].[DeletedAt], [r].[DeletedBy], [r].[Description], [r].[IsActive], [r].[IsDeleted], [r].[IsSystem], [r].[Name], [r].[UpdatedAt], [r].[UpdatedBy]
+FROM [Roles] AS [r]
+WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'Admin'
+2026-05-23 10:41:19.647 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[CreatedAt], [p].[CreatedBy], [p].[DeletedAt], [p].[DeletedBy], [p].[Description], [p].[IsActive], [p].[IsDeleted], [p].[Name], [p].[UpdatedAt], [p].[UpdatedBy]
+FROM [Permissions] AS [p]
+WHERE [p].[IsDeleted] = CAST(0 AS bit)
+2026-05-23 10:41:19.776 +04:00 [INF] Executed DbCommand (89ms) [Parameters=[@__adminRole_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [r].[PermissionId]
+FROM [RolePermissions] AS [r]
+WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[RoleId] = @__adminRole_Id_0
+2026-05-23 10:41:19.867 +04:00 [INF] Executed DbCommand (4ms) [Parameters=[@__userName_Value_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_Value_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-23 10:41:19.991 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-23 10:41:20.035 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-23 10:41:20.082 +04:00 [INF] Token cleanup started
+2026-05-23 10:41:20.158 +04:00 [INF] Executed DbCommand (8ms) [Parameters=[@__cutoff_0='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM [l]
+FROM [LoginTokens] AS [l]
+WHERE [l].[RevokedAt] IS NOT NULL AND [l].[ExpiresAt] < @__cutoff_0
+2026-05-23 10:41:20.159 +04:00 [ERR] Failed executing DbCommand (30ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-23 10:41:20.336 +04:00 [ERR] Error during token cleanup
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'IsActive'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__210_1(IAsyncResult result)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.ExecuteSqlRawAsync(DatabaseFacade databaseFacade, String sql, IEnumerable`1 parameters, CancellationToken cancellationToken)
+   at AuthServer.Infrastructure.Repositories.LoginTokenRepository.DeactivateExpiredTokensAsync(CancellationToken ct) in D:\NetworkPassFox\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Infrastructure\Repositories\LoginTokenRepository.cs:line 58
+   at AuthServer.WEBapi.CheckLoginTokenBackgroundService.ExecuteAsync(CancellationToken stoppingToken) in D:\NetworkPassFox\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\CheckLoginTokenBackgroundService.cs:line 19
+ClientConnectionId:8ed1179f-e74d-4325-8cd2-05c95e16e9f5
+Error Number:207,State:1,Class:16
+2026-05-23 10:41:20.600 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-23 10:41:20.601 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-23 10:41:20.679 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-23 10:41:20.680 +04:00 [INF] Hosting environment: Development
+2026-05-23 10:41:20.681 +04:00 [INF] Content root path: D:\NetworkPassFox\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-23 10:41:21.199 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-23 10:46:48.517 +04:00 [WRN] The foreign key property 'UserRole.RoleId1' was created in shadow state because a conflicting property with the simple name 'RoleId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-05-23 10:46:49.337 +04:00 [INF] Executed DbCommand (29ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Name]
+FROM [Permissions] AS [p]
+WHERE [p].[IsDeleted] = CAST(0 AS bit)
+2026-05-23 10:46:49.405 +04:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Roles] AS [r]
+        WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'Admin') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-23 10:46:49.415 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Roles] AS [r]
+        WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'User') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-23 10:46:49.483 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [r].[Id], [r].[CreatedAt], [r].[CreatedBy], [r].[DeletedAt], [r].[DeletedBy], [r].[Description], [r].[IsActive], [r].[IsDeleted], [r].[IsSystem], [r].[Name], [r].[UpdatedAt], [r].[UpdatedBy]
+FROM [Roles] AS [r]
+WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[Name] = N'Admin'
+2026-05-23 10:46:49.561 +04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[CreatedAt], [p].[CreatedBy], [p].[DeletedAt], [p].[DeletedBy], [p].[Description], [p].[IsActive], [p].[IsDeleted], [p].[Name], [p].[UpdatedAt], [p].[UpdatedBy]
+FROM [Permissions] AS [p]
+WHERE [p].[IsDeleted] = CAST(0 AS bit)
+2026-05-23 10:46:49.612 +04:00 [INF] Executed DbCommand (17ms) [Parameters=[@__adminRole_Id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [r].[PermissionId]
+FROM [RolePermissions] AS [r]
+WHERE [r].[IsDeleted] = CAST(0 AS bit) AND [r].[RoleId] = @__adminRole_Id_0
+2026-05-23 10:46:49.697 +04:00 [INF] Executed DbCommand (3ms) [Parameters=[@__userName_Value_0='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[UserName] = @__userName_Value_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-23 10:46:49.796 +04:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2026-05-23 10:46:49.822 +04:00 [INF] User profile is available. Using 'C:\Users\azizl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-23 10:46:49.871 +04:00 [INF] Token cleanup started
+2026-05-23 10:46:50.017 +04:00 [INF] Executed DbCommand (45ms) [Parameters=[@__cutoff_0='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM [l]
+FROM [LoginTokens] AS [l]
+WHERE [l].[RevokedAt] IS NOT NULL AND [l].[ExpiresAt] < @__cutoff_0
+2026-05-23 10:46:50.018 +04:00 [ERR] Failed executing DbCommand (92ms) [Parameters=[@p0='?' (DbType = DateTimeOffset), @p1='?' (DbType = DateTimeOffset)], CommandType='"Text"', CommandTimeout='30']
+
+        UPDATE LoginTokens
+        SET IsActive = 0, RevokedAt = @p0
+        WHERE IsActive = 1 AND ExpiresAt < @p1
+2026-05-23 10:46:50.164 +04:00 [ERR] Error during token cleanup
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'IsActive'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__210_1(IAsyncResult result)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.ExecuteSqlRawAsync(DatabaseFacade databaseFacade, String sql, IEnumerable`1 parameters, CancellationToken cancellationToken)
+   at AuthServer.Infrastructure.Repositories.LoginTokenRepository.DeactivateExpiredTokensAsync(CancellationToken ct) in D:\NetworkPassFox\NetworkPass-master\NetWorkPassServer\auth\AuthServer.Infrastructure\Repositories\LoginTokenRepository.cs:line 58
+   at AuthServer.WEBapi.CheckLoginTokenBackgroundService.ExecuteAsync(CancellationToken stoppingToken) in D:\NetworkPassFox\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi\CheckLoginTokenBackgroundService.cs:line 19
+ClientConnectionId:c688f0f3-f624-4787-9fbf-3bd05518ea71
+Error Number:207,State:1,Class:16
+2026-05-23 10:46:50.438 +04:00 [INF] Now listening on: https://localhost:7232
+2026-05-23 10:46:50.439 +04:00 [INF] Now listening on: http://localhost:5142
+2026-05-23 10:46:50.518 +04:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-23 10:46:50.520 +04:00 [INF] Hosting environment: Development
+2026-05-23 10:46:50.520 +04:00 [INF] Content root path: D:\NetworkPassFox\NetworkPass-master\NetWorkPassServer\auth\AuthServer.WEBapi
+2026-05-23 10:46:50.879 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/v1 - null null
+2026-05-23 10:46:52.449 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-23 10:46:52.631 +04:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-05-23 10:46:52.668 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-05-23 10:46:52.679 +04:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-23 10:46:52.685 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - null null
+2026-05-23 10:46:52.685 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/scalar/scalar.js - null null
+2026-05-23 10:46:52.686 +04:00 [WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2026-05-23 10:46:52.693 +04:00 [INF] CORS policy execution failed.
+2026-05-23 10:46:52.694 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-23 10:46:52.696 +04:00 [INF] Request origin https://localhost:7232 does not have permission to access the resource.
+2026-05-23 10:46:52.699 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/v1 - 200 null text/html 1835.2544ms
+2026-05-23 10:46:52.703 +04:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-23 10:46:52.862 +04:00 [INF] Sending file with download name ''.
+2026-05-23 10:46:52.862 +04:00 [INF] Sending file with download name ''.
+2026-05-23 10:46:52.870 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-05-23 10:46:52.873 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.aspnetcore.js - 200 1111 text/javascript 188.5969ms
+2026-05-23 10:46:52.910 +04:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-05-23 10:46:52.914 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/scalar/scalar.js - 200 989709 text/javascript 229.5415ms
+2026-05-23 10:46:53.310 +04:00 [INF] Request starting HTTP/2 GET https://localhost:7232/openapi/v1.json - null null
+2026-05-23 10:46:53.313 +04:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-23 10:46:53.471 +04:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-05-23 10:46:53.473 +04:00 [INF] Request finished HTTP/2 GET https://localhost:7232/openapi/v1.json - 200 null application/json;charset=utf-8 162.756ms

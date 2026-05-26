@@ -21,6 +21,9 @@ namespace NetWorkPassServer.Application.Dtos.BranchDtos
       int OfflineDevices,
 
       int ActiveAlerts,
+       int HealthScore,
+
+       bool IsInMaintenanceMode,
 
       DateTime? LastSeenAt
   );

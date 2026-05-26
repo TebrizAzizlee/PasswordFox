@@ -16,10 +16,8 @@ public sealed record AlertListDto(
     AlertType Type,
 
     AlertSeverity Severity,
-
+    AlertStatus Status,
     string Message,
-
-    bool IsResolved,
 
     DateTime TriggeredAt,
 

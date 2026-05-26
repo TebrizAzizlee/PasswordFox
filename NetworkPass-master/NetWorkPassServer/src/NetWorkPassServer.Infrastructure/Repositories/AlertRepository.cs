@@ -5,14 +5,10 @@ using NetWorkPassServer.Infrastructure.Context;
 
 namespace NetWorkPassServer.Infrastructure.Repositories
 {
-    internal sealed class AlertRepository
-      : Repository<Alert, PasswordDbContext>,
+    internal sealed class AlertRepository(
+        PasswordDbContext context)
+            : Repository<Alert, PasswordDbContext>(context),
         IAlertRepository
     {
-        public AlertRepository(
-            PasswordDbContext context)
-            : base(context)
-        {
-        }
     }
 }

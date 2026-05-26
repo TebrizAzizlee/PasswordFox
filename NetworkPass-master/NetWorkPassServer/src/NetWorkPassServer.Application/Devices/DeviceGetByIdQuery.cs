@@ -23,7 +23,7 @@ internal sealed class DeviceGetByIdQueryHandler(
         CancellationToken cancellationToken)
     {
         var device = await deviceRepository
-            .Where(x => x.Id == request.Id)
+            .Where(x => x.Id == request.Id && !x.IsDeleted && x.Branch!=null && !x.Branch.IsDeleted)
             .AsNoTracking()
             .Select(x => new DeviceDetailDto(
                 x.Id,
@@ -31,10 +31,15 @@ internal sealed class DeviceGetByIdQueryHandler(
                 x.Branch.Name.Value, // 🔥 join burda olur
                 x.Name.Value,
                 x.IpAddress.Value,
-                x.Type.ToString(),
+                x.Type,
+                x.Model,
+                x.Status,
                 x.Description,
-                x.IsActive,
-                x.CreationTime
+                x.LastSeenAt,
+                x.IsMonitoringEnabled,
+                 x.IsActive,
+                x.CreationTime,
+                x.LastModificationTime
             ))
             .SingleOrDefaultAsync(cancellationToken);
 

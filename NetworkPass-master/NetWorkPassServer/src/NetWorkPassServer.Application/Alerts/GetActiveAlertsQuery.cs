@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Application.Dtos;
+using NetWorkPassServer.Domain.Alerts;
 using SharedLibrary;
 using TS.MediatR;
 
@@ -20,7 +21,7 @@ internal sealed class GetActiveAlertsQueryHandler(
     {
         var alerts = await context.Alerts
             .AsNoTracking()
-            .Where(x => !x.IsResolved)
+            .Where(x => x.Status!=AlertStatus.Resolved)
             .OrderByDescending(x => x.TriggeredAt)
             .Select(x => new AlertListDto(
                 x.Id,
@@ -30,8 +31,8 @@ internal sealed class GetActiveAlertsQueryHandler(
                 x.Branch.Name.Value,
                 x.Type,
                 x.Severity,
+                x.Status,
                 x.Message,
-                x.IsResolved,
                 x.TriggeredAt,
                 x.ResolvedAt
             ))

@@ -8,22 +8,36 @@ namespace NetWorkPassServer.Domain.Alerts
 {
     public enum AlertType
     {
-        Unknown = 0,
+
 
         DeviceOffline = 1,
 
-        HighCpuUsage = 2,
+        DeviceRecovered = 2,
 
-        HighMemoryUsage = 3,
+        DeviceDegraded = 3,
 
-        HighTemperature = 4,
+        DeviceFlapping = 4,
 
-        HighPingLatency = 5,
+        HighCpuUsage = 5,
 
-        PacketLoss = 6,
+        HighMemoryUsage = 6,
 
-        VpnDisconnected = 7,
+        HighTemperature = 7,
 
-        InterfaceDown = 8
+        HighPingLatency = 8,
+
+        DevicePacketLoss = 9,
+
+        VpnDisconnected = 10,
+
+        VpnRecovered = 11,
+
+        VpnDegraded = 12,
+
+        VpnFlapping = 13,
+
+        VpnPacketLoss = 14,
+
+        InterfaceDown = 15
     }
 }

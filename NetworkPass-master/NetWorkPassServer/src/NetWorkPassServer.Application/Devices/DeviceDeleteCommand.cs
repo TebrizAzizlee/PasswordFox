@@ -21,7 +21,7 @@ internal sealed class DeviceDeleteCommandHandler(
     {
         // 🔥 1. Device var?
         var device = await deviceRepository.FirstOrDefaultAsync(
-            x => x.Id == request.Id,
+            x => x.Id == request.Id && !x.IsDeleted,
             cancellationToken);
 
         if (device is null)
@@ -32,16 +32,7 @@ internal sealed class DeviceDeleteCommandHandler(
                 HttpStatusCode.NotFound);
         }
 
-        // 🔥 2. artıq silinib?
-        if (device.IsDeleted)
-        {
-            return ServiceResult.Failure(
-                "Artıq silinib",
-                "Device artıq silinmişdir",
-                HttpStatusCode.BadRequest);
-        }
-
-        device.Deactivate();
+        device.MarkAsDeleted();
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

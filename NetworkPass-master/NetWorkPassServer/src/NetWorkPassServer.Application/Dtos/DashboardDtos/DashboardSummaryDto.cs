@@ -12,7 +12,7 @@ public sealed record DashboardSummaryDto
 
     int OfflineBranches,
 
-    int WarningBranches,
+    int DegradedBranches,
 
     int TotalDevices,
 
@@ -20,7 +20,7 @@ public sealed record DashboardSummaryDto
 
     int OfflineDevices,
 
-    int WarningDevices,
+    int DegradedDevices,
 
     int ActiveAlerts,
 

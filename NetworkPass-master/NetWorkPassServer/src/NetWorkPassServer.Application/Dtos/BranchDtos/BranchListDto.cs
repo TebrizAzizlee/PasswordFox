@@ -6,7 +6,7 @@ namespace NetWorkPassServer.Application.Dtos.BranchDtos;
 public sealed record BranchListDto
 (
      Guid Id ,
-
+     string Code,
      string Name ,
 
      string City,
@@ -16,10 +16,11 @@ public sealed record BranchListDto
 
      int TotalDeviceCount ,
      int OnlineDeviceCount ,
-
+     int DegradedDeviceCount,
      int OfflineDeviceCount ,
 
      int AlertCount ,
+     int HealthScore,
      bool IsActive,
      DateTime? LastSeenAt 
 );

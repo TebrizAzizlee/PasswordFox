@@ -13,5 +13,6 @@ public enum DeviceVendor
     Ubiquiti,
     TPLink,
     Fortinet,
-    Juniper
+    Juniper,
+    Canon
 }

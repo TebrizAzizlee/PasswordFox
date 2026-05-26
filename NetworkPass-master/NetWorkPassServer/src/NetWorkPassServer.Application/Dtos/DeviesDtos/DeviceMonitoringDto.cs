@@ -13,7 +13,7 @@ public sealed record DeviceMonitoringDto(
 
     DeviceType Type,
 
-    DeviceVendor Vendor,
+    string Vendor,
 
     DeviceStatus Status,
 

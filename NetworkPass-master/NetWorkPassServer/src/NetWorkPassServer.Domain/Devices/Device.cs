@@ -1,12 +1,11 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using NetWorkPassServer.Domain.Alerts;
+using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.DeviceHeartbeats;
 using NetWorkPassServer.Domain.DeviceMetricss;
-using NetWorkPassServer.Domain.Devices;
-using SharedLibrary.Abstractions.Entity;
+using NetWorkPassServer.Domain.Shared;
 
-
-
+namespace NetWorkPassServer.Domain.Devices;
 public sealed class Device : FullAuditedAggregateRoot<Guid>
 {
     private Device()
@@ -18,6 +17,10 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
         DeviceName name,
         IpAddress ipAddress,
         DeviceType type,
+        string vendor,
+        DeviceRole role,
+        string model,
+         bool iscritical,
         string? description
         )
     {
@@ -25,16 +28,20 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
         Name = name;
         IpAddress = ipAddress;
         Type = type;
+        Vendor = vendor;
+        Role = role;
+        IsCritical=iscritical;
         Description = description;
-       
-        Metrics = new List<DeviceMetric>();
-        Heartbeats = new List<DeviceHeartbeat>();
-        Alerts = new List<Alert>();
+        Model = model;
+        Metrics = [];
+        Heartbeats = [];
+        Alerts = [];
 
         Status = DeviceStatus.Unknown;
 
         IsMonitoringEnabled = true;
         IsActive=true;
+        ConsecutiveFailureCount = 0;
     }
 
     public Guid BranchId { get; private set; } = default;
@@ -47,7 +54,7 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
     public bool IsActive { get; private set; } = default;
     public string Model { get; private set; } = default!;
 
-    public DeviceVendor Vendor { get; private set; }
+    public string Vendor { get; private set; } = default!;
 
     public DeviceType Type { get; private set; }
 
@@ -57,19 +64,20 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
     public int ConsecutiveFailureCount { get; private set; }
     public DeviceStatus Status { get; private set; }
 
-    public DateTime? LastSeenAt { get; private set; } = default!;
-
+    public DateTime? LastSeenAt { get; private set; }
+    public DateTime? LastHeartbeatAttemptAt { get; private set; }
+    public DateTime? LastStatusChangeAt { get; private set; }
     public long UptimeSeconds { get; private set; } = default!;
 
     public bool IsMonitoringEnabled { get; private set; } = default!;
 
-    public double? CpuUsage { get; private set; } = default!;
+    public double? CpuUsage { get; private set; }
 
-    public double? MemoryUsage { get; private set; } = default!;
+    public double? MemoryUsage { get; private set; }
 
-    public double? Temperature { get; private set; } = default!;
+    public double? Temperature { get; private set; }
 
-    public long? PingLatency { get; private set; } = default!;
+    public long? PingLatency { get; private set; }
 
     public Branch Branch { get; private set; } = default!;
 
@@ -83,57 +91,183 @@ public sealed class Device : FullAuditedAggregateRoot<Guid>
         DeviceName name,
         IpAddress ipAddress,
         DeviceType type,
+        string vendor,
+        DeviceRole role,
+        string model,
+        bool isCritical,
         string? description)
     {
         Name = name;
         IpAddress = ipAddress;
         Type = type;
+        Vendor = vendor;
+        Role = role;
+        Model = model;
+        IsCritical = isCritical;
         Description = description;
+    }
+    public void MarkAsDeleted()
+    {
+        if (IsDeleted)
+        {
+            return;
+        }
+
+        IsDeleted = true;
+
+        IsActive = false;
+
+        DisableMonitoring();
+
+        Status = DeviceStatus.Unknown;
     }
     public void Deactivate()
     {
+        if (!IsActive)
+        {
+            return;
+        }
+
         IsActive = false;
 
-        IsMonitoringEnabled = false;
-
+        DisableMonitoring();
         Status = DeviceStatus.Unknown;
     }
     public void Activate()
     {
+        if (IsActive)
+        {
+            return;
+        }
+
         IsActive = true;
 
+    }
+    public void EnableMonitoring()
+    {
+        if (IsMonitoringEnabled)
+        {
+            return;
+        }
+
         IsMonitoringEnabled = true;
+        ConsecutiveFailureCount = 0;
 
         Status = DeviceStatus.Unknown;
     }
+
+    public void DisableMonitoring()
+    {
+        if (!IsMonitoringEnabled)
+        {
+            return;
+        }
+
+        IsMonitoringEnabled = false;
+    }
+
     public void MarkHeartbeatSuccess(
-     long? responseTimeMs)
+     long? responseTimeMs, DateTime utcNow)
     {
         ConsecutiveFailureCount = 0;
-
-        LastSeenAt = DateTime.UtcNow;
+        LastHeartbeatAttemptAt = utcNow;
+        LastSeenAt = utcNow;
 
         PingLatency = responseTimeMs;
+        EvaluateHealthStatus(
+            utcNow);
+    }
+    public void MarkHeartbeatFailure(
+        DateTime utcNow)
+    {
+        LastHeartbeatAttemptAt = utcNow;
 
-        if (responseTimeMs.HasValue &&
-            responseTimeMs.Value > 500)
+        ConsecutiveFailureCount++;
+
+        
+
+        if (ConsecutiveFailureCount < 3)
         {
-            Status = DeviceStatus.Warning;
+            return;
+        }
+
+        ChangeStatus(
+            DeviceStatus.Offline,
+            utcNow);
+    }
+    public void UpdateMetrics(
+        double? cpuUsage,
+        double? memoryUsage,
+        double? temperature,
+        long uptimeSeconds)
+    {
+        CpuUsage = cpuUsage;
+
+        MemoryUsage = memoryUsage;
+
+        Temperature = temperature;
+
+        UptimeSeconds = uptimeSeconds;
+    }
+    public void EvaluateHealthStatus(
+       DateTime utcNow)
+    {
+        // 🔥 offline state handled separately
+
+        if (ConsecutiveFailureCount >= 3)
+        {
+            ChangeStatus(
+                DeviceStatus.Offline,
+                utcNow);
 
             return;
         }
 
-        Status = DeviceStatus.Online;
-    }
-    public void MarkHeartbeatFailure()
-    {
-        ConsecutiveFailureCount++;
+        // 🔥 degraded checks
 
-        if (ConsecutiveFailureCount >= 3)
+        var highLatency =
+            PingLatency.HasValue &&
+            PingLatency.Value > 500;
+
+        var highCpu =
+            CpuUsage.HasValue &&
+            CpuUsage.Value >= 90;
+
+        var highMemory =
+            MemoryUsage.HasValue &&
+            MemoryUsage.Value >= 90;
+
+        var highTemperature =
+            Temperature.HasValue &&
+            Temperature.Value >= 80;
+
+        if (highLatency ||
+            highCpu ||
+            highMemory ||
+            highTemperature)
         {
-            Status = DeviceStatus.Offline;
-        }
-    }
+            ChangeStatus(
+                DeviceStatus.Degraded,
+                utcNow);
 
-   
+            return;
+        }
+        ChangeStatus(
+         DeviceStatus.Online,
+         utcNow);
+
+    }
+    private void ChangeStatus(
+        DeviceStatus newStatus,
+        DateTime utcNow)
+    {
+        if (Status == newStatus)
+        {
+            return;
+        }
+
+        Status = newStatus;
+
+        LastStatusChangeAt = utcNow;
+    }
 }

@@ -5,7 +5,7 @@ namespace NetWorkPassServer.Domain.Branches;
 public enum BranchType
 {
     HeadOffice = 1,
-    Branch = 2,
+    RetailBranch = 2,
     Warehouse = 3,
     Datacenter = 4,
     RemoteOffice = 5

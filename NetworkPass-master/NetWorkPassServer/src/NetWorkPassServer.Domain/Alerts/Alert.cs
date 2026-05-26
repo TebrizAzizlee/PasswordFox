@@ -15,17 +15,43 @@ public sealed class Alert : FullAuditedAggregateRoot<Guid>
         Guid branchId,
         AlertType type,
         AlertSeverity severity,
-        string message)
+        AlertSource source,
+        string message,
+        string title,       
+        DateTime triggeredAt,
+         string fingerprint)
     {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            throw new ArgumentException(
+                "Title boş ola bilməz");
+        }
+
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            throw new ArgumentException(
+                "Message boş ola bilməz");
+        }
+        if (string.IsNullOrWhiteSpace(fingerprint))
+        {
+            throw new ArgumentException(
+                "Fingerprint boş ola bilməz");
+        }
+
+
+
+
         DeviceId = deviceId;
         BranchId = branchId;
         Type = type;
+        Title = title.Trim();
         Severity = severity;
+        Source = source;
         Message = message;
-
-        IsResolved = false;
-
-        TriggeredAt = DateTime.UtcNow;
+        OccurrenceCount=1;
+       Status = AlertStatus.Open;
+        Fingerprint = fingerprint.Trim();
+        TriggeredAt = triggeredAt;
     }
 
     // RELATIONS
@@ -43,50 +69,90 @@ public sealed class Alert : FullAuditedAggregateRoot<Guid>
     public AlertType Type { get; private set; }
 
     public AlertSeverity Severity { get; private set; }
-
+    public AlertSource Source { get; private set; }
+    public string Title { get; private set; } = default!;
     public string Message { get; private set; } = default!;
-
+    // 🔥 deduplication key
+    public string Fingerprint { get; private set; } = default!;
+    public Guid? ResolvedBy { get; private set; }
     // STATE
-
-    public bool IsResolved { get; private set; }
-
+    public int OccurrenceCount { get; private set; }
+    public AlertStatus Status { get; private set; }
     public DateTime TriggeredAt { get; private set; }
-
+    public DateTime? AcknowledgedAt { get; private set; }
+    public Guid? AcknowledgedBy { get; private set; }
     public DateTime? ResolvedAt { get; private set; }
 
     public string? ResolutionNote { get; private set; }
 
     // METHODS
 
-    public void Resolve(
-        string? resolutionNote = null)
+
+
+    // METHODS
+    public void IncrementOccurrence()
     {
-        if (IsResolved)
+        OccurrenceCount++;
+    }
+    public void Acknowledge(
+        Guid userId)
+    {
+        if (Status == AlertStatus.Resolved)
+        {
+            return;
+        }
+        if (Status == AlertStatus.Acknowledged)
         {
             return;
         }
 
-        IsResolved = true;
+        Status = AlertStatus.Acknowledged;
+
+        AcknowledgedAt = DateTime.UtcNow;
+
+        AcknowledgedBy = userId;
+    }
+
+
+
+    public void Resolve(
+      Guid? userId = null,
+      string? resolutionNote = null)
+    {
+        if (Status == AlertStatus.Resolved)
+        {
+            return;
+        }
+
+        Status = AlertStatus.Resolved;
 
         ResolvedAt = DateTime.UtcNow;
 
         ResolutionNote = resolutionNote;
-    }
 
-    public void ReOpen()
+        ResolvedBy = userId;
+    }
+    public void ChangeMessage(
+       string title,
+       string message)
     {
-        IsResolved = false;
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            throw new ArgumentException(
+                "Title boş ola bilməz");
+        }
 
-        ResolvedAt = null;
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            throw new ArgumentException(
+                "Message boş ola bilməz");
+        }
 
-        ResolutionNote = null;
+        Title = title.Trim();
+
+        Message = message.Trim();
     }
 
-    public void ChangeSeverity(
-        AlertSeverity severity)
-    {
-        Severity = severity;
-    }
 
     public void ChangeMessage(
         string message)

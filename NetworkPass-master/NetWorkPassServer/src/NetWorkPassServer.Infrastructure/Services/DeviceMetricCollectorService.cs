@@ -27,11 +27,13 @@ namespace NetWorkPassServer.Infrastructure.Services
 
             var entity = DeviceMetric.Create(
                 metric.DeviceId,
+                
                 metric.Timestamp,
                 metric.CpuUsage,
                 metric.MemoryUsage,
                 metric.DiskUsage,
                 metric.Temperature,
+                metric.UptimeSeconds,
                 metric.PingLatency
                 );
 

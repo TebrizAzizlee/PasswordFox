@@ -1,79 +1,72 @@
 ﻿using NetWorkPassServer.Domain.Branches;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NetWorkPassServer.Application.Dtos.BranchDtos;
-public sealed record BranchDetailsDto
-{
-    public Guid Id { get; set; }
+public sealed record BranchDetailsDto(
+    Guid Id,
 
-    public string Name { get; set; } = default!;
+    string Code,
 
-    public string Code { get; set; } = default!;
+    string Name,
 
-    public string? Description { get; set; }
+    string? Description,
 
-    public BranchType Type { get; set; }
+    BranchType Type,
 
-    public BranchStatus Status { get; set; }
+    BranchStatus Status,
 
     // ADDRESS
 
-    public string City { get; set; } = default!;
+    string City,
 
-    public string District { get; set; } = default!;
+    string District,
 
-    public string FullAddress { get; set; } = default!;
-
+    string FullAddress,
 
     // CONTACT
 
-    public string PhoneNumber1 { get; set; } = default!;
+    string PhoneNumber1,
 
-    public string? PhoneNumber2 { get; set; }
+    string? PhoneNumber2,
 
-    public string Email { get; set; } = default!;
-
+    string Email,
 
     // NETWORK
 
-    public string WanIp { get; set; } = default!;
+    string? WanIp,
 
-    public string Subnet { get; set; } = default!;
+    string? Subnet,
 
-    public string Gateway { get; set; } = default!;
+    string? Gateway,
 
-    public string DnsServer { get; set; } = default!;
-
+    string? DnsServer,
 
     // STATS
 
-    public int TotalDeviceCount { get; set; }
+    int TotalDeviceCount,
 
-    public int OnlineDeviceCount { get; set; }
+    int OnlineDeviceCount,
 
-    public int OfflineDeviceCount { get; set; }
+    int OfflineDeviceCount,
 
-    public int WarningDeviceCount { get; set; }
+    int DegradedDeviceCount,
 
-    public int AlertCount { get; set; }
+    int AlertCount,
 
+    int HealthScore,
 
     // STATE
 
-    public DateTime? LastSeenAt { get; set; }
+    DateTime? LastSeenAt,
 
-    public bool IsMonitoringEnabled { get; set; }
+    bool IsMonitoringEnabled,
 
-    public bool IsActive { get; set; }
+    bool IsInMaintenanceMode,
 
+    bool IsActive,
 
     // AUDIT
 
-    public DateTime CreationTime { get; set; }
+    DateTime CreationTime,
 
-    public DateTime? LastModificationTime { get; set; }
-}
+    DateTime? LastModificationTime
+);

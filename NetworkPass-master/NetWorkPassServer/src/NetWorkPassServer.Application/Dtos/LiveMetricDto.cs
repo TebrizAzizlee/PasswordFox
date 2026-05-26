@@ -15,7 +15,7 @@ namespace NetWorkPassServer.Application.Dtos
      double? DiskUsage ,
 
     double? Temperature,
-
+     long? UptimeSeconds,
      long? PingLatency
 
     

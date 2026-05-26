@@ -13,6 +13,7 @@ public sealed class DeviceHeartbeat : Entity<Guid>
         DeviceStatus status,
         bool isReachable,
         long? responseTimeMs,
+        DateTime occurredAtUtc,
         string? errorMessage)
     {
         DeviceId = deviceId;
@@ -20,7 +21,7 @@ public sealed class DeviceHeartbeat : Entity<Guid>
         IsReachable = isReachable;
         ResponseTimeMs = responseTimeMs;
         ErrorMessage = errorMessage;
-
+        OccurredAtUtc=occurredAtUtc;
         Timestamp = DateTime.UtcNow;
     }
 
@@ -31,7 +32,7 @@ public sealed class DeviceHeartbeat : Entity<Guid>
     public DeviceStatus Status { get; private set; }
 
     public bool IsReachable { get; private set; }
-
+    public DateTime OccurredAtUtc {  get; private set; }
     public long? ResponseTimeMs { get; private set; }
 
     public string? ErrorMessage { get; private set; }

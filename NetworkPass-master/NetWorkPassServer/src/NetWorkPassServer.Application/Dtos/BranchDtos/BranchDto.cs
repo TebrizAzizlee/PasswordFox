@@ -37,8 +37,6 @@ public sealed record BranchDto(
 
     int OfflineDeviceCount,
 
-    int WarningDeviceCount,
-
     int AlertCount,
 
     DateTime? LastSeenAt,

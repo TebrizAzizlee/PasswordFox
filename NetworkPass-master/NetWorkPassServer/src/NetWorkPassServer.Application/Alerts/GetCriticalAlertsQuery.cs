@@ -28,8 +28,7 @@ internal sealed class GetCriticalAlertsQueryHandler(
     {
         var alerts = await context.Alerts
             .AsNoTracking()
-            .Where(x =>
-                !x.IsResolved &&
+            .Where(x => x.Status!=AlertStatus.Resolved &&
                 x.Severity == AlertSeverity.Critical)
             .OrderByDescending(x => x.TriggeredAt)
             .Select(x => new AlertListDto(
@@ -40,8 +39,8 @@ internal sealed class GetCriticalAlertsQueryHandler(
                 x.Branch.Name.Value,
                 x.Type,
                 x.Severity,
+                x.Status,
                 x.Message,
-                x.IsResolved,
                 x.TriggeredAt,
                 x.ResolvedAt
             ))

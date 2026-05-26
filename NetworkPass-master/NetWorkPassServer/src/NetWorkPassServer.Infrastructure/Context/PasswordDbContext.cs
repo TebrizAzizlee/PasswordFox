@@ -3,7 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Domain.Alerts;
+using NetWorkPassServer.Domain.Branches;
+using NetWorkPassServer.Domain.DeviceHeartbeats;
+using NetWorkPassServer.Domain.DeviceInterfaces;
 using NetWorkPassServer.Domain.DeviceMetricss;
+using NetWorkPassServer.Domain.Devices;
+using NetWorkPassServer.Domain.InterfaceMetrics;
+using NetWorkPassServer.Domain.VpnTunnelHeartbeats;
+using NetWorkPassServer.Domain.VpnTunnels;
 using SharedLibrary;
 using SharedLibrary.Abstractions.Entity;
 using SharedLibrary.BaseContext;
@@ -20,24 +27,36 @@ public sealed class PasswordDbContext(DbContextOptions<PasswordDbContext> option
         modelBuilder.ApplyGlobalFilters();
         base.OnModelCreating(modelBuilder);
     }
-    public DbSet<Branch> Branches { get; set; }
-    public DbSet<Device> Devices { get; set; }
+    public DbSet<Branch> Branches { get; set; } = default!;
+    public DbSet<Device> Devices { get; set; } = default!;
+    public DbSet<DeviceHeartbeat>DeviceHeartbeats { get; set; } = default!;
+    public DbSet<Alert> Alerts { get; set; } = default!;
+    public DbSet<DeviceMetric> DeviceMetrics { get; set; } = default!;
+    public DbSet<VpnTunnel> VpnTunnels { get; set; } = default!;
+    public DbSet<VpnTunnelHeartbeat> VpnTunnelHeartbeats { get; set; } = default!;
+    public DbSet<DeviceInterface> DeviceInterfaces { get; set; }
 
-    public DbSet<Alert> Alerts { get; set; }
-    public DbSet<DeviceMetric> DeviceMetrics { get; set; }
+    public DbSet<InterfaceMetric> InterfaceMetrics { get; set; }
+
+    // EXPLICIT INTERFACE IMPLEMENTATION
+
+
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        if (Database.ProviderName!=null)
+        if (Database.ProviderName is null)
         {
+            throw new InvalidOperationException(
+                "Database provider not configured");
+        }
             var SystemUserId = new IdentityId(SystemUser.Id);
             var now = DateTimeOffset.UtcNow;
             ApplyAudit(ChangeTracker, SystemUserId, now);
 
 
             return await base.SaveChangesAsync(cancellationToken);
-        }
-        throw new InvalidOperationException("Use SaveChangesAsync(userId)");
+        
+        
 
     }
     public  Task<int> SaveChangesAsync(IdentityId userId, CancellationToken cancellationToken = default)

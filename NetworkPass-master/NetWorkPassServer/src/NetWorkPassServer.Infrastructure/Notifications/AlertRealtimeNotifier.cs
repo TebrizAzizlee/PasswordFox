@@ -14,20 +14,66 @@ namespace NetWorkPassServer.Infrastructure.Notifications
             AlertListDto alert,
             CancellationToken cancellationToken)
         {
-            await hubContext.Clients.All.SendAsync(
+            await hubContext.Clients.Group("noc").SendAsync(
                 "alert-created",
                 alert,
                 cancellationToken);
+
+            // 🔥 branch specific stream
+            await hubContext.Clients.Group($"branch:{alert.BranchId}").SendAsync("alerts:created",
+                alert,
+                cancellationToken);
+
+        }
+
+        public async Task AlertAcknowledgedAsync(
+            Guid alertId,
+            Guid acknowledgedBy,
+            DateTime acknowledgedAt,
+            CancellationToken cancellationToken)
+        {
+            var payload = new
+            {
+                AlertId = alertId,
+
+                AcknowledgedBy = acknowledgedBy,
+
+                AcknowledgedAt = acknowledgedAt
+            };
+            await hubContext.Clients
+             .Group("noc")
+             .SendAsync(
+                 "alerts:acknowledged",
+                 payload,
+                 cancellationToken);
         }
 
         public async Task AlertResolvedAsync(
-            Guid alertId,
-            CancellationToken cancellationToken)
+      Guid alertId,
+      Guid? resolvedBy,
+      DateTime resolvedAt,
+      string? resolutionNote,
+      CancellationToken cancellationToken)
         {
-            await hubContext.Clients.All.SendAsync(
-                "alert-resolved",
-                alertId,
-                cancellationToken);
+            var payload = new
+            {
+                AlertId = alertId,
+
+                ResolvedBy = resolvedBy,
+
+                ResolvedAt = resolvedAt,
+
+                ResolutionNote = resolutionNote
+            };
+
+            await hubContext.Clients
+                .Group("noc")
+                .SendAsync(
+                    "alerts:resolved",
+                    payload,
+                    cancellationToken);
         }
     }
 }
+
+

@@ -1,10 +1,10 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using NetWorkPassServer.Domain.Alerts;
-using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Branches.ValueObjects;
 using NetWorkPassServer.Domain.Devices;
 using NetWorkPassServer.Domain.VpnTunnels;
 
+namespace NetWorkPassServer.Domain.Branches;
 public sealed class Branch : FullAuditedAggregateRoot<Guid>
 {
     private Branch()
@@ -13,38 +13,53 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
 
     public Branch(
         BranchName name,
+        BranchType type,
         Address address,
         ContactInfo contactInfo,
-        NetworkInfo networkInfo)
+        NetworkInfo networkInfo,
+        string code, 
+        string? description,
+        int healtScore)
+
     {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            throw new ArgumentException(
+                "Branch code boş ola bilməz");
+        }
+
+        Code = code.Trim().ToUpperInvariant();
         SetName(name);
+        Type = type;
+        Description = description?.Trim();
+        HealthScore = healtScore;
+        Address = address;
+        ContactInfo = contactInfo;
+        NetworkInfo = networkInfo;
 
-        Address = address ?? throw new ArgumentNullException(nameof(address));
-        ContactInfo = contactInfo ?? throw new ArgumentNullException(nameof(contactInfo));
-        NetworkInfo = networkInfo ?? throw new ArgumentNullException(nameof(networkInfo));
-
-        Devices = new List<Device>();
-        Alerts = new List<Alert>();
-        VpnTunnels = new List<VpnTunnel>();
+        Devices = [];
+        Alerts = [];
+        VpnTunnels = [];
 
         Status = BranchStatus.Unknown;
-
+        HealthScore=100;
         IsActive = true;
         IsMonitoringEnabled = true;
-       
+        IsInMaintenanceMode = false;
     }
 
     // BASIC
 
-    public BranchName Name { get; private set; } = default!;
-
     public string Code { get; private set; } = default!;
 
-    public string Description { get; private set; } = default!;
-   
+    public BranchName Name { get; private set; } = default!;
+
+    public BranchType Type { get; private set; }
+
+    public string? Description { get; private set; }=default!;
+
 
     // VALUE OBJECTS
-
     public Address Address { get; private set; } = default!;
 
     public ContactInfo ContactInfo { get; private set; } = default!;
@@ -54,31 +69,34 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
 
     // STATUS
 
-    public BranchStatus Status { get; private set; } = default!;    
+    public BranchStatus Status { get; private set; }
 
-    public BranchType Type { get; private set; }= default!;
-
-    public DateTime? LastSeenAt { get; private set; }
+    public bool IsActive { get; private set; } = default!;
 
     public bool IsMonitoringEnabled { get; private set; } = default!;
 
-    public bool IsActive { get; private set; } = default!;
+    public bool IsInMaintenanceMode { get; private set; } = default!;
+
+    public DateTime? LastSeenAt { get; private set; } = default!;
 
 
     // STATS
 
-    public int OnlineDeviceCount { get; private set; } = default!;
+    public int TotalDeviceCount { get; private set; } = default!;
 
+    public int OnlineDeviceCount { get; private set; }=default!;
+        
     public int OfflineDeviceCount { get; private set; } = default!;
 
-    public int WarningDeviceCount { get; private set; } = default!;
-    public int TotalDeviceCount { get; private set; }
+    public int DegradedDeviceCount { get; private set; } = default!;
+
     public int AlertCount { get; private set; } = default!;
 
-
+    public int HealthScore { get; private set; } = default!;
     // RELATIONS
 
-    public ICollection<Device> Devices { get; private set; }=default! ;
+
+    public ICollection<Device> Devices { get; private set; } = default!;
 
     public ICollection<Alert> Alerts { get; private set; } = default!;
 
@@ -88,44 +106,112 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
     public void SetName(BranchName name)
     {
         if (string.IsNullOrWhiteSpace(name.Value))
-            throw new ArgumentException(nameof(name));
+           
 
         Name = name;
     }
 
     public void Update(
         BranchName name,
+        BranchType branchType,
         Address address,
         ContactInfo contactInfo,
-        NetworkInfo networkInfo)
+        NetworkInfo networkInfo,
+        string? description)
     {
-        SetName(name);
+        Name=name;
+        Type = branchType;
 
-        Address = address ?? throw new ArgumentNullException(nameof(address));
+        Address = address;
 
-        ContactInfo = contactInfo ?? throw new ArgumentNullException(nameof(contactInfo));
+        ContactInfo = contactInfo;
 
-        NetworkInfo = networkInfo ?? throw new ArgumentNullException(nameof(networkInfo));
+        NetworkInfo = networkInfo;
+        Description = description;
     }
+    public void ChangeCode(string code)
 
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            throw new ArgumentException(
+                "Branch code boş ola bilməz");
+        }
+
+        Code = code.Trim().ToUpperInvariant();
+    }
     public void Activate()
     {
+        if (IsActive)
+        {
+            return;
+        }
+
         IsActive = true;
+
+        IsMonitoringEnabled = true;
+
     }
 
     public void Deactivate()
     {
+        if (!IsActive)
+        {
+            return;
+        }
+
         IsActive = false;
-    }
-    public void IncreaseDeviceCount()
-    {
-        TotalDeviceCount++;
+
+        IsMonitoringEnabled = false;
+
     }
 
-    public void DecreaseDeviceCount()
+    public void EnableMaintenanceMode()
     {
-        if (TotalDeviceCount > 0)
-            TotalDeviceCount--;
+        if (IsInMaintenanceMode)
+        {
+            return;
+        }
+
+        IsInMaintenanceMode = true;
+    }
+
+    public void DisableMaintenanceMode()
+    {
+        if (!IsInMaintenanceMode)
+        {
+            return;
+        }
+
+        IsInMaintenanceMode = false;
+    }
+
+    // MONITORING
+
+    public void EnableMonitoring()
+    {
+        if (!IsActive)
+        {
+            throw new InvalidOperationException(
+                "Inactive branch monitoring enable edilə bilməz");
+        }
+
+        if (IsMonitoringEnabled)
+        {
+            return;
+        }
+
+        IsMonitoringEnabled = true;
+    }
+
+    public void DisableMonitoring()
+    {
+        if (!IsMonitoringEnabled)
+        {
+            return;
+        }
+
+        IsMonitoringEnabled = false;
     }
     public void MarkAsDeleted()
     {
@@ -139,30 +225,20 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
         IsMonitoringEnabled = false;
     }
 
-    public void RecalculateDeviceStats()
+    public void UpdateLastSeenAt(DateTime? lastSeenAt)
+
     {
-        TotalDeviceCount =
-            Devices.Count(x => !x.IsDeleted);
-
-        OnlineDeviceCount =
-            Devices.Count(x =>
-                !x.IsDeleted &&
-                x.Status == DeviceStatus.Online);
-
-        OfflineDeviceCount =
-            Devices.Count(x =>
-                !x.IsDeleted &&
-                x.Status == DeviceStatus.Offline);
-
-        WarningDeviceCount =
-            Devices.Count(x =>
-                !x.IsDeleted &&
-                x.Status == DeviceStatus.Warning);
-
-        UpdateBranchStatus();
+        LastSeenAt = lastSeenAt;
     }
     private void UpdateBranchStatus()
     {
+        if (IsInMaintenanceMode)
+        {
+            Status = BranchStatus.Maintenance;
+
+            return;
+        }
+
         if (TotalDeviceCount == 0)
         {
             Status = BranchStatus.Unknown;
@@ -177,9 +253,9 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
             return;
         }
 
-        if (WarningDeviceCount > 0)
+        if (DegradedDeviceCount > 0)
         {
-            Status = BranchStatus.Warning;
+            Status = BranchStatus.Degraded;
 
             return;
         }
@@ -193,4 +269,19 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
 
         Status = BranchStatus.Unknown;
     }
+    public void UpdateStats(int totalDevices, int onlineDevices, int offlineDevices, int degradedDevices, int alertCount ,int healthScore)
+    {
+        TotalDeviceCount = totalDevices;
+
+        OnlineDeviceCount = onlineDevices;
+
+        OfflineDeviceCount = offlineDevices;
+
+        DegradedDeviceCount = degradedDevices;
+
+        AlertCount = alertCount;
+        HealthScore=healthScore;
+        UpdateBranchStatus();
+    }
+   
 }

@@ -7,6 +7,7 @@ using NetWorkPassServer.Infrastructure.Hubs;
 using NetWorkPassServer.WEBAPI.Modules;
 using Scalar.AspNetCore;
 using SharedLibrary.Configurations;
+using SharedLibrary.Middlewares;
 using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,12 +31,15 @@ builder.Services.AddRateLimiter(cfr =>
 
     });
 });
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>(); 
+builder.Services.AddProblemDetails();
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("cors", x => {
-        x.WithOrigins("https://localhost7232", "https://localhost:4200")//Authserver
+        x.WithOrigins("https://localhost:7232", "https://localhost:4200")//Authserver
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();
@@ -44,35 +48,28 @@ builder.Services.AddCors(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddAuthorization();
 var app = builder.Build();
-app.MapOpenApi();
-app.MapScalarApiReference();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+
+    app.MapScalarApiReference();
+}
 //http leri https cevirir
 app.UseHttpsRedirection();
 app.UseCors("cors");
-
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.Use(async (context, next) =>
-{
-    
-    await next();
-});
-
-app.Use(async (context, next) =>
-{
-    
-    await next();
-});
-app.Use(async (ctx, next) =>
-{
-    
-    await next();
-});
+app.UseRateLimiter();
+//app.UseSerilogRequestLogging();
 app.MapControllers().RequireRateLimiting("fixed");
 
 app.MapBranch();
 app.MapDevice();
+app.RegisterDeviceHeartbeatRoutes();
+app.RegisterAlertRoutes();
+app.MapHub<DashboardHub>(
+    "/hubs/dashboard");
 app.MapHub<AlertHub>(
     "/hubs/alerts");
 app.MapHub<MonitoringHub>(

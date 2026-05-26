@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace NetWorkPassServer.Domain.Devices;
 public enum DeviceRole
 {
-    CoreRouter,
-    EdgeRouter,
-    DistributionSwitch,
-    AccessSwitch,
-    Firewall,
-    WirelessController,
-    AccessPoint
+    Core = 1,
+    Distribution = 2,
+    Access = 3,
+    Edge = 4,
+    WAN = 5,
+    VPN = 6,
+    DMZ = 7
 }

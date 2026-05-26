@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.Branches;
-public sealed record BranchGetAllQuery(string? Search, BranchStatus? Status,
+public sealed record BranchGetAllQuery(
+    string? Search, 
+    BranchStatus? Status,
     BranchType? Type,
     int Page = 1,
     int PageSize = 10
@@ -29,7 +31,7 @@ IBranchRepository branchRepository
     {
         var page = request.Page < 1 ? 1 : request.Page;
         var pageSize = request.PageSize is < 1 or > 100 ? 10 : request.PageSize;
-        var query = branchRepository.Where(x=>true).AsNoTracking();
+        var query = branchRepository.Where(x=>!x.IsDeleted).AsNoTracking();
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
             var search = request.Search.Trim();
@@ -37,7 +39,11 @@ IBranchRepository branchRepository
             query = query.Where(x =>
                 EF.Functions.Like(
                     x.Name.Value,
-                    $"%{search}%"));
+                    $"%{search}%") ||
+                    
+                    EF.Functions.Like(
+                    x.Code, $"%{search}%"));
+                
         }
         if (request.Status.HasValue)
         {
@@ -52,20 +58,24 @@ IBranchRepository branchRepository
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query
-            .OrderBy(x => x.Name) // default sorting
+            .OrderBy(x => x.Name.Value) // default sorting
             .Skip((page-1)*pageSize)
             .Take(pageSize)
             .Select(x => new BranchListDto(
                 x.Id,
+                x.Code,
                 x.Name.Value,
                x.Address.City,
                x.Type,
                 x.Status,
                 x.TotalDeviceCount,
                 x.OnlineDeviceCount,
+                x.DegradedDeviceCount,
                 x.OfflineDeviceCount,
-                x.AlertCount,
+                x.AlertCount, 
+                x.HealthScore,
                 x.IsActive,
+                
                 x.LastSeenAt
             ))
             .ToListAsync(cancellationToken);

@@ -41,25 +41,27 @@ public class GlobalExceptionHandler : IExceptionHandler
                 problem.Extensions["errors"]=errors;
                 break;
             case UnauthorizedException:
-                problem = CreateProblem("Unauthorized", 401);
+                problem = CreateProblem(httpContext,exception.Message, StatusCodes.Status401Unauthorized);
                 break;
-            case AuthorizationException:
-                problem = CreateProblem("Forbidden", 403);
+            case ForbiddenException:
+                problem = CreateProblem(httpContext,exception.Message,StatusCodes.Status403Forbidden);
                 break;
 
             case BadRequestException ex:
-                problem = CreateProblem(ex.Message, 400);
+                problem = CreateProblem(httpContext, ex.Message, StatusCodes.Status400BadRequest);
                 break;
 
             case NotFoundException ex:
-                problem = CreateProblem(ex.Message, 404);
+                problem = CreateProblem(httpContext, ex.Message, StatusCodes.Status404NotFound);
                 break;
 
             case RateLimitExceededException ex:
                 httpContext.Response.Headers["Retry-After"] = ex.RetryAfterSeconds.ToString();
-                problem = CreateProblem(ex.Message, 429);
+                problem = CreateProblem(httpContext, ex.Message, 429);
                 break;
-
+            case TokenException ex:
+                problem = CreateProblem(httpContext, ex.Message ?? "Invalid token", StatusCodes.Status401Unauthorized);
+                break;
 
             default:
                 Log.Error(exception, "Unhandled exception occurred");
@@ -87,12 +89,20 @@ public class GlobalExceptionHandler : IExceptionHandler
         return true; // handled
     }
 
-    private static ProblemDetails CreateProblem(string message, int status)
+    private static ProblemDetails CreateProblem(HttpContext context, string message, int status)
     {
         return new ProblemDetails
         {
             Title = message,
-            Status = status
+            Status = status,
+            Instance = context.Request.Path,
+            Extensions=
+            {
+                
+                    ["traceId"]=context.TraceIdentifier,
+                    ["timestamp"]=DateTime.UtcNow
+                    
+            }
         };
     }
 }

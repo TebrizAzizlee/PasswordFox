@@ -1,6 +1,9 @@
 ﻿using GenericRepository;
-using NetWorkPassServer.Domain.Branches;
+using NetWorkPassServer.Application.Alerts;
+using NetWorkPassServer.Application.Services;
+using NetWorkPassServer.Domain.Alerts;
 using NetWorkPassServer.Domain.DeviceHeartbeats;
+using NetWorkPassServer.Domain.DeviceMetricss;
 using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
 using System.Net;
@@ -8,18 +11,24 @@ using TS.MediatR;
 
 namespace NetWorkPassServer.Application.DeviceHeartbeats;
 public sealed record DeviceHeartbeatReceivedCommand(
-    Guid DeviceId,
-
+      Guid DeviceId,
     bool IsReachable,
+    string? ErrorMessage,  
+    double? CpuUsage,
+    double? DiskUsage,
+    double? MemoryUsage,
+    double? Temperature,
+    long? UptimeSeconds,
+    long? ResponseTimeMs
 
-    long? ResponseTimeMs,
 
-    string? ErrorMessage
 ) : IRequest<ServiceResult>;
 internal sealed class DeviceHeartbeatReceivedCommandHandler(
     IDeviceRepository deviceRepository,
     IDeviceHeartbeatRepository heartbeatRepository,
-    IBranchRepository branchRepository,
+    IDeviceMetricRepository metricRepository,
+    IBranchStatsService branchStats,
+    IAlertService alertService,
     IUnitOfWork unitOfWork)
     : IRequestHandler<
         DeviceHeartbeatReceivedCommand,
@@ -31,7 +40,8 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
     {
         var device = await deviceRepository
             .FirstOrDefaultAsync(
-                x => x.Id == request.DeviceId,
+                x => x.Id == request.DeviceId &&
+                !x.IsDeleted,
                 cancellationToken);
 
         if (device is null)
@@ -41,48 +51,253 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                 "Device tapılmadı",
                 HttpStatusCode.NotFound);
         }
+        var utcNow = DateTime.UtcNow;
+        var oldStatus = device.Status;
 
+        // 🔥 realtime status update
+        if (request.IsReachable)
+        {
+            device.MarkHeartbeatSuccess(
+                request.ResponseTimeMs, utcNow);
+            // 🔥 realtime metrics update
+
+            device.UpdateMetrics(
+            request.CpuUsage,
+              request.MemoryUsage,
+             request.Temperature,
+              request.UptimeSeconds ?? 0);
+            device.EvaluateHealthStatus(
+                utcNow);
+        }
+        else
+        {
+            device.MarkHeartbeatFailure(utcNow);
+        }
+        // 🔥 heartbeat history
         var heartbeat = new DeviceHeartbeat(
             request.DeviceId,
-            request.IsReachable
-                ? DeviceStatus.Online
-                : DeviceStatus.Offline,
+            device.Status,
             request.IsReachable,
             request.ResponseTimeMs,
+            utcNow,
             request.ErrorMessage);
 
         await heartbeatRepository.AddAsync(
             heartbeat,
             cancellationToken);
 
-        var oldStatus = device.Status;
+        // 🔥 metric history
 
         if (request.IsReachable)
         {
-            device.MarkHeartbeatSuccess(
-                request.ResponseTimeMs);
+            var latestMetric =
+                await metricRepository
+                    .GetLatestAsync(
+                        device.Id,
+                        cancellationToken);
+
+            var shouldPersistMetric =
+                latestMetric is null ||
+
+                Math.Abs(
+                    (latestMetric.CpuUsage ?? 0) -
+                    (request.CpuUsage ?? 0)) >= 5 ||
+
+                Math.Abs(
+                    (latestMetric.MemoryUsage ?? 0) -
+                    (request.MemoryUsage ?? 0)) >= 5 ||
+
+                Math.Abs(
+                    (latestMetric.Temperature ?? 0) -
+                    (request.Temperature ?? 0)) >= 3 ||
+
+                utcNow -
+                latestMetric.OccurredAtUtc >=
+                TimeSpan.FromMinutes(1);
+
+            if (shouldPersistMetric)
+            {
+                var metric =
+                    DeviceMetric.Create(
+                        device.Id,
+                        utcNow,
+                        request.CpuUsage,
+                        request.MemoryUsage,
+                        request.DiskUsage,
+                        request.Temperature,
+                        request.UptimeSeconds,
+                        request.ResponseTimeMs);
+
+                await metricRepository.AddAsync(
+                    metric,
+                    cancellationToken);
+            }
+
+        }
+
+
+
+
+        if (request.CpuUsage.HasValue && request.CpuUsage.Value >= 90)
+        {
+            await alertService.ProcessAsync(
+                new AlertContext
+                {
+                    Device = device,
+
+                    Type =
+                        AlertType.HighCpuUsage,
+
+                    Severity =
+                        AlertSeverity.Warning,
+
+                    Source =
+                        AlertSource.System,
+
+                    Title =
+                        "High CPU Usage",
+
+                    Message =
+                        $"{device.Name.Value} CPU usage yüksəkdir ({request.CpuUsage}%)",
+
+                    Fingerprint =
+                        $"device:{device.Id}:high-cpu"
+                },
+                cancellationToken);
         }
         else
         {
-            device.MarkHeartbeatFailure();
+            await alertService.ResolveAsync(
+                $"device:{device.Id}:high-cpu",
+                cancellationToken);
         }
 
+        // HIGH MEMORY ALERT
+
+        if (request.MemoryUsage.HasValue && request.MemoryUsage.Value >= 90)
+        {
+            await alertService.ProcessAsync(
+                new AlertContext
+                {
+                    Device = device,
+
+                    Type =
+                        AlertType.HighMemoryUsage,
+
+                    Severity =
+                        AlertSeverity.Warning,
+
+                    Source =
+                        AlertSource.System,
+
+                    Title =
+                        "High Memory Usage",
+
+                    Message =
+                        $"{device.Name.Value} memory usage yüksəkdir ({request.MemoryUsage}%)",
+
+                    Fingerprint =
+                        $"device:{device.Id}:high-memory"
+                },
+                cancellationToken);
+        }
+        else
+        {
+            await alertService.ResolveAsync(
+                $"device:{device.Id}:high-memory",
+                cancellationToken);
+        }
+
+        // HIGH TEMPERATURE ALERT
+
+        if (request.Temperature.HasValue && request.Temperature.Value >= 80)
+        {
+            await alertService.ProcessAsync(
+                new AlertContext
+                {
+                    Device = device,
+
+                    Type =
+                        AlertType.HighTemperature,
+
+                    Severity =
+                        AlertSeverity.Critical,
+
+                    Source =
+                        AlertSource.System,
+
+                    Title =
+                        "High Temperature",
+
+                    Message =
+                        $"{device.Name.Value} yüksək temperaturdadır ({request.Temperature}°C)",
+
+                    Fingerprint =
+                        $"device:{device.Id}:high-temperature"
+                },
+                cancellationToken);
+        }
+        else
+        {
+            await alertService.ResolveAsync(
+                $"device:{device.Id}:high-temperature",
+                cancellationToken);
+        }
         if (oldStatus != device.Status)
         {
-            var branch = await branchRepository
-                .FirstOrDefaultAsync(
-                    x => x.Id == device.BranchId,
-                    cancellationToken);
+            // OFFLINE
 
-            if (branch is not null)
+            if (device.Status ==
+                DeviceStatus.Offline)
             {
-                branch.RecalculateDeviceStats();
-            }
-        }
+                await alertService.ProcessAsync(
+                    new AlertContext
+                    {
+                        Device = device,
 
+                        Type =
+                            AlertType.DeviceOffline,
+
+                        Severity =
+                            AlertSeverity.Critical,
+
+                        Source =
+                            AlertSource.System,
+
+                        Title =
+                            "Device Offline",
+
+                        Message =
+                            $"{device.Name.Value} offline oldu",
+
+                        Fingerprint =
+                            $"device:{device.Id}:offline"
+                    },
+                    cancellationToken);
+            }
+            if (oldStatus ==
+                   DeviceStatus.Offline &&
+               device.Status ==
+                   DeviceStatus.Online)
+            {
+                await alertService.ResolveAsync(
+                    $"device:{device.Id}:offline",
+                    cancellationToken);
+            }
+           
+                await branchStats
+                    .RecalculateAsync(
+                        device.BranchId,
+                        cancellationToken);
+            
+
+            // 🔥 commit
+
+          
+        }
         await unitOfWork.SaveChangesAsync(
-            cancellationToken);
+                  cancellationToken);
 
         return ServiceResult.Success();
     }
-}
+    }

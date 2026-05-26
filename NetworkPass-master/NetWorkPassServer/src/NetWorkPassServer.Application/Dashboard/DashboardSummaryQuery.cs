@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Application.Dtos.DashboardDtos;
+using NetWorkPassServer.Domain.Alerts;
 using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
@@ -21,71 +22,104 @@ internal sealed class DashboardSummaryQueryHandler(
         DashboardSummaryQuery request,
         CancellationToken cancellationToken)
     {
-        var totalBranches =
-            await context.Branches.AsNoTracking()
-                .CountAsync(cancellationToken);
+        // 🔥 BRANCH STATS
+       var branchStats=
+            await context.Branches.AsNoTracking().Where(x=>!x.IsDeleted &&
+            x.IsActive).GroupBy(x => 1).Select(g => new
+            {
+                Total=g.Count(),
+                Online=g.Count(x=>x.Status==BranchStatus.Online),
+                Offline=g.Count(x=>x.Status==BranchStatus.Offline),
+                Degraded=g.Count(x=>x.Status!=BranchStatus.Degraded)
 
-        var onlineBranches =
-            await context.Branches.AsNoTracking()
-                .CountAsync(
-                    x => x.Status == BranchStatus.Online,
-                    cancellationToken);
+            }).FirstOrDefaultAsync(cancellationToken);
 
-        var offlineBranches =
-            await context.Branches.AsNoTracking()
-                .CountAsync(
-                    x => x.Status == BranchStatus.Offline,
-                    cancellationToken);
+        // 🔥 DEVICE STATS
 
-        var warningBranches =
-            await context.Branches.AsNoTracking()
-                .CountAsync(
-                    x => x.Status == BranchStatus.Warning,
-                    cancellationToken);
+        var deviceStats =
+            await context.Devices
+                .AsNoTracking()
+                .Where(x =>
+                    !x.IsDeleted &&
+                    x.IsActive)
+                .GroupBy(x => 1)
+                .Select(g => new
+                {
+                    Total = g.Count(),
 
-        var totalDevices =
-            await context.Devices.AsNoTracking()
-                .CountAsync(cancellationToken);
 
-        var onlineDevices =
-            await context.Devices.AsNoTracking()
-                .CountAsync(
-                    x => x.Status == DeviceStatus.Online,
-                    cancellationToken);
+                    Online =
+                        g.Count(x =>
+                            x.Status ==
+                                DeviceStatus.Online),
 
-        var offlineDevices =
-            await context.Devices.AsNoTracking()
-                .CountAsync(
-                    x => x.Status == DeviceStatus.Offline,
-                    cancellationToken);
+                    Offline =
+                        g.Count(x =>
+                            x.Status ==
+                                DeviceStatus.Offline),
 
-        var warningDevices =
-            await context.Devices.AsNoTracking()
-                .CountAsync(
-                    x => x.Status == DeviceStatus.Warning,
+                    Degraded =
+                        g.Count(x =>
+                            x.Status ==
+                                DeviceStatus.Degraded)
+                })
+                .FirstOrDefaultAsync(
                     cancellationToken);
 
         // TEMP
         // Alert entity hazır olmayıbsa 0 saxla
+        // 🔥 ALERT STATS
 
-        int activeAlerts = 0;
+        var alertStats =
+            await context.Alerts
+                .AsNoTracking()
+                .Where(x =>
+                    !x.IsDeleted &&
+                    x.Status !=
+                        AlertStatus.Resolved)
+                .GroupBy(x => 1)
+                .Select(g => new
+                {
+                    Active =
+                        g.Count(),
 
-        int criticalAlerts = 0;
+                    Critical =
+                        g.Count(x =>
+                            x.Severity ==
+                                AlertSeverity.Critical),
 
-        int warningAlerts = 0;
+                    Warning =
+                        g.Count(x =>
+                            x.Severity ==
+                                AlertSeverity.Warning)
+                })
+                .FirstOrDefaultAsync(
+                    cancellationToken);
 
         var dto = new DashboardSummaryDto(
-            totalBranches,
-            onlineBranches,
-            offlineBranches,
-            warningBranches,
-            totalDevices,
-            onlineDevices,
-            offlineDevices,
-            warningDevices,
-            activeAlerts,
-            criticalAlerts,
-            warningAlerts
+            //Branches
+                 branchStats?.Total ?? 0,
+                 branchStats?.Online ?? 0,
+                branchStats?.Offline ?? 0,
+                branchStats?.Degraded ?? 0,
+                // DEVICES
+
+                deviceStats?.Total ?? 0,
+
+                deviceStats?.Online ?? 0,
+
+                deviceStats?.Offline ?? 0,
+
+                deviceStats?.Degraded ?? 0,
+
+                // ALERTS
+
+                alertStats?.Active ?? 0,
+
+                alertStats?.Critical ?? 0,
+
+                alertStats?.Warning ?? 0
+
         );
 
         return ServiceResult<DashboardSummaryDto>

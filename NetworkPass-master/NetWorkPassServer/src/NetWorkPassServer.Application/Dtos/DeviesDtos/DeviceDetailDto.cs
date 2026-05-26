@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NetWorkPassServer.Domain.Devices;
+
 
 namespace NetWorkPassServer.Application.Dtos.DeviesDtos;
 public sealed record DeviceDetailDto(
@@ -11,8 +8,13 @@ public sealed record DeviceDetailDto(
     string BranchName,
     string Name,
     string IpAddress,
-    string Type,
+    DeviceType Type,
+    string Model,
+    DeviceStatus Status,
     string? Description,
+    DateTime? LastSeenAt,
+    bool IsMonitoringEnabled,
     bool IsActive,
-    DateTimeOffset CreatedAt
+   DateTime CreationTime,
+    DateTime? LastModificationTime
 );

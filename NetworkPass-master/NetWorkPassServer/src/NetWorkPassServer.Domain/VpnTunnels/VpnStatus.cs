@@ -12,10 +12,10 @@ namespace NetWorkPassServer.Domain.VpnTunnels
 
         Connected = 1,
 
-        Connecting = 2,
+        Degraded = 2,
 
         Disconnected = 3,
 
-        Error = 4
+        Maintenance = 4
     }
 }

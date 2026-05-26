@@ -3,11 +3,6 @@ using GenericRepository;
 using NetWorkPassServer.Domain.Branches;
 using NetWorkPassServer.Domain.Branches.ValueObjects;
 using SharedLibrary;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.Branches;
@@ -21,13 +16,18 @@ public sealed record BranchCreateCommand(string Name,
     string WanIp,
     string Subnet,
     string Gateway,
-    string DnsServer
+    string DnsServer,
+    BranchType type,
+    string? description,
+    string Code,
+    int healtScore
     ) : IRequest<ServiceResult<Guid>>;
 
 public sealed class BranchCreateCommmandValidator : AbstractValidator<BranchCreateCommand>
 {
     public BranchCreateCommmandValidator()
     {
+        RuleFor(i => i.Code).NotEmpty().MinimumLength(2).MaximumLength(20);
         RuleFor(i => i.Name).NotEmpty().WithMessage("Düzgün şöbə adı daxil edin");
         RuleFor(i => i.City).NotEmpty().WithMessage("Düzgün Şəhər adı daxil edin");
         RuleFor(i => i.FullAddress).NotEmpty().WithMessage("Düzgün Tam Adres daxil edin");
@@ -40,7 +40,7 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
     public async Task<ServiceResult<Guid>> Handle(BranchCreateCommand request, CancellationToken cancellationToken)
     {
         
-        var exists = await branchRepository.AnyAsync(p => p.Name.Value == request.Name , cancellationToken);
+        var exists = await branchRepository.AnyAsync(p =>  p.Code==request.Code||p.Name.Value == request.Name , cancellationToken);
         if (exists)
         {
             return ServiceResult<Guid>.Failure(
@@ -49,6 +49,7 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
                 System.Net.HttpStatusCode.BadRequest);
         }
         BranchName name = new(request.Name);
+        
         var address = new Address
         (request.City,
     request.District,
@@ -65,7 +66,7 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
             request.Gateway,
             request.DnsServer
             );
-        Branch branch = new(name, address,contactInfo,networkInfo);
+        Branch branch = new(name,request.type, address,contactInfo,networkInfo,request.Code, request.description, request.healtScore);
        await branchRepository.AddAsync(branch,cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

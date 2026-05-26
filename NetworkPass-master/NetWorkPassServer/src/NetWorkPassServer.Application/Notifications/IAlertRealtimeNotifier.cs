@@ -10,11 +10,20 @@ namespace NetWorkPassServer.Application.Notifications
     public interface IAlertRealtimeNotifier
     {
         Task AlertCreatedAsync(
-            AlertListDto alert,
+         AlertListDto alert,
+         CancellationToken cancellationToken);
+
+        Task AlertAcknowledgedAsync(
+            Guid alertId,
+            Guid acknowledgedBy,
+            DateTime acknowledgedAt,
             CancellationToken cancellationToken);
 
         Task AlertResolvedAsync(
             Guid alertId,
+            Guid? resolvedBy,
+            DateTime resolvedAt,
+            string? resolutionNote,
             CancellationToken cancellationToken);
     }
 }
