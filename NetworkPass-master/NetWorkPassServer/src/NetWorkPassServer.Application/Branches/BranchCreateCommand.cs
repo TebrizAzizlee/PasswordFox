@@ -6,7 +6,8 @@ using SharedLibrary;
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.Branches;
-public sealed record BranchCreateCommand(string Name,
+public sealed record BranchCreateCommand(
+    string Name,
     string City,
     string District,
     string FullAddress,
@@ -17,10 +18,10 @@ public sealed record BranchCreateCommand(string Name,
     string Subnet,
     string Gateway,
     string DnsServer,
-    BranchType type,
-    string? description,
+    BranchType Type,
+    string? Description,
     string Code,
-    int healtScore
+    int HealtScore
     ) : IRequest<ServiceResult<Guid>>;
 
 public sealed class BranchCreateCommmandValidator : AbstractValidator<BranchCreateCommand>
@@ -66,7 +67,7 @@ internal sealed class BranchCreateCommandHandler(IBranchRepository branchReposit
             request.Gateway,
             request.DnsServer
             );
-        Branch branch = new(name,request.type, address,contactInfo,networkInfo,request.Code, request.description, request.healtScore);
+        Branch branch = new(name,request.Type, address,contactInfo,networkInfo,request.Code, request.Description, request.HealtScore);
        await branchRepository.AddAsync(branch,cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -1,4 +1,5 @@
-﻿using GenericRepository;
+﻿
+using GenericRepository;
 using NetWorkPassServer.Application.Alerts;
 using NetWorkPassServer.Application.Services;
 using NetWorkPassServer.Domain.Alerts;
@@ -10,19 +11,19 @@ using System.Net;
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.DeviceHeartbeats;
+
 public sealed record DeviceHeartbeatReceivedCommand(
-      Guid DeviceId,
+    Guid DeviceId,
     bool IsReachable,
-    string? ErrorMessage,  
+    string? ErrorMessage,
     double? CpuUsage,
     double? DiskUsage,
     double? MemoryUsage,
     double? Temperature,
     long? UptimeSeconds,
     long? ResponseTimeMs
-
-
 ) : IRequest<ServiceResult>;
+
 internal sealed class DeviceHeartbeatReceivedCommandHandler(
     IDeviceRepository deviceRepository,
     IDeviceHeartbeatRepository heartbeatRepository,
@@ -38,11 +39,13 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
         DeviceHeartbeatReceivedCommand request,
         CancellationToken cancellationToken)
     {
-        var device = await deviceRepository
-            .FirstOrDefaultAsync(
-                x => x.Id == request.DeviceId &&
-                !x.IsDeleted,
-                cancellationToken);
+        var device =
+            await deviceRepository
+                .FirstOrDefaultAsync(
+                    x =>
+                        x.Id == request.DeviceId &&
+                        !x.IsDeleted,
+                    cancellationToken);
 
         if (device is null)
         {
@@ -51,44 +54,76 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                 "Device tapılmadı",
                 HttpStatusCode.NotFound);
         }
-        var utcNow = DateTime.UtcNow;
-        var oldStatus = device.Status;
 
-        // 🔥 realtime status update
+        var utcNow =
+            DateTime.UtcNow;
+
+        var oldStatus =
+            device.Status;
+
+        // =====================================================
+        // METRIC CHECK
+        // =====================================================
+
+        var hasMetrics =
+            request.CpuUsage.HasValue ||
+            request.MemoryUsage.HasValue ||
+            request.DiskUsage.HasValue ||
+            request.Temperature.HasValue;
+
+        // =====================================================
+        // HEARTBEAT STATUS
+        // =====================================================
+
         if (request.IsReachable)
         {
             device.MarkHeartbeatSuccess(
-                request.ResponseTimeMs, utcNow);
-            // 🔥 realtime metrics update
-
-            device.UpdateMetrics(
-            request.CpuUsage,
-              request.MemoryUsage,
-             request.Temperature,
-              request.UptimeSeconds ?? 0);
-            device.EvaluateHealthStatus(
+                request.ResponseTimeMs,
                 utcNow);
+
+            // yalnız metric varsa update et
+
+            if (hasMetrics)
+            {
+                device.UpdateMetrics(
+                    request.CpuUsage,
+                    request.MemoryUsage,
+                    request.Temperature,
+                    request.UptimeSeconds ?? 0);
+
+                device.EvaluateHealthStatus(
+                    utcNow);
+            }
         }
         else
         {
-            device.MarkHeartbeatFailure(utcNow);
+            device.MarkHeartbeatFailure(
+                utcNow);
         }
-        // 🔥 heartbeat history
-        var heartbeat = new DeviceHeartbeat(
-            request.DeviceId,
-            device.Status,
-            request.IsReachable,
-            request.ResponseTimeMs,
-            utcNow,
-            request.ErrorMessage);
+
+        // =====================================================
+        // HEARTBEAT HISTORY
+        // =====================================================
+
+        var heartbeat =
+            new DeviceHeartbeat(
+                request.DeviceId,
+                device.Status,
+                request.IsReachable,
+                request.ResponseTimeMs,
+                utcNow,
+                request.ErrorMessage);
 
         await heartbeatRepository.AddAsync(
             heartbeat,
             cancellationToken);
 
-        // 🔥 metric history
+        // =====================================================
+        // METRIC HISTORY
+        // =====================================================
 
-        if (request.IsReachable)
+        if (request.IsReachable &&
+            hasMetrics)
         {
             var latestMetric =
                 await metricRepository
@@ -132,13 +167,14 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                     metric,
                     cancellationToken);
             }
-
         }
 
+        // =====================================================
+        // CPU ALERT
+        // =====================================================
 
-
-
-        if (request.CpuUsage.HasValue && request.CpuUsage.Value >= 90)
+        if (request.CpuUsage.HasValue &&
+            request.CpuUsage.Value >= 90)
         {
             await alertService.ProcessAsync(
                 new AlertContext
@@ -165,16 +201,21 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                 },
                 cancellationToken);
         }
-        else
+        else if (
+            request.CpuUsage.HasValue &&
+            request.CpuUsage.Value < 80)
         {
             await alertService.ResolveAsync(
                 $"device:{device.Id}:high-cpu",
                 cancellationToken);
         }
 
-        // HIGH MEMORY ALERT
+        // =====================================================
+        // MEMORY ALERT
+        // =====================================================
 
-        if (request.MemoryUsage.HasValue && request.MemoryUsage.Value >= 90)
+        if (request.MemoryUsage.HasValue &&
+            request.MemoryUsage.Value >= 90)
         {
             await alertService.ProcessAsync(
                 new AlertContext
@@ -201,16 +242,21 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                 },
                 cancellationToken);
         }
-        else
+        else if (
+            request.MemoryUsage.HasValue &&
+            request.MemoryUsage.Value < 80)
         {
             await alertService.ResolveAsync(
                 $"device:{device.Id}:high-memory",
                 cancellationToken);
         }
 
-        // HIGH TEMPERATURE ALERT
+        // =====================================================
+        // TEMPERATURE ALERT
+        // =====================================================
 
-        if (request.Temperature.HasValue && request.Temperature.Value >= 80)
+        if (request.Temperature.HasValue &&
+            request.Temperature.Value >= 80)
         {
             await alertService.ProcessAsync(
                 new AlertContext
@@ -237,12 +283,19 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                 },
                 cancellationToken);
         }
-        else
+        else if (
+            request.Temperature.HasValue &&
+            request.Temperature.Value < 70)
         {
             await alertService.ResolveAsync(
                 $"device:{device.Id}:high-temperature",
                 cancellationToken);
         }
+
+        // =====================================================
+        // OFFLINE ALERTS
+        // =====================================================
+
         if (oldStatus != device.Status)
         {
             // OFFLINE
@@ -275,29 +328,31 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                     },
                     cancellationToken);
             }
+
+            // RECOVERY
+
             if (oldStatus ==
-                   DeviceStatus.Offline &&
-               device.Status ==
-                   DeviceStatus.Online)
+                    DeviceStatus.Offline &&
+                device.Status ==
+                    DeviceStatus.Online)
             {
                 await alertService.ResolveAsync(
                     $"device:{device.Id}:offline",
                     cancellationToken);
             }
-           
-                await branchStats
-                    .RecalculateAsync(
-                        device.BranchId,
-                        cancellationToken);
-            
 
-            // 🔥 commit
-
-          
+            await branchStats.RecalculateAsync(
+                device.BranchId,
+                cancellationToken);
         }
+
+        // =====================================================
+        // COMMIT
+        // =====================================================
+
         await unitOfWork.SaveChangesAsync(
-                  cancellationToken);
+            cancellationToken);
 
         return ServiceResult.Success();
     }
-    }
+}

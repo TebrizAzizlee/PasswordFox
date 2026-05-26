@@ -29,7 +29,7 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
         }
 
         Code = code.Trim().ToUpperInvariant();
-        SetName(name);
+       Name=name;
         Type = type;
         Description = description?.Trim();
         HealthScore = healtScore;
@@ -103,13 +103,13 @@ public sealed class Branch : FullAuditedAggregateRoot<Guid>
     public ICollection<VpnTunnel> VpnTunnels { get; private set; } = default!;
 
 
-    public void SetName(BranchName name)
-    {
-        if (string.IsNullOrWhiteSpace(name.Value))
+    //public void SetName(BranchName name)
+    //{
+    //    if (string.IsNullOrWhiteSpace(name.Value))
            
 
-        Name = name;
-    }
+    //    Name = name;
+    //}
 
     public void Update(
         BranchName name,
