@@ -1,5 +1,6 @@
 ﻿
 using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.RateLimiting;
 using NetWorkPassServer.Application;
 using NetWorkPassServer.Infrastructure;
@@ -68,8 +69,10 @@ app.MapBranch();
 app.MapDevice();
 app.RegisterDeviceHeartbeatRoutes();
 app.RegisterAlertRoutes();
+app.RegisterDashboardRoutes();
 app.MapHub<DashboardHub>(
-    "/hubs/dashboard");
+    
+"/hubs/dashboard");
 app.MapHub<AlertHub>(
     "/hubs/alerts");
 app.MapHub<MonitoringHub>(

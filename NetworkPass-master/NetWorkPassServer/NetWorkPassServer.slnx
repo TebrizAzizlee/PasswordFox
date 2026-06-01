@@ -15,5 +15,5 @@
     <Project Path="src/NetWorkPassServer.Infrastructure/NetWorkPassServer.Infrastructure.csproj" Id="b1b9a245-f513-4afd-83ca-dbcac09afe88" />
     <Project Path="src/NetWorkPassServer.WEBAPI/NetWorkPassServer.WEBAPI.csproj" Id="1c1f1555-3e1a-4093-afd0-cb9d622d9e80" />
   </Folder>
-  <Folder Name="/test/" />
+  <Folder Name="/src/test/" />
 </Solution>

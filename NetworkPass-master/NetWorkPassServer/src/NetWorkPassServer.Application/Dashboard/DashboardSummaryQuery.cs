@@ -30,7 +30,7 @@ internal sealed class DashboardSummaryQueryHandler(
                 Total=g.Count(),
                 Online=g.Count(x=>x.Status==BranchStatus.Online),
                 Offline=g.Count(x=>x.Status==BranchStatus.Offline),
-                Degraded=g.Count(x=>x.Status!=BranchStatus.Degraded)
+                Degraded=g.Count(x=>x.Status==BranchStatus.Degraded)
 
             }).FirstOrDefaultAsync(cancellationToken);
 

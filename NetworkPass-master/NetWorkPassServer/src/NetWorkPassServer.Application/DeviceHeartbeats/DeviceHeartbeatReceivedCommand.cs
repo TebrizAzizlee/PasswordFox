@@ -93,6 +93,10 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
 
                 device.EvaluateHealthStatus(
                     utcNow);
+                await unitOfWork.SaveChangesAsync(
+                        cancellationToken);
+                await unitOfWork.SaveChangesAsync(
+                  cancellationToken);
             }
         }
         else
@@ -295,64 +299,63 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
         // =====================================================
         // OFFLINE ALERTS
         // =====================================================
-
-        if (oldStatus != device.Status)
+        if (!request.IsReachable)
         {
-            // OFFLINE
+            await alertService.ProcessAsync(
+                new AlertContext
+                {
+                    Device = device,
 
-            if (device.Status ==
-                DeviceStatus.Offline)
-            {
-                await alertService.ProcessAsync(
-                    new AlertContext
-                    {
-                        Device = device,
+                    Type =
+                        AlertType.DeviceOffline,
 
-                        Type =
-                            AlertType.DeviceOffline,
+                    Severity =
+                        AlertSeverity.Critical,
 
-                        Severity =
-                            AlertSeverity.Critical,
+                    Source =
+                        AlertSource.System,
 
-                        Source =
-                            AlertSource.System,
+                    Title =
+                        "Device Offline",
 
-                        Title =
-                            "Device Offline",
+                    Message =
+                        $"{device.Name.Value} offline oldu",
 
-                        Message =
-                            $"{device.Name.Value} offline oldu",
+                    Fingerprint =
+                        $"device:{device.Id}:offline"
+                },
+                cancellationToken);
+        }
 
-                        Fingerprint =
-                            $"device:{device.Id}:offline"
-                    },
-                    cancellationToken);
-            }
 
-            // RECOVERY
+        //OFFLINE RECOVERY
 
-            if (oldStatus ==
-                    DeviceStatus.Offline &&
-                device.Status ==
-                    DeviceStatus.Online)
-            {
+        if (oldStatus ==DeviceStatus.Offline && device.Status ==  DeviceStatus.Online)
+
+
+
+        {
                 await alertService.ResolveAsync(
                     $"device:{device.Id}:offline",
                     cancellationToken);
             }
 
+        if (oldStatus != device.Status)
+        {
             await branchStats.RecalculateAsync(
                 device.BranchId,
                 cancellationToken);
         }
+        await unitOfWork.SaveChangesAsync(
+          cancellationToken);
+
+        return ServiceResult.Success();
+    }
 
         // =====================================================
         // COMMIT
         // =====================================================
 
-        await unitOfWork.SaveChangesAsync(
-            cancellationToken);
-
-        return ServiceResult.Success();
+      
     }
-}
+

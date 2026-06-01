@@ -25,7 +25,11 @@ internal sealed class AlertService(
              await context.Alerts.FirstOrDefaultAsync(x => !x.IsDeleted &&
              x.Fingerprint==contextData.Fingerprint &&
              x.Status!=AlertStatus.Resolved, cancellationToken);
+        Console.WriteLine(
+    $"Fingerprint: {contextData.Fingerprint}");
 
+        Console.WriteLine(
+            $"Found Alert: {existingAlert != null}");
         //dublicate
         if (existingAlert is not null)
         {
