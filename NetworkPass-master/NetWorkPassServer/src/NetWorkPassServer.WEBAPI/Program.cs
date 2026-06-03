@@ -64,7 +64,8 @@ app.UseAuthorization();
 app.UseRateLimiter();
 //app.UseSerilogRequestLogging();
 app.MapControllers().RequireRateLimiting("fixed");
-
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.MapBranch();
 app.MapDevice();
 app.RegisterDeviceHeartbeatRoutes();

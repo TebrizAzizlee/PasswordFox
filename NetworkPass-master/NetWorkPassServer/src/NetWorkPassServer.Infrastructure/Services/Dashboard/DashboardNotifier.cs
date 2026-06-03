@@ -10,8 +10,10 @@ internal sealed class DashboardNotifier(
     public async Task NotifyDashboardUpdatedAsync(
         CancellationToken cancellationToken)
     {
+        Console.WriteLine(
+        "DASHBOARD EVENT SENT");
         await hubContext.Clients.All.SendAsync(
-            "dashboard-updated",
-            cancellationToken);
+            "dashboard-updated"
+            );
     }
 }

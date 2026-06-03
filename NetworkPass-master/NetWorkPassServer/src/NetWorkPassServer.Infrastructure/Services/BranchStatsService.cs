@@ -1,17 +1,18 @@
 ﻿
 using GenericRepository;
 using Microsoft.EntityFrameworkCore;
-using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Application.Dtos.BranchDtos;
 using NetWorkPassServer.Application.Services;
 using NetWorkPassServer.Domain.Alerts;
 using NetWorkPassServer.Domain.Devices;
+using NetWorkPassServer.Infrastructure.Context;
 
 namespace NetWorkPassServer.Infrastructure.Services;
 
 internal sealed class BranchStatsService(
-    IPasswordDbContext context,
+    PasswordDbContext context,
     IUnitOfWork unitOfWork,
+    IDashboardNotifier dashboardNotifier,
     IBranchRealtimeNotifier realtimeNotifier)
     : IBranchStatsService
 {
@@ -30,22 +31,7 @@ internal sealed class BranchStatsService(
         {
             return;
         }
-        var deviceStatuses = await context.Devices
-    .Where(x =>
-        !x.IsDeleted &&
-        x.BranchId == branchId)
-    .Select(x => new
-    {
-        x.Id,
-        x.Status
-    })
-    .ToListAsync(cancellationToken);
-
-        foreach (var d in deviceStatuses)
-        {
-            Console.WriteLine(
-                $"Device: {d.Id} Status: {d.Status}");
-        }
+  
 
         if (!branch.IsActive)
         {
@@ -124,11 +110,7 @@ internal sealed class BranchStatsService(
             deviceStats?.LastSeenAt;
 
         // HEALTH SCORE
-        Console.WriteLine($"BranchId={branchId}");
-        Console.WriteLine($"Total={total}");
-        Console.WriteLine($"Online={online}");
-        Console.WriteLine($"Offline={offline}");
-        Console.WriteLine($"Degraded={degraded}");
+      
         var healthScore = 100;
 
         healthScore -= offline * 30;
@@ -149,13 +131,13 @@ internal sealed class BranchStatsService(
             degraded,
             alertCount,
             healthScore);
-        Console.WriteLine($"Branch Status={branch.Status}");
+      
         branch.UpdateLastSeenAt(
             lastSeenAt);
-
+        
         await unitOfWork.SaveChangesAsync(
             cancellationToken);
-
+       
         var snapshot =
               new BranchRuntimeSnapshotDto(
                   branch.Id,
@@ -183,6 +165,11 @@ internal sealed class BranchStatsService(
            .BranchStatsChangedAsync(
                snapshot,
                cancellationToken);
+        Console.WriteLine("BEFORE DASHBOARD");
+        await dashboardNotifier
+    .NotifyDashboardUpdatedAsync(
+        cancellationToken);
+        Console.WriteLine("AFTER DASHBOARD");
     }
 }
 

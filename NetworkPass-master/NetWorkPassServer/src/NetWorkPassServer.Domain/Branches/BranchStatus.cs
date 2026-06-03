@@ -3,9 +3,10 @@
 namespace NetWorkPassServer.Domain.Branches;
 public enum BranchStatus
 {
-    Online = 1,
-    Degraded = 2,
+    Unknown = 0,
+    Online = 2,
     Offline = 3,
-    Unknown = 4,
-    Maintenance = 5
+    
+    Maintenance = 4,
+    Degraded = 5,
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>SignalR Test</h2>
+
+<div id="log"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
+<script>
+
+function log(text)
+{
+    document.getElementById("log").innerHTML +=
+        "<div>" + text + "</div>";
+}
+
+log("PAGE LOADED");
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7036/hubs/dashboard")
+    .build();
+
+connection.on("dashboard-updated", () =>
+{
+    console.log("DASHBOARD UPDATED EVENT");
+    log("DASHBOARD UPDATED EVENT");
+});
+
+connection.start()
+    .then(() =>
+    {
+        console.log("CONNECTED");
+        log("CONNECTED");
+    })
+    .catch(err =>
+    {
+        console.error(err);
+        log("ERROR: " + err);
+    });
+
+</script>
+
+</body>
+</html>

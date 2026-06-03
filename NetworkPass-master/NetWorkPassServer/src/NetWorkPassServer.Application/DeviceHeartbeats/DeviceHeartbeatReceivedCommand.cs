@@ -95,8 +95,7 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                     utcNow);
                 await unitOfWork.SaveChangesAsync(
                         cancellationToken);
-                await unitOfWork.SaveChangesAsync(
-                  cancellationToken);
+                
             }
         }
         else

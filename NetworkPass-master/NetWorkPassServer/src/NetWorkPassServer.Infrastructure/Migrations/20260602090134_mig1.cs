@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NetWorkPassServer.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class mig1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -348,7 +348,7 @@ namespace NetWorkPassServer.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceMetrics_DeviceId_OccurredAtUtc",
                 table: "DeviceMetrics",
-                columns: ["DeviceId", "OccurredAtUtc"]);
+                columns: new[] { "DeviceId", "OccurredAtUtc" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceMetrics_OccurredAtUtc",

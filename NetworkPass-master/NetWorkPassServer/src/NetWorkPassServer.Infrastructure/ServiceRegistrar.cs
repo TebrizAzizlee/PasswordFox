@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetWorkPassServer.Application.Context;
 using NetWorkPassServer.Application.Monitoring;
 using NetWorkPassServer.Application.Services;
 using NetWorkPassServer.Infrastructure.Context;
@@ -31,8 +32,9 @@ public static class ServiceRegistrar
 
 
         services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<PasswordDbContext>());
-        
-        
+        services.AddScoped<IPasswordDbContext>(srv => srv.GetRequiredService<PasswordDbContext>());
+
+
 
 
         services.AddScoped<IDeviceMonitoringStrategy, PingMonitoringStrategy>();
