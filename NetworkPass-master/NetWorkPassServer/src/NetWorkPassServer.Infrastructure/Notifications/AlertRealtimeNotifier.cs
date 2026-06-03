@@ -14,7 +14,9 @@ namespace NetWorkPassServer.Infrastructure.Notifications
             AlertListDto alert,
             CancellationToken cancellationToken)
         {
-            await hubContext.Clients.Group("noc").SendAsync(
+            Console.WriteLine(
+       $"ALERT CREATED SENT: {alert.Id}");
+            await hubContext.Clients.All.SendAsync(
                 "alert-created",
                 alert,
                 cancellationToken);
@@ -62,6 +64,7 @@ namespace NetWorkPassServer.Infrastructure.Notifications
                 ResolvedBy = resolvedBy,
 
                 ResolvedAt = resolvedAt,
+
 
                 ResolutionNote = resolutionNote
             };

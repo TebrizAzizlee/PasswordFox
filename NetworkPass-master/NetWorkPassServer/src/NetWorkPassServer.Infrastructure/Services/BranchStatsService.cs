@@ -165,7 +165,7 @@ internal sealed class BranchStatsService(
            .BranchStatsChangedAsync(
                snapshot,
                cancellationToken);
-        Console.WriteLine("BEFORE DASHBOARD");
+       
         await dashboardNotifier
     .NotifyDashboardUpdatedAsync(
         cancellationToken);

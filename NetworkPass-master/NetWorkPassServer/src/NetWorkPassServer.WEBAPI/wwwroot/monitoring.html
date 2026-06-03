@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>MonitoringHub Test</h2>
+
+<div id="log"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
+<script>
+
+function log(text)
+{
+    document.getElementById("log").innerHTML +=
+        "<div>" + text + "</div>";
+}
+
+log("PAGE LOADED");
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7036/hubs/monitoring")
+    .build();
+
+connection.on("device-status-changed", data =>
+{
+    log("DEVICE STATUS CHANGED");
+    console.log(data);
+});
+
+connection.on("branch-status-changed", data =>
+{
+    log("BRANCH STATUS CHANGED");
+    console.log(data);
+});
+
+connection.start()
+    .then(() =>
+    {
+        log("CONNECTED");
+    })
+    .catch(err =>
+    {
+        log("ERROR: " + err);
+    });
+
+</script>
+
+</body>
+</html>
