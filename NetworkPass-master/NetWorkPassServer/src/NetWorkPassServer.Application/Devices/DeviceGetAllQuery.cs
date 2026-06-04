@@ -3,11 +3,7 @@ using NetWorkPassServer.Application.Dtos.DeviesDtos;
 using NetWorkPassServer.Domain.Devices;
 using SharedLibrary;
 using SharedLibrary.Abstractions.Pagination;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using TS.MediatR;
 
 namespace NetWorkPassServer.Application.Devices;

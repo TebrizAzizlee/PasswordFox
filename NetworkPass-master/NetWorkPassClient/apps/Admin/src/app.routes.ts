@@ -51,6 +51,13 @@ export const appRoutes: Route[] = [
             loadChildren: () =>
               import('./pages/department/router').then(m=>m.default)
 
+          },
+          {
+            path: 'devices',
+
+            loadChildren: () =>
+              import('./pages/device/device/router').then(m=>m.default)
+
           }
         ]
       }

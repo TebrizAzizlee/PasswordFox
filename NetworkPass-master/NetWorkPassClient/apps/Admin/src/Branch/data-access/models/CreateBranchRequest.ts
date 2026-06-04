@@ -2,7 +2,7 @@
 export interface CreateBranchRequest {
 
     name: string;
-
+code:string;
   city: string;
 
   district: string;

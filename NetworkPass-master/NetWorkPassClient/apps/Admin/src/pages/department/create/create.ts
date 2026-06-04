@@ -24,6 +24,7 @@ export class Create {
   private readonly router = inject(Router);
   readonly form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
+    code:['',[Validators.required,Validators.minLength(2)]],
     address: this.fb.group({
       city: ['', Validators.required],
       district: ['', Validators.required],
@@ -50,8 +51,9 @@ export class Create {
     const raw = this.form.getRawValue();
     const request: CreateBranchRequest = {
       name: raw.name ?? '',
-
+      code:raw.code ?? '',
         city: raw.address?.city ?? '',
+
         district: raw.address?.district ?? '',
         fullAddress: raw.address?.fullAddress ?? '',
         phoneNumber1: raw.contactInfo?.phoneNumber1 ?? '',

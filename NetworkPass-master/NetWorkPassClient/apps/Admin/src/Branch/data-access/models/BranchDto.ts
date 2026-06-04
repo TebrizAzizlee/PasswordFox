@@ -2,25 +2,32 @@
 
 export interface BranchDto {
 
-  id: string;
+id: string;
 
-  name: string;
+code: string;
 
-  city: string;
+name: string;
 
-  district: string;
+city: string;
 
-  fullAddress: string;
+type: string;
 
-  phoneNumber: string;
+status: string;
 
-  email: string;
+totalDeviceCount: number;
 
-  wanIp: string;
+onlineDeviceCount: number;
 
-  subnet: string;
+degradedDeviceCount: number;
 
-  gateway: string;
+offlineDeviceCount: number;
 
-  dnsServer: string;
+alertCount: number;
+
+healthScore: number;
+
+isActive: boolean;
+
+lastSeenAt: string | null;
 }
+

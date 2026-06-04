@@ -7,7 +7,11 @@ import { BranchDto } from './models/BranchDto';
 })
 export class BranchStore {
   branches = signal<BranchDto[]>([]);
+page = signal(1);
 
+totalPages = signal(1);
+
+totalCount = signal(0);
   loading = signal(false);
 
   loaded = signal(false);

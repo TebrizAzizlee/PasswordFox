@@ -15,5 +15,10 @@ export const navigations:NavigationModel[]=[
     title:"Branches",
     url:"/departments",
     icon:"bi-buildings-fill"
+  },
+  {
+    title:"Devices",
+    url:"/devices",
+    icon:"bi bi-display"
   }
 ]

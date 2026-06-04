@@ -1,6 +1,8 @@
 ﻿
 using GenericRepository;
 using NetWorkPassServer.Application.Alerts;
+using NetWorkPassServer.Application.Dtos.DeviesDtos;
+using NetWorkPassServer.Application.Notifications;
 using NetWorkPassServer.Application.Services;
 using NetWorkPassServer.Domain.Alerts;
 using NetWorkPassServer.Domain.DeviceHeartbeats;
@@ -26,6 +28,7 @@ public sealed record DeviceHeartbeatReceivedCommand(
 
 internal sealed class DeviceHeartbeatReceivedCommandHandler(
     IDeviceRepository deviceRepository,
+    IMonitoringRealtimeNotifier monitoringRealtimeNotifier,
     IDeviceHeartbeatRepository heartbeatRepository,
     IDeviceMetricRepository metricRepository,
     IBranchStatsService branchStats,
@@ -345,6 +348,21 @@ internal sealed class DeviceHeartbeatReceivedCommandHandler(
                 device.BranchId,
                 cancellationToken);
         }
+        var dto = new DeviceRealtimeDto(
+         device.Id,
+         device.BranchId,
+         device.Name.Value,
+         device.Status,
+         device.PingLatency,
+         device.CpuUsage,
+         device.MemoryUsage,
+         device.Temperature,
+         device.LastSeenAt);
+
+        await monitoringRealtimeNotifier
+    .DeviceStatusChangedAsync(
+        dto,
+        cancellationToken);
         await unitOfWork.SaveChangesAsync(
           cancellationToken);
 

@@ -40,7 +40,7 @@ builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("cors", x => {
-        x.WithOrigins("https://localhost:7232", "https://localhost:4200")//Authserver
+        x.WithOrigins("https://localhost:7232", "https://localhost:4200", "http://localhost:4200")//Authserver
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();
@@ -64,8 +64,6 @@ app.UseAuthorization();
 app.UseRateLimiter();
 //app.UseSerilogRequestLogging();
 app.MapControllers().RequireRateLimiting("fixed");
-app.UseDefaultFiles();
-app.UseStaticFiles();
 app.MapBranch();
 app.MapDevice();
 app.RegisterDeviceHeartbeatRoutes();

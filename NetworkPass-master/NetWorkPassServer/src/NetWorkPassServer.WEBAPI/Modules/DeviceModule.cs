@@ -71,5 +71,10 @@ public static class DeviceModule
                 return res.ToResult();
             })
         . RequireAuthorization();
+
+        group.MapGet("monitoring", 
+            async ([AsParameters] DeviceMonitoringListQuery request, ISender sender, CancellationToken ct) => 
+            { var result = await sender.Send(request, ct); return result.ToResult(); })
+            .RequireAuthorization();
     }
 }

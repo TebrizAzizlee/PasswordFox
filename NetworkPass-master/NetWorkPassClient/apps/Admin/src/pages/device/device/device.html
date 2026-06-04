@@ -1,0 +1,280 @@
+
+<app-blank
+  pageTitle="Devices"
+  pageDescription="Monitor and manage all network devices"
+  pageIcon="bi-pc-display">
+
+  <div class="container-fluid">
+
+    <!-- Summary Cards -->
+
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-3">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="text-muted">
+              Total Devices
+            </h6>
+
+            <h2>
+              {{ totalDevices() }}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="text-muted">
+              Online Devices
+            </h6>
+
+            <h2 class="text-success">
+              {{ onlineDevices() }}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="text-muted">
+              Degraded Devices
+            </h6>
+
+            <h2 class="text-warning">
+              {{ degradedDevices() }}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="text-muted">
+              Offline Devices
+            </h6>
+
+            <h2 class="text-danger">
+              {{ offlineDevices() }}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Toolbar -->
+
+    <div class="card shadow-sm mb-3">
+
+      <div class="card-body">
+
+        <div class="row">
+
+          <div class="col-md-8">
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search devices..."
+              [(ngModel)]="searchText">
+
+          </div>
+
+          <div class="col-md-4 text-end">
+
+            <button
+              class="btn btn-primary">
+
+              <i class="bi bi-plus-circle"></i>
+
+              Add Device
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Device Table -->
+
+    <div class="card shadow-sm">
+
+      <div class="card-header">
+
+        <h5 class="mb-0">
+          Device Monitoring
+        </h5>
+
+      </div>
+
+      <div class="card-body p-0">
+
+        <table
+          class="table table-hover table-striped mb-0">
+
+          <thead class="table-light">
+
+            <tr>
+
+              <th>Name</th>
+
+              <th>IP Address</th>
+
+              <th>Type</th>
+
+              <th>Status</th>
+
+              <th>CPU</th>
+
+              <th>Memory</th>
+
+              <th>Latency</th>
+
+              <th>Last Seen</th>
+
+              <th></th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for(device of devices(); track device.id)
+            {
+              <tr>
+
+                <td>
+                  <strong>
+                    {{ device.name }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{ device.ipAddress }}
+                </td>
+
+                <td>
+                  {{ device.type }}
+                </td>
+
+                <td>
+
+                  <span
+                    class="badge"
+
+                    [class.bg-success]="device.status"
+
+                    [class.bg-danger]="device.status"
+
+                    [class.bg-warning]="device.status">
+
+                    {{ device.status }}
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                  @if(device.cpuUsage !== null)
+                  {
+                    {{ device.cpuUsage }}%
+                  }
+                  @else
+                  {
+                    -
+                  }
+
+                </td>
+
+                <td>
+
+                  @if(device.memoryUsage !== null)
+                  {
+                    {{ device.memoryUsage }}%
+                  }
+                  @else
+                  {
+                    -
+                  }
+
+                </td>
+
+                <td>
+
+                  @if(device.pingLatency !== null)
+                  {
+                    {{ device.pingLatency }} ms
+                  }
+                  @else
+                  {
+                    -
+                  }
+
+                </td>
+
+                <td>
+
+                  @if(device.lastSeenAt)
+                  {
+                    {{ device.lastSeenAt | date:'dd.MM.yyyy HH:mm:ss' }}
+                  }
+                  @else
+                  {
+                    -
+                  }
+
+                </td>
+
+                <td>
+
+                  <button
+                    class="btn btn-sm btn-outline-primary">
+
+                    <i class="bi bi-eye"></i>
+
+                  </button>
+
+                </td>
+
+              </tr>
+            }
+
+            @empty
+            {
+              <tr>
+
+                <td
+                  colspan="9"
+                  class="text-center p-5">
+
+                  No devices found
+
+                </td>
+
+              </tr>
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</app-blank>
+
